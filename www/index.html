@@ -234,7 +234,8 @@ button{font-family:inherit;color:inherit;}
 .stars{ font-size:2rem; margin:10px 0 18px; }
 
 /* ---------- AUTH / HOME / PROFILE / SETTINGS / GATE ---------- */
-#loginScreen .wrap, #homeScreen .wrap, #gateScreen .wrap, #introScreen .wrap{ align-items:center; justify-content:center; text-align:center; }
+#loginScreen .wrap, #homeScreen .wrap, #gateScreen .wrap, #introScreen .wrap, #registerScreen .wrap, #forgotScreen .wrap{ align-items:center; justify-content:center; text-align:center; overflow-y:auto; padding-top:14px; padding-bottom:14px; }
+.mascotSmall{ width:64px; height:auto; filter:drop-shadow(0 4px 0 rgba(0,0,0,.08)); }
 .authCard{ width:100%; max-width:340px; display:flex; flex-direction:column; align-items:center; gap:10px; }
 .mascot{ width:104px; height:auto; filter:drop-shadow(0 4px 0 rgba(0,0,0,.08)); }
 .homeMascot{ width:96px; margin-top:8px; }
@@ -255,6 +256,21 @@ button{font-family:inherit;color:inherit;}
 }
 .guestNote{ font-size:.72rem; opacity:.45; font-weight:700; margin:2px 0 0; }
 .authMsg{ color:var(--bad); font-weight:800; font-size:.8rem; min-height:1.2em; }
+.authRow{ width:100%; display:flex; align-items:center; justify-content:space-between; gap:8px; margin-top:2px; }
+.checkboxRow{ display:flex; align-items:flex-start; gap:7px; font-size:.78rem; font-weight:700; opacity:.75; text-align:left; cursor:pointer; }
+.checkboxRow input{ margin-top:2px; flex:0 0 auto; }
+.linkBtn{
+  border:none; background:none; font-weight:800; font-size:.78rem; opacity:.6;
+  cursor:pointer; color:var(--ink); text-decoration:underline; padding:4px 0;
+}
+.linkBtn.inlineLink{ font-size:.78rem; padding:0; display:inline; text-decoration:underline; }
+.linkBtn b{ opacity:1; }
+.kvkkBox{ width:100%; text-align:left; margin-top:4px; }
+.kvkkText{
+  display:none; font-size:.72rem; font-weight:600; opacity:.65; line-height:1.5;
+  background:rgba(0,0,0,.04); border-radius:12px; padding:10px 12px; margin-top:8px;
+}
+.kvkkText.show{ display:block; }
 
 .homeGreeting{ font-weight:700; opacity:.55; margin:2px 0 0; }
 .homeGreetingTop{
@@ -328,7 +344,7 @@ button{font-family:inherit;color:inherit;}
 <div class="screen active" id="loginScreen">
   <div class="wrap">
     <div class="authCard">
-      <svg class="mascot" viewBox="0 0 240 240" xmlns="http://www.w3.org/2000/svg">
+      <svg class="mascotSmall" viewBox="0 0 240 240" xmlns="http://www.w3.org/2000/svg">
         <path d="M20 190 Q10 150 45 140 Q35 175 55 205 Q30 210 20 190 Z" fill="#FFFDF7" stroke="#E9DCB8" stroke-width="3"/>
         <path d="M220 190 Q230 150 195 140 Q205 175 185 205 Q210 210 220 190 Z" fill="#FFFDF7" stroke="#E9DCB8" stroke-width="3"/>
         <path d="M100 205 L96 218 M100 205 L104 218 M100 205 L92 213" stroke="#F4841D" stroke-width="5" stroke-linecap="round"/>
@@ -354,15 +370,90 @@ button{font-family:inherit;color:inherit;}
       <h1 style="font-size:1.5rem;">Civciv İngilizce</h1>
       <p class="slogan">Çocuğunuz oynarken, konuşarak İngilizce öğrensin!</p>
       <p class="authSub">Devam etmek için giriş yap</p>
-      <input class="authInput" id="loginUser" type="text" placeholder="Kullanıcı adı">
-      <input class="authInput" id="loginPass" type="password" placeholder="Şifre">
-      <button class="bigBtn" style="margin-top:2px;" onclick="doLogin()">Giriş Yap</button>
-      <div class="authDivider">veya</div>
       <button class="googleBtn" onclick="doGoogleLogin()">🔵 Google ile Giriş Yap</button>
+      <div class="authDivider">veya e-posta ile</div>
+      <input class="authInput" id="loginEmail" type="email" placeholder="E-posta adresi" autocomplete="username">
+      <input class="authInput" id="loginPass" type="password" placeholder="Şifre" autocomplete="current-password">
+      <div class="authRow">
+        <label class="checkboxRow"><input type="checkbox" id="rememberMe" checked> Beni hatırla</label>
+        <button class="linkBtn" onclick="goForgotPassword()">Şifremi unuttum</button>
+      </div>
+      <button class="bigBtn" style="margin-top:2px;" onclick="doLogin()">Giriş Yap</button>
+      <button class="linkBtn" style="margin-top:2px;" onclick="goRegister()">Hesabın yok mu? <b>Yeni Üye Ol</b></button>
       <div class="authDivider">veya</div>
       <button class="guestBtn" onclick="doGuestLogin()">Üyeliksiz Dene</button>
       <p class="guestNote">Üyeliksiz denemede ilk 3 bölüme erişebilirsin.</p>
       <p class="authMsg" id="authMsg"></p>
+    </div>
+  </div>
+</div>
+
+<!-- REGISTER -->
+<div class="screen" id="registerScreen">
+  <div class="wrap">
+    <div class="authCard">
+      <svg class="mascotSmall" viewBox="0 0 240 240" xmlns="http://www.w3.org/2000/svg">
+        <path d="M20 190 Q10 150 45 140 Q35 175 55 205 Q30 210 20 190 Z" fill="#FFFDF7" stroke="#E9DCB8" stroke-width="3"/>
+        <path d="M220 190 Q230 150 195 140 Q205 175 185 205 Q210 210 220 190 Z" fill="#FFFDF7" stroke="#E9DCB8" stroke-width="3"/>
+        <path d="M100 205 L96 218 M100 205 L104 218 M100 205 L92 213" stroke="#F4841D" stroke-width="5" stroke-linecap="round"/>
+        <path d="M140 205 L136 218 M140 205 L144 218 M140 205 L148 213" stroke="#F4841D" stroke-width="5" stroke-linecap="round"/>
+        <ellipse cx="55" cy="150" rx="18" ry="26" fill="#FFC93C" transform="rotate(-25 55 150)"/>
+        <ellipse cx="185" cy="150" rx="18" ry="26" fill="#FFC93C" transform="rotate(25 185 150)"/>
+        <circle cx="120" cy="140" r="78" fill="#FFDA4D"/>
+        <path d="M104 62 Q98 34 112 24 Q112 46 118 64 Z" fill="#FFC93C"/>
+        <path d="M122 60 Q122 30 138 22 Q132 46 134 62 Z" fill="#FFC93C"/>
+        <circle cx="76" cy="150" r="14" fill="#FFAABB"/>
+        <circle cx="164" cy="150" r="14" fill="#FFAABB"/>
+        <circle cx="93" cy="128" r="24" fill="#20180a"/>
+        <circle cx="147" cy="128" r="24" fill="#20180a"/>
+        <circle cx="93" cy="128" r="19" fill="#ffffff"/>
+        <circle cx="147" cy="128" r="19" fill="#ffffff"/>
+        <circle cx="96" cy="131" r="10" fill="#20180a"/>
+        <circle cx="150" cy="131" r="10" fill="#20180a"/>
+        <circle cx="90" cy="124" r="4" fill="#ffffff"/>
+        <circle cx="144" cy="124" r="4" fill="#ffffff"/>
+        <path d="M108 152 Q120 142 132 152 Q127 174 120 179 Q113 174 108 152 Z" fill="#F4841D"/>
+        <path d="M112 156 Q120 152 128 156 Q124 166 120 168 Q116 166 112 156 Z" fill="#D9660A"/>
+      </svg>
+      <h1 style="font-size:1.3rem;">Yeni Üye Ol</h1>
+      <p class="authSub">Sadece e-posta ve şifre yeterli</p>
+      <input class="authInput" id="regEmail" type="email" placeholder="E-posta adresi" autocomplete="username">
+      <input class="authInput" id="regPass" type="password" placeholder="Şifre (en az 6 karakter)" autocomplete="new-password">
+      <input class="authInput" id="regPass2" type="password" placeholder="Şifre (tekrar)" autocomplete="new-password">
+
+      <div class="kvkkBox">
+        <label class="checkboxRow">
+          <input type="checkbox" id="kvkkConsent">
+          <span>18 yaşından büyüğüm ve bu hesabı çocuğum adına veli/vasi olarak oluşturuyorum. <button type="button" class="linkBtn inlineLink" onclick="toggleKvkkText()">KVKK Aydınlatma Metni</button>'ni okudum, anladım ve onaylıyorum.</span>
+        </label>
+        <div class="kvkkText" id="kvkkText">
+          Bu uygulama; çocuğunuzun öğrenme ilerlemesini kaydetmek amacıyla e-posta adresiniz,
+          uygulama içi ilerleme verileri ve (kullanırsanız) sesli telaffuz denemelerinizi işler.
+          Ses kayıtları yalnızca anlık değerlendirme için kullanılır, cihazda saklanmaz.
+          Veriler üçüncü kişilerle paylaşılmaz, pazarlama amacıyla kullanılmaz.
+          6698 sayılı KVKK kapsamında bilgi talebi ve verilerin silinmesini isteme hakkınız saklıdır.
+          <br><br><i>(Bu metin bir taslaktır; uygulamayı yayınlamadan önce bir hukuk danışmanına onaylatılmalıdır.)</i>
+        </div>
+      </div>
+
+      <button class="bigBtn" style="margin-top:2px;" onclick="doRegister()">Üye Ol</button>
+      <button class="linkBtn" onclick="showScreen('loginScreen')">Zaten hesabın var mı? <b>Giriş Yap</b></button>
+      <p class="authMsg" id="regMsg"></p>
+    </div>
+  </div>
+</div>
+
+<!-- FORGOT PASSWORD -->
+<div class="screen" id="forgotScreen">
+  <div class="wrap">
+    <div class="authCard">
+      <div style="font-size:3rem;">🔑</div>
+      <h1 style="font-size:1.3rem;">Şifremi Unuttum</h1>
+      <p class="authSub">E-posta adresini gir, sıfırlama bağlantısı gönderelim</p>
+      <input class="authInput" id="forgotEmail" type="email" placeholder="E-posta adresi" autocomplete="username">
+      <button class="bigBtn" style="margin-top:2px;" onclick="doForgotPassword()">Sıfırlama Bağlantısı Gönder</button>
+      <button class="linkBtn" onclick="showScreen('loginScreen')">Giriş ekranına dön</button>
+      <p class="authMsg" id="forgotMsg"></p>
     </div>
   </div>
 </div>
@@ -777,34 +868,100 @@ function isDone(id){ return !!(PROGRESS[id] && PROGRESS[id].done); }
 function isUnlocked(id){ if(id===SECTIONS[0].id) return true; const idx=SECTIONS.findIndex(s=>s.id===id); const prev=SECTIONS[idx-1]; if(!prev) return true; if(prev.type==='placeholder') return false; return isDone(prev.id); }
 
 const GUEST_LIMIT = 3;
+let REMEMBER_ME = true;
 let AUTH = {type:null};
-try{ AUTH = JSON.parse(localStorage.getItem('kk_auth')||'null') || {type:null}; }catch(e){ AUTH = {type:null}; }
-function saveAuth(){ try{ localStorage.setItem('kk_auth', JSON.stringify(AUTH)); }catch(e){} }
+try{
+  AUTH = JSON.parse(localStorage.getItem('kk_auth') || sessionStorage.getItem('kk_auth') || 'null') || {type:null};
+}catch(e){ AUTH = {type:null}; }
+function saveAuth(){
+  try{
+    if(REMEMBER_ME){ localStorage.setItem('kk_auth', JSON.stringify(AUTH)); sessionStorage.removeItem('kk_auth'); }
+    else{ sessionStorage.setItem('kk_auth', JSON.stringify(AUTH)); localStorage.removeItem('kk_auth'); }
+  }catch(e){}
+}
+function loadUsers(){
+  try{ return JSON.parse(localStorage.getItem('kk_users')||'{}'); }catch(e){ return {}; }
+}
+function saveUsers(users){ try{ localStorage.setItem('kk_users', JSON.stringify(users)); }catch(e){} }
+function isValidEmail(email){ return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email); }
 
 function doLogin(){
-  const u = document.getElementById('loginUser').value.trim();
-  const p = document.getElementById('loginPass').value.trim();
+  const email = document.getElementById('loginEmail').value.trim().toLowerCase();
+  const pass = document.getElementById('loginPass').value;
   const msg = document.getElementById('authMsg');
-  if(!u || !p){ msg.textContent = 'Lütfen kullanıcı adı ve şifreni gir.'; return; }
   msg.textContent = '';
-  AUTH = {type:'member', username:u};
+  if(!email || !pass){ msg.textContent = 'Lütfen e-posta ve şifreni gir.'; return; }
+  if(!isValidEmail(email)){ msg.textContent = 'Geçerli bir e-posta adresi gir.'; return; }
+  const users = loadUsers();
+  const user = users[email];
+  if(!user || user.password !== pass){ msg.textContent = 'E-posta veya şifre hatalı.'; return; }
+  REMEMBER_ME = document.getElementById('rememberMe').checked;
+  AUTH = {type:'member', username:email};
   saveAuth();
   enterHome();
 }
 function doGoogleLogin(){
+  REMEMBER_ME = true;
   AUTH = {type:'member', username:'Google Kullanıcısı'};
   saveAuth();
   enterHome();
 }
 function doGuestLogin(){
+  REMEMBER_ME = true;
   AUTH = {type:'guest', username:'Misafir'};
   saveAuth();
   enterHome();
 }
 function logout(){
   AUTH = {type:null};
-  saveAuth();
+  try{ localStorage.removeItem('kk_auth'); sessionStorage.removeItem('kk_auth'); }catch(e){}
   showScreen('loginScreen');
+}
+function goRegister(){
+  document.getElementById('regEmail').value = '';
+  document.getElementById('regPass').value = '';
+  document.getElementById('regPass2').value = '';
+  document.getElementById('kvkkConsent').checked = false;
+  document.getElementById('kvkkText').classList.remove('show');
+  document.getElementById('regMsg').textContent = '';
+  showScreen('registerScreen');
+}
+function toggleKvkkText(){
+  document.getElementById('kvkkText').classList.toggle('show');
+}
+function doRegister(){
+  const email = document.getElementById('regEmail').value.trim().toLowerCase();
+  const pass = document.getElementById('regPass').value;
+  const pass2 = document.getElementById('regPass2').value;
+  const kvkk = document.getElementById('kvkkConsent').checked;
+  const msg = document.getElementById('regMsg');
+  msg.textContent = '';
+  if(!email || !isValidEmail(email)){ msg.textContent = 'Geçerli bir e-posta adresi gir.'; return; }
+  if(pass.length < 6){ msg.textContent = 'Şifre en az 6 karakter olmalı.'; return; }
+  if(pass !== pass2){ msg.textContent = 'Şifreler eşleşmiyor.'; return; }
+  if(!kvkk){ msg.textContent = 'Devam etmek için KVKK onayını işaretlemelisin.'; return; }
+  const users = loadUsers();
+  if(users[email]){ msg.textContent = 'Bu e-posta zaten kayıtlı, giriş yapmayı dener misin?'; return; }
+  users[email] = {password:pass, createdAt:Date.now()};
+  saveUsers(users);
+  REMEMBER_ME = true;
+  AUTH = {type:'member', username:email};
+  saveAuth();
+  enterHome();
+}
+function goForgotPassword(){
+  document.getElementById('forgotEmail').value = '';
+  document.getElementById('forgotMsg').className = 'authMsg';
+  document.getElementById('forgotMsg').textContent = '';
+  showScreen('forgotScreen');
+}
+function doForgotPassword(){
+  const email = document.getElementById('forgotEmail').value.trim().toLowerCase();
+  const msg = document.getElementById('forgotMsg');
+  if(!email || !isValidEmail(email)){ msg.className='authMsg'; msg.textContent = 'Geçerli bir e-posta adresi gir.'; return; }
+  msg.className = 'authMsg';
+  msg.style.color = 'var(--good)';
+  msg.textContent = 'Bu e-posta sistemde kayıtlıysa, sıfırlama bağlantısı gönderildi. 📧';
 }
 function enterHome(){
   try{
