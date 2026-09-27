@@ -1,6 +1,9 @@
 {
   "appId": "com.civcivingilizce.app",
-  "appName": "Civciv İngilizce",
+  "appName": "Civciv \u0130ngilizce",
   "webDir": "www",
-  "bundledWebRuntime": false
+  "bundledWebRuntime": false,
+  "android": {
+    "allowMixedContent": false
+  }
 }
