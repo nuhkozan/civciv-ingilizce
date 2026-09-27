@@ -286,6 +286,33 @@ button{font-family:inherit;color:inherit;}
 
 .settingsGroupLabel{ font-weight:800; opacity:.45; font-size:.72rem; text-transform:uppercase; letter-spacing:.04em; padding:0 4px; }
 .soonTag{ font-weight:800; font-size:.7rem; opacity:.5; background:rgba(0,0,0,.06); padding:3px 8px; border-radius:20px; }
+.planCard{
+  background:var(--card); border-radius:22px; padding:18px; text-align:center;
+  box-shadow:0 4px 0 rgba(0,0,0,.06); cursor:pointer; position:relative;
+  border:2px solid transparent;
+}
+.planCard.featured{ border-color:var(--sun); }
+.planTag{
+  position:absolute; top:-10px; left:50%; transform:translateX(-50%);
+  background:var(--sun); color:#20180a; font-weight:800; font-size:.68rem;
+  padding:3px 12px; border-radius:20px; white-space:nowrap;
+}
+.planTag.gold{ background:#F4C430; }
+.planName{ font-family:'Baloo 2'; font-weight:800; font-size:1.2rem; }
+.planDuration{ font-weight:700; opacity:.55; font-size:.8rem; margin-top:2px; }
+.planPrice{ font-family:'Baloo 2'; font-weight:800; font-size:1.8rem; margin-top:8px; color:var(--good); }
+.planPrice span{ font-family:'Nunito'; font-weight:700; font-size:.85rem; opacity:.5; }
+.planNote{ font-weight:700; font-size:.72rem; opacity:.5; margin-top:4px; }
+.planBtn{
+  margin-top:12px; width:100%; border:none; border-radius:14px; padding:11px;
+  font-weight:800; font-size:.95rem; cursor:pointer; background:var(--ink); color:#fff;
+}
+.paySummary{
+  width:100%; max-width:320px; background:var(--card); border-radius:18px; padding:16px;
+  text-align:center; font-weight:800; box-shadow:0 3px 0 rgba(0,0,0,.05);
+}
+.paySummary .psName{ font-family:'Baloo 2'; font-size:1.15rem; }
+.paySummary .psPrice{ color:var(--good); font-size:1.3rem; margin-top:4px; }
 .settingsRow{
   display:flex; align-items:center; gap:12px; border:none; border-radius:18px; padding:16px 18px;
   background:var(--card); box-shadow:0 3px 0 rgba(0,0,0,.06); font-weight:800; font-size:.95rem;
@@ -408,7 +435,7 @@ button{font-family:inherit;color:inherit;}
     </div>
     <div style="flex:1; display:flex; flex-direction:column; gap:10px; padding-top:20px;">
       <div class="settingsGroupLabel">Üyelik</div>
-      <button class="settingsRow" onclick="showMembershipInfo()">💳 <span>Üyelik Seçenekleri</span> <b class="soonTag">Yakında</b></button>
+      <button class="settingsRow" onclick="showMembershipInfo()">💳 <span>Üyelik Seçenekleri</span></button>
       <div class="settingsGroupLabel" style="margin-top:8px;">Genel</div>
       <button class="settingsRow" onclick="requestMicPermission()">🎙️ <span>Mikrofon İznini Ver / Kontrol Et</span></button>
       <button class="settingsRow" onclick="testSound()">🔊 <span>Sesi Test Et</span></button>
@@ -443,9 +470,71 @@ button{font-family:inherit;color:inherit;}
   <div class="wrap">
     <div style="font-size:4.5rem;">👑</div>
     <h2 style="font-size:1.2rem;">Bu bölüm için üyelik gerekiyor</h2>
-    <p style="opacity:.6;font-weight:700;max-width:280px;font-size:.9rem;">Üyeliksiz denemede ilk 3 bölümü tamamladın! Öğrenmeye devam etmek için giriş yapman gerekiyor.</p>
-    <button class="bigBtn" style="max-width:260px;margin-top:18px;" onclick="showScreen('loginScreen')">Giriş Yap</button>
+    <p style="opacity:.6;font-weight:700;max-width:280px;font-size:.9rem;">Üyeliksiz denemede ilk 3 bölümü tamamladın! Devam etmek için bir üyelik planı seçmen gerekiyor.</p>
+    <button class="bigBtn" style="max-width:260px;margin-top:18px;" onclick="openMembership('gate')">Üyelik Planlarını Gör</button>
     <button class="skipLink" onclick="goMap()">Haritaya dön</button>
+  </div>
+</div>
+
+<!-- MEMBERSHIP PLANS -->
+<div class="screen" id="membershipScreen">
+  <div class="wrap">
+    <div class="topbar">
+      <button class="backBtn" id="membershipBackBtn" onclick="goMap()">‹</button>
+      <h2 style="font-size:1.1rem;">Üyelik Planları</h2>
+    </div>
+    <div style="flex:1; display:flex; flex-direction:column; gap:14px; padding:16px 4px 20px; overflow-y:auto;">
+      <p style="font-weight:700; opacity:.6; font-size:.85rem; text-align:center; margin:0 0 4px;">
+        Tüm bölümlere, tüm kelimelere ve gelecekteki içeriklere sınırsız erişim.
+      </p>
+      <div class="planCard" onclick="openPayment('pro')">
+        <div class="planName">Başlangıç Plan</div>
+        <div class="planDuration">Aylık üyelik</div>
+        <div class="planPrice">29.99 TL<span>/ay</span></div>
+        <div class="planNote">İlk 1 gün ücretsiz, sonra 30 günde bir yenilenir</div>
+        <button class="planBtn">Seç</button>
+      </div>
+      <div class="planCard featured" onclick="openPayment('king')">
+        <div class="planTag">En Popüler</div>
+        <div class="planName">Aile Plan</div>
+        <div class="planDuration">3 Aylık üyelik</div>
+        <div class="planPrice">69.99 TL<span>/3 ay</span></div>
+        <div class="planNote">İlk 3 gün ücretsiz, sonra 90 günde bir yenilenir</div>
+        <button class="planBtn">Seç</button>
+      </div>
+      <div class="planCard" onclick="openPayment('master')">
+        <div class="planTag gold">En Avantajlı</div>
+        <div class="planName">Sınırsız Plan</div>
+        <div class="planDuration">Yıllık üyelik</div>
+        <div class="planPrice">199 TL<span>/yıl</span></div>
+        <div class="planNote">İlk 7 gün ücretsiz, sonra yılda bir yenilenir</div>
+        <button class="planBtn">Seç</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PAYMENT -->
+<div class="screen" id="paymentScreen">
+  <div class="wrap">
+    <div class="topbar">
+      <button class="backBtn" onclick="showScreen('membershipScreen')">‹</button>
+      <h2 style="font-size:1.1rem;">Ödeme</h2>
+    </div>
+    <div style="flex:1; display:flex; flex-direction:column; gap:14px; padding:16px 6px 20px; align-items:center;">
+      <div class="paySummary" id="paySummary"></div>
+      <input class="authInput" placeholder="Kart üzerindeki isim" style="width:100%;max-width:320px;">
+      <input class="authInput" placeholder="Kart numarası" style="width:100%;max-width:320px;">
+      <div style="display:flex; gap:10px; width:100%; max-width:320px;">
+        <input class="authInput" placeholder="AA/YY" style="flex:1;">
+        <input class="authInput" placeholder="CVC" style="flex:1;">
+      </div>
+      <button class="bigBtn" style="max-width:320px;" onclick="completePayment()"><span id="payBtnLabel">Ücretsiz Denemeyi Başlat</span></button>
+      <p class="settingsMsg" id="paymentMsg"></p>
+      <p style="font-size:.7rem; opacity:.45; font-weight:700; text-align:center; max-width:300px;">
+        Bu bir demo ödeme ekranıdır, gerçek bir ödeme alınmaz.
+      </p>
+    </div>
   </div>
 </div>
 
@@ -754,14 +843,50 @@ function requestMicPermission(){
     msg.textContent = 'Bu ortamda mikrofon izni kontrol edilemiyor.';
   }
 }
+const PLANS = {
+  pro:    {name:'Başlangıç Plan', duration:'Aylık',    days:30,  price:'29.99 TL', trial:1},
+  king:   {name:'Aile Plan',      duration:'3 Aylık',  days:90,  price:'69.99 TL', trial:3},
+  master: {name:'Sınırsız Plan',  duration:'Yıllık',   days:365, price:'199 TL',   trial:7}
+};
+let membershipReturnScreen = 'settingsScreen';
+let selectedPlanId = null;
+function openMembership(fromWhere){
+  membershipReturnScreen = fromWhere==='gate' ? 'gateScreen' : 'settingsScreen';
+  document.getElementById('membershipBackBtn').onclick = ()=> showScreen(membershipReturnScreen);
+  showScreen('membershipScreen');
+}
+function openPayment(planId){
+  selectedPlanId = planId;
+  const p = PLANS[planId];
+  document.getElementById('paySummary').innerHTML =
+    '<div class="psName">'+p.name+'</div><div>'+p.duration+' üyelik</div><div class="psPrice">'+p.price+'</div>'+
+    '<div style="font-size:.78rem;font-weight:700;opacity:.6;margin-top:6px;">İlk '+p.trial+' gün ücretsiz, sonra otomatik yenilenir</div>';
+  document.getElementById('paymentMsg').textContent = '';
+  document.getElementById('payBtnLabel').textContent = p.trial + ' Günlük Ücretsiz Denemeyi Başlat';
+  showScreen('paymentScreen');
+}
+function completePayment(){
+  const msg = document.getElementById('paymentMsg');
+  const p = PLANS[selectedPlanId];
+  msg.className = 'settingsMsg';
+  msg.textContent = 'İşleniyor...';
+  setTimeout(()=>{
+    AUTH.type = 'member';
+    if(!AUTH.username) AUTH.username = 'Üye';
+    AUTH.plan = selectedPlanId;
+    AUTH.planExpires = Date.now() + p.days*24*60*60*1000;
+    saveAuth();
+    msg.textContent = p.trial + ' günlük ücretsiz deneme başladı! 🎉';
+    setTimeout(()=>{ goMap(); }, 1200);
+  }, 900);
+}
 function testSound(){
   const msg = document.getElementById('settingsMsg');
   if(msg) msg.textContent = 'Ses çalınıyor 🔊';
   speak('Merhaba! Ses çalışıyor.', 'tr-TR');
 }
 function showMembershipInfo(){
-  const msg = document.getElementById('settingsMsg');
-  if(msg) msg.textContent = 'Üyelik seçenekleri yakında burada olacak.';
+  openMembership('settings');
 }
 let SOUND_ON = true, MIC_ON = true;
 try{ SOUND_ON = localStorage.getItem('kk_sound_on') !== '0'; }catch(e){}
