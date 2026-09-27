@@ -190,31 +190,48 @@ button{font-family:inherit;color:inherit;}
   flex:1; background:var(--card); border-radius:30px; padding:22px 18px;
   box-shadow:0 10px 0 rgba(0,0,0,.05),0 14px 30px rgba(30,50,90,.10);
   display:flex; flex-direction:column; align-items:center; text-align:center;
+  justify-content:center; position:relative; overflow:hidden;
   animation:pop .3s cubic-bezier(.2,1.4,.4,1);
 }
 .qPrompt{ font-weight:800; font-size:1rem; opacity:.6; margin-bottom:6px; }
-.qEmoji{ font-size:4rem; margin:6px 0 4px; }
+.qVisual{
+  width:100%; max-width:260px; aspect-ratio:2/1; border-radius:26px;
+  display:flex; align-items:center; justify-content:center; gap:18px;
+  margin:10px auto 14px;
+}
+.qVisual .qVisualEmoji{ font-size:3.8rem; }
+.qEmoji{ font-size:5.5rem; margin:8px 0 10px; }
 .qWord{ font-family:'Baloo 2'; font-weight:800; font-size:2rem; margin:4px 0; }
 .qSentence{ font-family:'Baloo 2'; font-weight:700; font-size:1.4rem; line-height:1.5; margin:10px 0; }
 .blank{ display:inline-block; min-width:64px; border-bottom:4px solid rgba(0,0,0,.18); }
-.options{ display:grid; grid-template-columns:1fr 1fr; gap:12px; width:100%; margin-top:auto; padding-top:14px; }
+.options{ display:grid; grid-template-columns:1fr 1fr; gap:12px; width:100%; margin-top:18px; }
 .opt{
   border:none; border-radius:18px; padding:16px 8px; background:rgba(0,0,0,.045);
-  font-weight:800; font-size:1.4rem; cursor:pointer; color:var(--ink);
+  font-weight:800; font-size:1.8rem; cursor:pointer; color:var(--ink);
   display:flex; flex-direction:column; align-items:center; gap:4px;
 }
 .opt .lbl{ font-size:.85rem; font-family:'Nunito'; }
+.opt .optEmoji{ font-size:1.9rem; }
 .opt.correct{ background:var(--good); color:#fff; }
 .opt.wrong{ background:var(--bad); color:#fff; }
 .opt:disabled{ cursor:default; }
 .speakAgain{
   margin-top:10px; border:none; background:none; font-weight:800; opacity:.5; font-size:.85rem; cursor:pointer;
 }
+.quizPraise{
+  position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
+  background:rgba(255,253,247,.94); font-family:'Baloo 2'; font-weight:800; font-size:1.8rem;
+  color:var(--good); opacity:0; pointer-events:none; transition:opacity .2s ease; z-index:5;
+}
+.quizPraise.show{ opacity:1; animation:praisePop .6s ease; }
+@keyframes praisePop{ 0%{transform:scale(.7);} 60%{transform:scale(1.12);} 100%{transform:scale(1);} }
 
 /* ---------- COMPLETE ---------- */
 #completeScreen .wrap{ align-items:center; justify-content:center; text-align:center; }
-.bigEmoji{ font-size:5rem; margin-bottom:6px; }
-.stars{ font-size:1.6rem; margin:6px 0 4px; }
+.confettiRow{ font-size:1.8rem; margin-bottom:2px; animation:softBob 1.6s ease-in-out infinite; }
+.bigEmoji{ font-size:7rem; margin-bottom:4px; animation:praisePop .7s ease; }
+.celebrateTitle{ font-size:1.5rem; }
+.stars{ font-size:2rem; margin:10px 0 18px; }
 
 /* ---------- AUTH / HOME / PROFILE / SETTINGS / GATE ---------- */
 #loginScreen .wrap, #homeScreen .wrap, #gateScreen .wrap, #introScreen .wrap{ align-items:center; justify-content:center; text-align:center; }
@@ -240,6 +257,10 @@ button{font-family:inherit;color:inherit;}
 .authMsg{ color:var(--bad); font-weight:800; font-size:.8rem; min-height:1.2em; }
 
 .homeGreeting{ font-weight:700; opacity:.55; margin:2px 0 0; }
+.homeGreetingTop{
+  width:100%; padding-top:calc(env(safe-area-inset-top,0px) + 10px);
+  font-weight:800; opacity:.85; font-size:1.05rem; margin:0 0 4px;
+}
 .homeMenu{ display:flex; flex-direction:column; gap:12px; width:100%; max-width:340px; margin-top:26px; }
 .homeBtn{
   display:flex; align-items:center; gap:12px; border:none; border-radius:20px; padding:17px 18px;
@@ -263,6 +284,8 @@ button{font-family:inherit;color:inherit;}
 .profileType{ font-weight:700; opacity:.5; font-size:.85rem; margin-top:2px; }
 .profileStats{ font-weight:800; opacity:.65; font-size:.9rem; margin-top:16px; text-align:center; }
 
+.settingsGroupLabel{ font-weight:800; opacity:.45; font-size:.72rem; text-transform:uppercase; letter-spacing:.04em; padding:0 4px; }
+.soonTag{ font-weight:800; font-size:.7rem; opacity:.5; background:rgba(0,0,0,.06); padding:3px 8px; border-radius:20px; }
 .settingsRow{
   display:flex; align-items:center; gap:12px; border:none; border-radius:18px; padding:16px 18px;
   background:var(--card); box-shadow:0 3px 0 rgba(0,0,0,.06); font-weight:800; font-size:.95rem;
@@ -320,6 +343,7 @@ button{font-family:inherit;color:inherit;}
 <!-- HOME -->
 <div class="screen" id="homeScreen">
   <div class="wrap">
+    <p class="homeGreeting homeGreetingTop" id="homeGreeting"></p>
     <svg class="mascot homeMascot" viewBox="0 0 240 240" xmlns="http://www.w3.org/2000/svg">
       <path d="M20 190 Q10 150 45 140 Q35 175 55 205 Q30 210 20 190 Z" fill="#FFFDF7" stroke="#E9DCB8" stroke-width="3"/>
       <path d="M220 190 Q230 150 195 140 Q205 175 185 205 Q210 210 220 190 Z" fill="#FFFDF7" stroke="#E9DCB8" stroke-width="3"/>
@@ -345,7 +369,6 @@ button{font-family:inherit;color:inherit;}
     </svg>
     <h1 style="font-size:1.6rem;">Civciv İngilizce</h1>
     <p class="slogan" style="margin-bottom:2px;">Çocuğunuz oynarken, konuşarak İngilizce öğrensin!</p>
-    <p class="homeGreeting" id="homeGreeting"></p>
     <div class="homeMenu">
       <button class="homeBtn" onclick="goMap()">🚀 <span>Hadi Öğrenmeye Başlayalım</span></button>
       <button class="homeBtn" onclick="continueLearning()">⏩ <span>Kaldığın Yerden Devam Et</span></button>
@@ -384,6 +407,9 @@ button{font-family:inherit;color:inherit;}
       <h2 style="font-size:1.1rem;">Ayarlar</h2>
     </div>
     <div style="flex:1; display:flex; flex-direction:column; gap:10px; padding-top:20px;">
+      <div class="settingsGroupLabel">Üyelik</div>
+      <button class="settingsRow" onclick="showMembershipInfo()">💳 <span>Üyelik Seçenekleri</span> <b class="soonTag">Yakında</b></button>
+      <div class="settingsGroupLabel" style="margin-top:8px;">Genel</div>
       <button class="settingsRow" onclick="requestMicPermission()">🎙️ <span>Mikrofon İznini Ver / Kontrol Et</span></button>
       <button class="settingsRow" onclick="testSound()">🔊 <span>Sesi Test Et</span></button>
       <button class="settingsRow" onclick="resetProgress()">🔄 <span>İlerlemeyi Sıfırla</span></button>
@@ -523,8 +549,9 @@ button{font-family:inherit;color:inherit;}
 <!-- COMPLETE -->
 <div class="screen" id="completeScreen">
   <div class="wrap">
-    <div class="bigEmoji" id="cEmoji">🎉</div>
-    <h2 id="cTitle"></h2>
+    <div class="confettiRow">🎉🎊✨🎊🎉</div>
+    <div class="bigEmoji" id="cEmoji">🌟</div>
+    <h2 id="cTitle" class="celebrateTitle"></h2>
     <div class="stars" id="cStars"></div>
     <button class="bigBtn" style="max-width:280px;" onclick="goMap()">Haritaya Dön</button>
   </div>
@@ -731,6 +758,10 @@ function testSound(){
   const msg = document.getElementById('settingsMsg');
   if(msg) msg.textContent = 'Ses çalınıyor 🔊';
   speak('Merhaba! Ses çalışıyor.', 'tr-TR');
+}
+function showMembershipInfo(){
+  const msg = document.getElementById('settingsMsg');
+  if(msg) msg.textContent = 'Üyelik seçenekleri yakında burada olacak.';
 }
 let SOUND_ON = true, MIC_ON = true;
 try{ SOUND_ON = localStorage.getItem('kk_sound_on') !== '0'; }catch(e){}
@@ -1107,6 +1138,7 @@ function renderQuiz(){
   const card = document.getElementById('qCard');
   let optionsHtml = '';
   let correctKey;
+  const praiseDiv = '<div class="quizPraise" id="quizPraise"></div>';
 
   if(q.type==='emojiForEn' || q.type==='listenPick'){
     const opts = shuffle([w, ...dists]);
@@ -1115,35 +1147,44 @@ function renderQuiz(){
     card.innerHTML = `
       <div class="qPrompt">${q.type==='listenPick' ? 'Dinlediğin kelime hangisi?' : 'Bu resim hangisi?'}</div>
       <div class="qWord">${w.en}</div>
+      <div class="qVisual"><span class="qVisualEmoji">${q.type==='listenPick' ? '🎧' : '🤔'}</span></div>
       ${q.type==='listenPick' ? `<button class="speakAgain" onclick="speak('${w.en}')">🔊 Tekrar dinle</button>` : ''}
-      <div class="options">${optionsHtml}</div>`;
+      <div class="options">${optionsHtml}</div>${praiseDiv}`;
     if(q.type==='listenPick'){ setTimeout(()=>speak(w.en),300); document.querySelector('#qCard .qWord').style.display='none'; }
   } else if(q.type==='enForEmoji'){
     const opts = shuffle([w, ...dists]);
-    optionsHtml = opts.map(o=>`<button class="opt" data-key="${o.en}" onclick="answerQuiz(this,'${o.en===w.en?'1':'0'}')"><span class="lbl">${o.en}</span></button>`).join('');
+    optionsHtml = opts.map(o=>`<button class="opt" data-key="${o.en}" onclick="answerQuiz(this,'${o.en===w.en?'1':'0'}')"><span class="optEmoji">${o.e1}</span><span class="lbl">${o.en}</span></button>`).join('');
     card.innerHTML = `
       <div class="qPrompt">Bu ne demek?</div>
-      <div class="qEmoji">${w.e1}</div>
-      <div class="options">${optionsHtml}</div>`;
+      <div class="qVisual"><span class="qVisualEmoji">${w.e1}</span><span class="qVisualEmoji">${w.e2}</span></div>
+      <div class="options">${optionsHtml}</div>${praiseDiv}`;
   } else if(q.type==='trForEn'){
     const opts = shuffle([w, ...dists]);
-    optionsHtml = opts.map(o=>`<button class="opt" data-key="${o.tr}" onclick="answerQuiz(this,'${o.tr===w.tr?'1':'0'}')"><span class="lbl">${o.tr}</span></button>`).join('');
+    optionsHtml = opts.map(o=>`<button class="opt" data-key="${o.tr}" onclick="answerQuiz(this,'${o.tr===w.tr?'1':'0'}')"><span class="optEmoji">${o.e1}</span><span class="lbl">${o.tr}</span></button>`).join('');
     card.innerHTML = `
       <div class="qPrompt">Türkçesi ne?</div>
-      <div class="qEmoji">${w.e1}</div>
+      <div class="qVisual"><span class="qVisualEmoji">${w.e1}</span><span class="qVisualEmoji">${w.e2}</span></div>
       <div class="qWord" style="font-size:1.5rem;">${w.en}</div>
-      <div class="options">${optionsHtml}</div>`;
+      <div class="options">${optionsHtml}</div>${praiseDiv}`;
   }
 }
+const PRAISE_PHRASES = ['Harika! 🎉','Tebrikler! 🌟','Süpersin! 🥳','Çok iyi! 👏','Bravo! ✨','Mükemmel! 💫'];
 function answerQuiz(btn, isCorrect){
   document.querySelectorAll('#qCard .opt').forEach(b=>b.disabled=true);
-  if(isCorrect==='1'){ btn.classList.add('correct'); qCorrect++; }
+  if(isCorrect==='1'){
+    btn.classList.add('correct'); qCorrect++;
+    const praise = document.getElementById('quizPraise');
+    if(praise){
+      praise.textContent = PRAISE_PHRASES[Math.floor(Math.random()*PRAISE_PHRASES.length)];
+      praise.classList.add('show');
+    }
+  }
   else{ btn.classList.add('wrong'); }
   setTimeout(()=>{
     qIdx++;
     if(qIdx < qQuestions.length){ renderQuiz(); }
     else{ finishSection(qSection, qCorrect, qQuestions.length); }
-  }, 700);
+  }, 1000);
 }
 
 /* ===================== SENTENCE FLOW ===================== */
@@ -1203,7 +1244,7 @@ function finishSection(section, correct, total){
   saveProgress();
   const ratio = correct/total;
   document.getElementById('cEmoji').textContent = ratio===1 ? '🌟' : ratio>=0.5 ? '🎉' : '💪';
-  document.getElementById('cTitle').textContent = section.title + ' tamamlandı!';
+  document.getElementById('cTitle').textContent = 'Tebrikler! ' + section.title + ' tamamlandı!';
   document.getElementById('cStars').textContent = '★'.repeat(Math.max(1,Math.round(ratio*4))) + '☆'.repeat(4-Math.max(1,Math.round(ratio*4))) + '  (' + correct + '/' + total + ')';
   showScreen('completeScreen');
 }
