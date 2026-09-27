@@ -56,6 +56,20 @@ jobs:
             fi
           done
 
+      - name: Add splash screen
+        shell: bash
+        run: |
+          mkdir -p android/app/src/main/res/drawable
+          mkdir -p android/app/src/main/res/drawable-port-mdpi android/app/src/main/res/drawable-port-hdpi \
+                   android/app/src/main/res/drawable-port-xhdpi android/app/src/main/res/drawable-port-xxhdpi \
+                   android/app/src/main/res/drawable-port-xxxhdpi
+          cp splash.png android/app/src/main/res/drawable/splash.png
+          convert splash.png -resize 480x480 android/app/src/main/res/drawable-port-mdpi/splash.png
+          convert splash.png -resize 800x800 android/app/src/main/res/drawable-port-hdpi/splash.png
+          convert splash.png -resize 1280x1280 android/app/src/main/res/drawable-port-xhdpi/splash.png
+          convert splash.png -resize 1600x1600 android/app/src/main/res/drawable-port-xxhdpi/splash.png
+          convert splash.png -resize 1920x1920 android/app/src/main/res/drawable-port-xxxhdpi/splash.png
+
       - name: Grant execute permission for gradlew
         run: chmod +x android/gradlew
 
