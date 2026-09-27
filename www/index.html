@@ -172,6 +172,10 @@ button{font-family:inherit;color:inherit;}
 }
 .micFeedback.good{ color:var(--good); }
 .micFeedback.retry{ color:var(--bad); }
+.prevLink{
+  position:absolute; top:10px; left:14px; z-index:2;
+  border:none; background:none; font-weight:700; opacity:.5; font-size:.75rem; cursor:pointer; text-decoration:underline; color:var(--ink);
+}
 .skipLink{
   position:absolute; left:0; right:0; bottom:6px; z-index:2; text-align:center;
   border:none; background:none; font-weight:700; opacity:.5; font-size:.75rem; cursor:pointer; text-decoration:underline; color:var(--ink);
@@ -470,6 +474,7 @@ button{font-family:inherit;color:inherit;}
         </div>
 
         <div class="micFeedback" id="micFeedback"></div>
+        <button class="prevLink" id="prevWordLink" onclick="prevWord()">← Önceki</button>
         <button class="skipLink" onclick="skipSpeak()">kendin ilerle →</button>
       </div>
     </div>
@@ -886,23 +891,38 @@ function renderWord(){
   const fb = document.getElementById('micFeedback');
   fb.textContent = ''; fb.className = 'micFeedback';
 
+  document.getElementById('prevWordLink').style.display = wIdx>0 ? 'block' : 'none';
+  attemptCountEN = 0; attemptCountTR = 0;
+
   clearTimeout(narrateTimer1);
-  narrateTimer1 = setTimeout(()=>{ speak('Hoparlör işaretine dokun ve dinle.', 'tr-TR'); }, 700);
+  const listenPhrase = wIdx < 2 ? 'Hoparlör işaretine dokun ve dinle.' : 'Dokun ve dinle.';
+  narrateTimer1 = setTimeout(()=>{ speak(listenPhrase, 'tr-TR'); }, 700);
 }
 let narrateTimer1 = null;
+function stopSpeaking(){
+  try{ speechSynthesis.cancel(); }catch(e){}
+  if(isNativePlatform() && window.Capacitor.Plugins.TextToSpeech){
+    try{ window.Capacitor.Plugins.TextToSpeech.stop(); }catch(e){}
+  }
+}
 function onListenTap(){
+  stopSpeaking();
   document.getElementById('listenHint').style.display = 'none';
   document.getElementById('listenBtn').classList.remove('listenPulse');
   clearTimeout(narrateTimer1);
   const en = currentWord().en;
+  const sayEnPhrase = wIdx < 2 ? 'Haydi şimdi bu kelimeyi İngilizce söyle.' : 'Şimdi İngilizce söyle.';
   speak(en, 'en-US', 0.85)
     .then(()=> new Promise(r=>setTimeout(r,200)))
     .then(()=> speak(en, 'en-US', 0.5))
     .then(()=> new Promise(r=>setTimeout(r,200)))
     .then(()=> speak(en, 'en-US', 0.85))
     .then(()=>{
-      setTimeout(()=>{ speak('Haydi şimdi bu kelimeyi İngilizce söyle.', 'tr-TR'); }, 350);
+      setTimeout(()=>{ speak(sayEnPhrase, 'tr-TR'); }, 350);
     });
+}
+function prevWord(){
+  if(wIdx>0){ stopSpeaking(); wIdx--; renderWord(); }
 }
 
 function advanceWord(){
@@ -912,7 +932,8 @@ function advanceWord(){
 function unlockTurkishStage(){
   document.getElementById('micTRBox').classList.remove('wbox-locked');
   document.getElementById('micBtnTR').disabled = false;
-  setTimeout(()=>{ speak('Şimdi de Türkçesini söyle.', 'tr-TR'); }, 300);
+  const phrase = wIdx < 2 ? 'Şimdi de Türkçesini söyle.' : 'Türkçesini söyle.';
+  setTimeout(()=>{ speak(phrase, 'tr-TR'); }, 300);
 }
 function skipSpeak(){
   advanceWord();
@@ -947,7 +968,9 @@ function playDing(){
   }catch(e){}
 }
 
+let attemptCountEN = 0, attemptCountTR = 0;
 function startListening(lang){
+  stopSpeaking();
   const w = currentWord();
   const isTR = lang==='tr';
   const btn = document.getElementById(isTR?'micBtnTR':'micBtnEN');
@@ -977,6 +1000,8 @@ function startListening(lang){
     else{ setTimeout(advanceWord, isLast?1800:1300); }
   }
   function retryStage(){
+    const attempts = isTR ? (++attemptCountTR) : (++attemptCountEN);
+    if(attempts >= 2){ passStage(); return; }
     fb.className = 'micFeedback retry';
     fb.textContent = 'Hadi birlikte tekrar söyleyelim!';
     setTimeout(()=>{ speak(expected, speechLang); }, 250);
