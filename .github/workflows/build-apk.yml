@@ -37,6 +37,9 @@ jobs:
           sed -i '/<manifest /a\    <uses-permission android:name="android.permission.RECORD_AUDIO" />' android/app/src/main/AndroidManifest.xml
           sed -i '/<manifest /a\    <uses-permission android:name="android.permission.INTERNET" />' android/app/src/main/AndroidManifest.xml
 
+      - name: Install ImageMagick
+        run: sudo apt-get update && sudo apt-get install -y imagemagick
+
       - name: Replace app icon
         shell: bash
         run: |
