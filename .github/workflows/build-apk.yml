@@ -1,26 +1,66 @@
 name: Build Debug APK
+
 on:
   push:
     branches: [ main ]
   workflow_dispatch:
+
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with: { node-version: '20' }
-      - uses: actions/setup-java@v4
-        with: { distribution: 'temurin', java-version: '17' }
-      - run: npm install
-      - run: npx cap add android
-      - run: npx cap sync android
-      - run: |
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Add Android platform
+        run: npx cap add android
+
+      - name: Sync Capacitor
+        run: npx cap sync android
+
+      - name: Add permissions to manifest
+        run: |
           sed -i '/<manifest /a\    <uses-permission android:name="android.permission.RECORD_AUDIO" />' android/app/src/main/AndroidManifest.xml
           sed -i '/<manifest /a\    <uses-permission android:name="android.permission.INTERNET" />' android/app/src/main/AndroidManifest.xml
-      - run: chmod +x android/gradlew
-      - run: cd android && ./gradlew assembleDebug
-      - uses: actions/upload-artifact@v4
+
+      - name: Replace app icon
+        shell: bash
+        run: |
+          declare -A sizes=( [mdpi]=48 [hdpi]=72 [xhdpi]=96 [xxhdpi]=144 [xxxhdpi]=192 )
+          for density in "${!sizes[@]}"; do
+            size=${sizes[$density]}
+            dir="android/app/src/main/res/mipmap-${density}"
+            if [ -d "$dir" ]; then
+              convert app-icon.png -resize ${size}x${size}\! "$dir/ic_launcher.png"
+              convert app-icon.png -resize ${size}x${size}\! \( -size ${size}x${size} xc:none -fill white -draw "circle $((size/2)),$((size/2)) $((size/2)),1" \) -compose DstIn -composite "$dir/ic_launcher_round.png"
+              if [ -f "$dir/ic_launcher_foreground.png" ]; then
+                convert app-icon.png -resize ${size}x${size}\! "$dir/ic_launcher_foreground.png"
+              fi
+            fi
+          done
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x android/gradlew
+
+      - name: Build debug APK
+        run: cd android && ./gradlew assembleDebug
+
+      - name: Upload APK artifact
+        uses: actions/upload-artifact@v4
         with:
           name: civciv-ingilizce-debug-apk
           path: android/app/build/outputs/apk/debug/app-debug.apk
