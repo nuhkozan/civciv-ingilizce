@@ -209,7 +209,7 @@ button{font-family:inherit;color:inherit;}
 .stars{ font-size:1.6rem; margin:6px 0 4px; }
 
 /* ---------- AUTH / HOME / PROFILE / SETTINGS / GATE ---------- */
-#loginScreen .wrap, #homeScreen .wrap, #gateScreen .wrap{ align-items:center; justify-content:center; text-align:center; }
+#loginScreen .wrap, #homeScreen .wrap, #gateScreen .wrap, #introScreen .wrap{ align-items:center; justify-content:center; text-align:center; }
 .authCard{ width:100%; max-width:340px; display:flex; flex-direction:column; align-items:center; gap:10px; }
 .mascot{ width:104px; height:auto; filter:drop-shadow(0 4px 0 rgba(0,0,0,.08)); }
 .homeMascot{ width:96px; margin-top:8px; }
@@ -364,10 +364,31 @@ button{font-family:inherit;color:inherit;}
       <h2 style="font-size:1.1rem;">Ayarlar</h2>
     </div>
     <div style="flex:1; display:flex; flex-direction:column; gap:10px; padding-top:20px;">
+      <button class="settingsRow" onclick="requestMicPermission()">🎙️ <span>Mikrofon İznini Ver / Kontrol Et</span></button>
+      <button class="settingsRow" onclick="testSound()">🔊 <span>Sesi Test Et</span></button>
       <button class="settingsRow" onclick="resetProgress()">🔄 <span>İlerlemeyi Sıfırla</span></button>
       <button class="settingsRow" onclick="logout()">🚪 <span>Çıkış Yap</span></button>
       <p class="settingsMsg" id="settingsMsg"></p>
     </div>
+  </div>
+</div>
+
+<!-- INTRO / PERMISSIONS -->
+<div class="screen" id="introScreen">
+  <div class="wrap">
+    <div style="font-size:3.6rem; margin-top:10px;">🎧</div>
+    <h2 style="font-size:1.25rem; margin-top:6px;">Sesli ve Uygulamalı Öğrenme</h2>
+    <p style="font-weight:700; opacity:.75; font-size:.92rem; max-width:320px; line-height:1.5; margin-top:10px;">
+      Civciv İngilizce, dil ediniminde bilimsel olarak en etkili kabul edilen yöntemi esas alır:
+      <b>dinleme, konuşma ve uygulamalı tekrar</b>. Çocuğunuz yalnızca izlemekle kalmaz;
+      kelimeleri sesli olarak tekrar ederek öğrenir ve bu şekilde kalıcı bir öğrenme deneyimi yaşar.
+    </p>
+    <p style="font-weight:700; opacity:.75; font-size:.92rem; max-width:320px; line-height:1.5; margin-top:10px;">
+      Bu deneyimin sorunsuz işleyebilmesi için mikrofon ve ses izinlerinin
+      etkinleştirilmesi gerekmektedir.
+    </p>
+    <button class="bigBtn" style="max-width:300px; margin-top:22px;" onclick="acceptIntro()">Mikrofonu ve Sesi Etkinleştir</button>
+    <button class="skipLink" style="position:static; margin-top:10px;" onclick="skipIntro()">şimdilik geç</button>
   </div>
 </div>
 
@@ -625,22 +646,64 @@ function doLogin(){
   msg.textContent = '';
   AUTH = {type:'member', username:u};
   saveAuth();
-  goHome();
+  enterHome();
 }
 function doGoogleLogin(){
   AUTH = {type:'member', username:'Google Kullanıcısı'};
   saveAuth();
-  goHome();
+  enterHome();
 }
 function doGuestLogin(){
   AUTH = {type:'guest', username:'Misafir'};
   saveAuth();
-  goHome();
+  enterHome();
 }
 function logout(){
   AUTH = {type:null};
   saveAuth();
   showScreen('loginScreen');
+}
+function enterHome(){
+  try{
+    if(!localStorage.getItem('kk_intro_seen')){
+      showScreen('introScreen');
+      return;
+    }
+  }catch(e){}
+  goHome();
+}
+function acceptIntro(){
+  try{ localStorage.setItem('kk_intro_seen','1'); }catch(e){}
+  requestMicPermission();
+  goHome();
+}
+function skipIntro(){
+  try{ localStorage.setItem('kk_intro_seen','1'); }catch(e){}
+  goHome();
+}
+function requestMicPermission(){
+  const msg = document.getElementById('settingsMsg');
+  if(isNativePlatform() && window.Capacitor.Plugins.SpeechRecognition){
+    window.Capacitor.Plugins.SpeechRecognition.requestPermissions().then(()=>{
+      if(msg) msg.textContent = 'Mikrofon izni tamam ✅';
+    }).catch(()=>{
+      if(msg) msg.textContent = 'İzin verilmedi — telefon ayarlarından açabilirsin.';
+    });
+  } else if(navigator.mediaDevices && navigator.mediaDevices.getUserMedia){
+    navigator.mediaDevices.getUserMedia({audio:true}).then((stream)=>{
+      stream.getTracks().forEach(t=>t.stop());
+      if(msg) msg.textContent = 'Mikrofon izni tamam ✅';
+    }).catch(()=>{
+      if(msg) msg.textContent = 'İzin verilmedi — telefon ayarlarından açabilirsin.';
+    });
+  } else if(msg){
+    msg.textContent = 'Bu ortamda mikrofon izni kontrol edilemiyor.';
+  }
+}
+function testSound(){
+  const msg = document.getElementById('settingsMsg');
+  if(msg) msg.textContent = 'Ses çalınıyor 🔊';
+  speak('Merhaba! Ses çalışıyor.', 'tr-TR');
 }
 function goHome(){
   const greet = document.getElementById('homeGreeting');
@@ -671,7 +734,27 @@ function resetProgress(){
 }
 
 function shuffle(arr){ const a=arr.slice(); for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
-function speak(text, lang){ try{ speechSynthesis.cancel(); const u=new SpeechSynthesisUtterance(text); u.lang=lang||'en-US'; u.rate=0.85; speechSynthesis.speak(u); }catch(e){} }
+function isNativePlatform(){
+  try{ return !!(window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform()); }catch(e){ return false; }
+}
+function speak(text, lang){
+  lang = lang || 'en-US';
+  if(isNativePlatform() && window.Capacitor.Plugins.TextToSpeech){
+    return window.Capacitor.Plugins.TextToSpeech.speak({
+      text, lang, rate:0.85, pitch:1.0, volume:1.0, category:'ambient'
+    }).catch(()=>{});
+  }
+  return new Promise((resolve)=>{
+    try{
+      speechSynthesis.cancel();
+      const u = new SpeechSynthesisUtterance(text);
+      u.lang = lang; u.rate = 0.85;
+      u.onend = ()=>resolve();
+      u.onerror = ()=>resolve();
+      speechSynthesis.speak(u);
+    }catch(e){ resolve(); }
+  });
+}
 function normalizeTR(s){ return (s||'').toLocaleLowerCase('tr-TR').replace(/[^\p{L}\p{N}\s]/gu,'').replace(/\s+/g,' ').trim(); }
 
 function showScreen(id){ document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active')); document.getElementById(id).classList.add('active'); }
@@ -783,15 +866,9 @@ function onListenTap(){
   document.getElementById('listenHint').style.display = 'none';
   document.getElementById('listenBtn').classList.remove('listenPulse');
   clearTimeout(narrateTimer1);
-  try{
-    speechSynthesis.cancel();
-    const u = new SpeechSynthesisUtterance(currentWord().en);
-    u.lang = 'en-US'; u.rate = 0.85;
-    u.onend = ()=>{ setTimeout(()=>{ speak('Haydi şimdi bu kelimeyi İngilizce söyle.', 'tr-TR'); }, 350); };
-    speechSynthesis.speak(u);
-  }catch(e){
-    speak('Haydi şimdi bu kelimeyi İngilizce söyle.', 'tr-TR');
-  }
+  speak(currentWord().en, 'en-US').then(()=>{
+    setTimeout(()=>{ speak('Haydi şimdi bu kelimeyi İngilizce söyle.', 'tr-TR'); }, 350);
+  });
 }
 
 function advanceWord(){
@@ -864,6 +941,24 @@ function startListening(lang){
     setTimeout(()=>{ speak(expected, speechLang); }, 250);
   }
 
+  if(isNativePlatform() && window.Capacitor.Plugins.SpeechRecognition){
+    btn.classList.add('recording');
+    fb.textContent = 'Dinliyorum...';
+    const NativeSR = window.Capacitor.Plugins.SpeechRecognition;
+    NativeSR.requestPermissions().then(()=>{
+      return NativeSR.start({ language: speechLang, maxResults: 3, prompt: '', popup: false, partialResults: false });
+    }).then((res)=>{
+      btn.classList.remove('recording');
+      const heard = (res && res.matches && res.matches.length) ? res.matches.join(' ') : '';
+      const ok = heard && wordMatches(heard, expected, lang);
+      if(ok){ passStage(); } else { retryStage(); }
+    }).catch(()=>{
+      btn.classList.remove('recording');
+      retryStage();
+    });
+    return;
+  }
+
   if(!micSupported){ passStage(); return; }
   const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
   let recognizer;
@@ -894,7 +989,10 @@ function startListening(lang){
 let qSection, qQuestions, qIdx, qCorrect;
 function openQuiz(section){
   clearTimeout(narrateTimer1);
-  speechSynthesis.cancel();
+  try{ speechSynthesis.cancel(); }catch(e){}
+  if(isNativePlatform() && window.Capacitor.Plugins.TextToSpeech){
+    try{ window.Capacitor.Plugins.TextToSpeech.stop(); }catch(e){}
+  }
   qSection = section;
   const picked = shuffle(section.words).slice(0,4);
   const types = shuffle(['emojiForEn','enForEmoji','trForEn','listenPick']);
@@ -1018,7 +1116,7 @@ function finishSection(section, correct, total){
 
 /* ===================== INIT ===================== */
 renderMap();
-if(AUTH.type){ goHome(); }
+if(AUTH.type){ enterHome(); }
 </script>
 </body>
 </html>
