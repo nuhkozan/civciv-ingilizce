@@ -11,6 +11,9 @@
 :root{
   --bg:#FFFDF7; --ink:#20180a; --card:#ffffff;
   --good:#1D7A43; --bad:#C23B3B; --sun:#FFD23F;
+  /* type scale */
+  --fs-xs:0.72rem; --fs-sm:0.85rem; --fs-base:1rem; --fs-md:1.15rem;
+  --fs-lg:1.4rem; --fs-xl:1.8rem; --fs-2xl:2.2rem;
   padding-top:env(safe-area-inset-top,0px);
   padding-bottom:env(safe-area-inset-bottom,0px);
 }
@@ -25,6 +28,8 @@ body{
   min-height:100%; overflow-x:hidden;
 }
 h1,h2,h3{font-family:'Baloo 2',sans-serif;margin:0;}
+h1{font-size:var(--fs-xl);}
+h2{font-size:var(--fs-lg);}
 button{font-family:inherit;color:inherit;}
 .screen{ display:none; min-height:100%; flex-direction:column; align-items:center; }
 .screen.active{ display:flex; }
@@ -148,7 +153,7 @@ button{font-family:inherit;color:inherit;}
 .count{ text-align:center; font-weight:800; opacity:.6; font-size:.85rem; margin-top:6px; }
 .bigBtn{
   margin-top:16px; width:100%; border:none; border-radius:18px; padding:14px;
-  font-weight:800; font-size:1rem; cursor:pointer; background:var(--ink); color:#fff;
+  font-weight:800; font-size:var(--fs-base); cursor:pointer; background:var(--ink); color:#fff;
 }
 .listenHint{ text-align:center; font-weight:800; font-size:clamp(.72rem,3vw,.95rem); opacity:.85; line-height:1.15; color:var(--ink); }
 .listenPulse{ animation:listenGlow 1.4s ease-in-out infinite; }
@@ -239,28 +244,28 @@ button{font-family:inherit;color:inherit;}
 .authCard{ width:100%; max-width:340px; display:flex; flex-direction:column; align-items:center; gap:10px; }
 .mascot{ width:104px; height:auto; filter:drop-shadow(0 4px 0 rgba(0,0,0,.08)); }
 .homeMascot{ width:96px; margin-top:8px; }
-.slogan{ font-weight:800; font-size:.88rem; opacity:.7; margin:6px 0 10px; max-width:280px; line-height:1.35; }
-.authSub{ margin:0 0 6px; font-weight:700; opacity:.55; font-size:.85rem; }
+.slogan{ font-weight:800; font-size:var(--fs-sm); opacity:.7; margin:6px 0 10px; max-width:280px; line-height:1.35; }
+.authSub{ margin:0 0 6px; font-weight:700; opacity:.55; font-size:var(--fs-sm); }
 .authInput{
-  width:100%; border:none; border-radius:16px; padding:14px 16px; font-size:1rem;
+  width:100%; border:none; border-radius:16px; padding:14px 16px; font-size:var(--fs-base);
   background:var(--card); box-shadow:0 2px 0 rgba(0,0,0,.06); font-family:inherit; color:var(--ink);
 }
-.authDivider{ font-weight:800; opacity:.4; font-size:.8rem; margin:2px 0; }
+.authDivider{ font-weight:800; opacity:.4; font-size:var(--fs-xs); margin:2px 0; }
 .googleBtn{
-  width:100%; border:none; border-radius:16px; padding:14px; font-weight:800; font-size:.95rem;
+  width:100%; border:none; border-radius:16px; padding:14px; font-weight:800; font-size:var(--fs-base);
   background:#fff; color:#233047; box-shadow:0 2px 0 rgba(0,0,0,.08); cursor:pointer;
 }
 .guestBtn{
-  width:100%; border:none; border-radius:16px; padding:14px; font-weight:800; font-size:.95rem;
+  width:100%; border:none; border-radius:16px; padding:14px; font-weight:800; font-size:var(--fs-base);
   background:rgba(0,0,0,.06); color:var(--ink); cursor:pointer;
 }
-.guestNote{ font-size:.72rem; opacity:.45; font-weight:700; margin:2px 0 0; }
-.authMsg{ color:var(--bad); font-weight:800; font-size:.8rem; min-height:1.2em; }
+.guestNote{ font-size:var(--fs-xs); opacity:.45; font-weight:700; margin:2px 0 0; }
+.authMsg{ color:var(--bad); font-weight:800; font-size:var(--fs-xs); min-height:1.2em; }
 .authRow{ width:100%; display:flex; align-items:center; justify-content:space-between; gap:8px; margin-top:2px; }
 .checkboxRow{ display:flex; align-items:flex-start; gap:7px; font-size:.78rem; font-weight:700; opacity:.75; text-align:left; cursor:pointer; }
 .checkboxRow input{ margin-top:2px; flex:0 0 auto; }
 .linkBtn{
-  border:none; background:none; font-weight:800; font-size:.78rem; opacity:.6;
+  border:none; background:none; font-weight:800; font-size:var(--fs-xs); opacity:.6;
   cursor:pointer; color:var(--ink); text-decoration:underline; padding:4px 0;
 }
 .linkBtn.inlineLink{ font-size:.78rem; padding:0; display:inline; text-decoration:underline; }
@@ -272,15 +277,22 @@ button{font-family:inherit;color:inherit;}
 }
 .kvkkText.show{ display:block; }
 
+.bootSpinner{
+  width:48px; height:48px; border-radius:50%;
+  border:5px solid rgba(32,24,10,.12); border-top-color:var(--sun);
+  animation:spin .8s linear infinite;
+}
+@keyframes spin{ to{transform:rotate(360deg);} }
+.bootLabel{ margin-top:14px; font-weight:800; opacity:.5; font-size:var(--fs-sm); }
 .homeGreeting{ font-weight:700; opacity:.55; margin:2px 0 0; }
 .homeGreetingTop{
   width:100%; padding-top:calc(env(safe-area-inset-top,0px) + 10px);
-  font-weight:800; opacity:.85; font-size:1.05rem; margin:0 0 4px;
+  font-weight:800; opacity:.85; font-size:var(--fs-md); margin:0 0 4px;
 }
 .homeMenu{ display:flex; flex-direction:column; gap:12px; width:100%; max-width:340px; margin-top:26px; }
 .homeBtn{
   display:flex; align-items:center; gap:12px; border:none; border-radius:20px; padding:17px 18px;
-  background:var(--card); box-shadow:0 4px 0 rgba(0,0,0,.06); font-weight:800; font-size:1rem;
+  background:var(--card); box-shadow:0 4px 0 rgba(0,0,0,.06); font-weight:800; font-size:var(--fs-base);
   cursor:pointer; color:var(--ink); text-align:left; font-family:'Nunito';
 }
 .homeBtn span{ flex:1; }
@@ -300,7 +312,10 @@ button{font-family:inherit;color:inherit;}
 .profileType{ font-weight:700; opacity:.5; font-size:.85rem; margin-top:2px; }
 .profileStats{ font-weight:800; opacity:.65; font-size:.9rem; margin-top:16px; text-align:center; }
 
-.settingsGroupLabel{ font-weight:800; opacity:.45; font-size:.72rem; text-transform:uppercase; letter-spacing:.04em; padding:0 4px; }
+.settingsGroupLabel{ font-weight:800; opacity:.45; font-size:var(--fs-xs); text-transform:uppercase; letter-spacing:.04em; padding:0 4px; }
+.appFooter{ text-align:center; margin-top:18px; font-weight:700; opacity:.35; font-size:.68rem; line-height:1.6; }
+.emptyState{ text-align:center; margin-top:14px; display:flex; flex-direction:column; align-items:center; gap:10px; }
+.emptyState p{ font-weight:700; opacity:.6; font-size:var(--fs-sm); line-height:1.5; margin:0; }
 .soonTag{ font-weight:800; font-size:.7rem; opacity:.5; background:rgba(0,0,0,.06); padding:3px 8px; border-radius:20px; }
 .planCard{
   background:var(--card); border-radius:22px; padding:18px; text-align:center;
@@ -314,14 +329,21 @@ button{font-family:inherit;color:inherit;}
   padding:3px 12px; border-radius:20px; white-space:nowrap;
 }
 .planTag.gold{ background:#F4C430; }
-.planName{ font-family:'Baloo 2'; font-weight:800; font-size:1.2rem; }
+.planName{ font-family:'Baloo 2'; font-weight:800; font-size:var(--fs-md); }
 .planDuration{ font-weight:700; opacity:.55; font-size:.8rem; margin-top:2px; }
-.planPrice{ font-family:'Baloo 2'; font-weight:800; font-size:1.8rem; margin-top:8px; color:var(--good); }
+.planPrice{ font-family:'Baloo 2'; font-weight:800; font-size:var(--fs-xl); margin-top:8px; color:var(--good); }
 .planPrice span{ font-family:'Nunito'; font-weight:700; font-size:.85rem; opacity:.5; }
 .planNote{ font-weight:700; font-size:.72rem; opacity:.5; margin-top:4px; }
 .planBtn{
   margin-top:12px; width:100%; border:none; border-radius:14px; padding:11px;
   font-weight:800; font-size:.95rem; cursor:pointer; background:var(--ink); color:#fff;
+}
+.promoBox{ width:100%; text-align:center; }
+.promoLabel{ font-weight:800; font-size:.85rem; opacity:.7; margin-bottom:8px; }
+.promoRow{ display:flex; gap:8px; align-items:center; }
+.promoBtn{
+  border:none; border-radius:16px; padding:0 18px; height:48px; background:var(--ink);
+  color:#fff; font-weight:800; font-size:.9rem; cursor:pointer; flex:0 0 auto;
 }
 .paySummary{
   width:100%; max-width:320px; background:var(--card); border-radius:18px; padding:16px;
@@ -331,7 +353,7 @@ button{font-family:inherit;color:inherit;}
 .paySummary .psPrice{ color:var(--good); font-size:1.3rem; margin-top:4px; }
 .settingsRow{
   display:flex; align-items:center; gap:12px; border:none; border-radius:18px; padding:16px 18px;
-  background:var(--card); box-shadow:0 3px 0 rgba(0,0,0,.06); font-weight:800; font-size:.95rem;
+  background:var(--card); box-shadow:0 3px 0 rgba(0,0,0,.06); font-weight:800; font-size:var(--fs-base);
   cursor:pointer; color:var(--ink); text-align:left; width:100%;
 }
 .settingsRow span{ flex:1; }
@@ -341,7 +363,15 @@ button{font-family:inherit;color:inherit;}
 <body>
 
 <!-- LOGIN -->
-<div class="screen active" id="loginScreen">
+<!-- BOOT LOADING -->
+<div class="screen active" id="bootScreen">
+  <div class="wrap" style="align-items:center;justify-content:center;text-align:center;">
+    <div class="bootSpinner"></div>
+    <p class="bootLabel">Yükleniyor...</p>
+  </div>
+</div>
+
+<div class="screen" id="loginScreen">
   <div class="wrap">
     <div class="authCard">
       <svg class="mascotSmall" viewBox="0 0 240 240" xmlns="http://www.w3.org/2000/svg">
@@ -512,6 +542,11 @@ button{font-family:inherit;color:inherit;}
       <div class="profileName" id="profileName"></div>
       <div class="profileType" id="profileType"></div>
       <div class="profileStats" id="profileStats"></div>
+      <div class="emptyState" id="profileEmptyState" style="display:none;">
+        <div style="font-size:2.2rem;">🌱</div>
+        <p>Henüz hiç bölüm tamamlamadın.<br>Hadi ilk kelimeyle başlayalım!</p>
+        <button class="bigBtn" style="max-width:240px;" onclick="goMap()">Öğrenmeye Başla</button>
+      </div>
       <button class="bigBtn" style="max-width:260px;margin-top:26px;" onclick="logout()">Çıkış Yap</button>
     </div>
   </div>
@@ -531,8 +566,34 @@ button{font-family:inherit;color:inherit;}
       <button class="settingsRow" onclick="requestMicPermission()">🎙️ <span>Mikrofon İznini Ver / Kontrol Et</span></button>
       <button class="settingsRow" onclick="testSound()">🔊 <span>Sesi Test Et</span></button>
       <button class="settingsRow" onclick="resetProgress()">🔄 <span>İlerlemeyi Sıfırla</span></button>
+      <div class="settingsGroupLabel" style="margin-top:8px;">Destek</div>
+      <button class="settingsRow" onclick="openContact()">✉️ <span>Bize Ulaşın</span></button>
       <button class="settingsRow" onclick="logout()">🚪 <span>Çıkış Yap</span></button>
       <p class="settingsMsg" id="settingsMsg"></p>
+      <div class="appFooter">
+        <div>Civciv İngilizce v1.0.0</div>
+        <div>© 2026 Civciv İngilizce — [Şirket/Şahıs Adı]</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CONTACT -->
+<div class="screen" id="contactScreen">
+  <div class="wrap">
+    <div class="topbar">
+      <button class="backBtn" onclick="showScreen('settingsScreen')">‹</button>
+      <h2 style="font-size:1.1rem;">Bize Ulaşın</h2>
+    </div>
+    <div style="flex:1; display:flex; flex-direction:column; gap:12px; padding:16px 6px 20px; align-items:center;">
+      <p style="font-weight:700; opacity:.6; font-size:.85rem; text-align:center; max-width:300px;">
+        Sorunuz, öneriniz ya da karşılaştığınız bir sorun mu var? Aşağıdaki formu doldurun, e-posta uygulamanız açılıp mesajınızı bizim için hazırlasın.
+      </p>
+      <input class="authInput" id="contactName" placeholder="Adınız (opsiyonel)" style="width:100%;max-width:320px;">
+      <input class="authInput" id="contactEmail" type="email" placeholder="E-posta adresiniz" style="width:100%;max-width:320px;">
+      <textarea class="authInput" id="contactMsg" placeholder="Mesajınız" rows="4" style="width:100%;max-width:320px; resize:vertical; font-family:inherit;"></textarea>
+      <button class="bigBtn" style="max-width:320px;" onclick="sendContact()">Gönder</button>
+      <p class="settingsMsg" id="contactStatus"></p>
     </div>
   </div>
 </div>
@@ -600,6 +661,16 @@ button{font-family:inherit;color:inherit;}
         <div class="planPrice">199 TL<span>/yıl</span></div>
         <div class="planNote">İlk 7 gün ücretsiz, sonra yılda bir yenilenir</div>
         <button class="planBtn">Seç</button>
+      </div>
+
+      <div class="authDivider">veya</div>
+      <div class="promoBox">
+        <div class="promoLabel">🎟️ Promosyon Kodu</div>
+        <div class="promoRow">
+          <input class="authInput" id="promoCodeInput" placeholder="Kodunu gir" style="flex:1; text-transform:uppercase;">
+          <button class="promoBtn" onclick="redeemPromoCode()">Kullan</button>
+        </div>
+        <p class="authMsg" id="promoMsg"></p>
       </div>
     </div>
   </div>
@@ -1010,6 +1081,8 @@ let selectedPlanId = null;
 function openMembership(fromWhere){
   membershipReturnScreen = fromWhere==='gate' ? 'gateScreen' : 'settingsScreen';
   document.getElementById('membershipBackBtn').onclick = ()=> showScreen(membershipReturnScreen);
+  document.getElementById('promoCodeInput').value = '';
+  document.getElementById('promoMsg').textContent = '';
   showScreen('membershipScreen');
 }
 function openPayment(planId){
@@ -1033,9 +1106,36 @@ function completePayment(){
     AUTH.plan = selectedPlanId;
     AUTH.planExpires = Date.now() + p.days*24*60*60*1000;
     saveAuth();
+    haptic('MEDIUM');
     msg.textContent = p.trial + ' günlük ücretsiz deneme başladı! 🎉';
     setTimeout(()=>{ goMap(); }, 1200);
   }, 900);
+}
+
+const ADMIN_CODES = ['CIVCIV-7K2M9X', 'CIVCIV-3QT8WZ', 'CIVCIV-N5R4PL'];
+function loadUsedCodes(){ try{ return JSON.parse(localStorage.getItem('kk_used_codes')||'[]'); }catch(e){ return []; } }
+function saveUsedCodes(list){ try{ localStorage.setItem('kk_used_codes', JSON.stringify(list)); }catch(e){} }
+function redeemPromoCode(){
+  const input = document.getElementById('promoCodeInput');
+  const msg = document.getElementById('promoMsg');
+  const code = input.value.trim().toUpperCase();
+  msg.style.color = '';
+  if(!code){ msg.textContent = 'Bir kod gir.'; return; }
+  if(!ADMIN_CODES.includes(code)){ msg.textContent = 'Geçersiz kod.'; return; }
+  const used = loadUsedCodes();
+  if(used.includes(code)){ msg.textContent = 'Bu kod daha önce kullanılmış.'; return; }
+  used.push(code);
+  saveUsedCodes(used);
+  REMEMBER_ME = true;
+  AUTH.type = 'member';
+  if(!AUTH.username) AUTH.username = 'Admin';
+  AUTH.plan = 'master';
+  AUTH.planExpires = Date.now() + 36500*24*60*60*1000;
+  AUTH.viaCode = true;
+  saveAuth();
+  msg.style.color = 'var(--good)';
+  msg.textContent = 'Kod kabul edildi! Sınırsız Plan ücretsiz aktif 🎉';
+  setTimeout(()=>{ goMap(); }, 1300);
 }
 function testSound(){
   const msg = document.getElementById('settingsMsg');
@@ -1044,6 +1144,30 @@ function testSound(){
 }
 function showMembershipInfo(){
   openMembership('settings');
+}
+const SUPPORT_EMAIL = 'destek@civcivingilizce.com';
+function openContact(){
+  document.getElementById('contactName').value = '';
+  document.getElementById('contactEmail').value = '';
+  document.getElementById('contactMsg').value = '';
+  document.getElementById('contactStatus').textContent = '';
+  showScreen('contactScreen');
+}
+function sendContact(){
+  const name = document.getElementById('contactName').value.trim();
+  const email = document.getElementById('contactEmail').value.trim();
+  const body = document.getElementById('contactMsg').value.trim();
+  const status = document.getElementById('contactStatus');
+  if(!body){ status.textContent = 'Lütfen bir mesaj yaz.'; return; }
+  const subject = encodeURIComponent('Civciv İngilizce - Destek Talebi');
+  const fullBody = encodeURIComponent(
+    (name ? 'Ad: ' + name + '\n' : '') +
+    (email ? 'E-posta: ' + email + '\n\n' : '\n') +
+    body
+  );
+  window.location.href = 'mailto:' + SUPPORT_EMAIL + '?subject=' + subject + '&body=' + fullBody;
+  status.style.color = 'var(--good)';
+  status.textContent = 'E-posta uygulaman açılıyor...';
 }
 let SOUND_ON = true, MIC_ON = true;
 try{ SOUND_ON = localStorage.getItem('kk_sound_on') !== '0'; }catch(e){}
@@ -1055,11 +1179,13 @@ function renderToggleButtons(){
   if(soundState){ soundState.textContent = SOUND_ON ? 'Açık' : 'Kapalı'; soundState.classList.toggle('off', !SOUND_ON); }
 }
 function toggleMic(){
+  haptic('LIGHT');
   MIC_ON = !MIC_ON;
   try{ localStorage.setItem('kk_mic_on', MIC_ON ? '1' : '0'); }catch(e){}
   renderToggleButtons();
 }
 function toggleSound(){
+  haptic('LIGHT');
   SOUND_ON = !SOUND_ON;
   try{ localStorage.setItem('kk_sound_on', SOUND_ON ? '1' : '0'); }catch(e){}
   renderToggleButtons();
@@ -1080,7 +1206,16 @@ function showProfile(){
   document.getElementById('profileType').textContent = AUTH.type==='guest' ? 'Üyeliksiz deneme' : 'Üye';
   const doneCount = SECTIONS.filter(s=>s.type!=='placeholder' && isDone(s.id)).length;
   const wordsLearned = wordSections.filter(s=>isDone(s.id)).reduce((a,s)=>a+s.words.length,0);
-  document.getElementById('profileStats').textContent = doneCount + ' bölüm tamamlandı · ' + wordsLearned + ' kelime öğrenildi';
+  const statsEl = document.getElementById('profileStats');
+  const emptyEl = document.getElementById('profileEmptyState');
+  if(doneCount===0){
+    statsEl.style.display = 'none';
+    emptyEl.style.display = 'flex';
+  } else {
+    statsEl.style.display = 'block';
+    emptyEl.style.display = 'none';
+    statsEl.textContent = doneCount + ' bölüm tamamlandı · ' + wordsLearned + ' kelime öğrenildi';
+  }
   showScreen('profileScreen');
 }
 function showSettings(){
@@ -1096,6 +1231,11 @@ function resetProgress(){
 function shuffle(arr){ const a=arr.slice(); for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
 function isNativePlatform(){
   try{ return !!(window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform()); }catch(e){ return false; }
+}
+function haptic(style){
+  if(isNativePlatform() && window.Capacitor.Plugins.Haptics){
+    try{ window.Capacitor.Plugins.Haptics.impact({ style: style || 'LIGHT' }); }catch(e){}
+  }
 }
 function speak(text, lang, rate){
   lang = lang || 'en-US';
@@ -1349,6 +1489,7 @@ function startListening(lang){
     resultBox.classList.remove('revealed');
     resultBox.classList.add('good');
     playDing();
+    haptic('MEDIUM');
     setTimeout(()=>{ speak(expected, speechLang); }, 300);
     if(!isTR){ unlockTurkishStage(); }
     else{ setTimeout(advanceWord, isLast?1800:1300); }
@@ -1469,6 +1610,7 @@ function answerQuiz(btn, isCorrect){
   document.querySelectorAll('#qCard .opt').forEach(b=>b.disabled=true);
   if(isCorrect==='1'){
     btn.classList.add('correct'); qCorrect++;
+    haptic('MEDIUM');
     const praise = document.getElementById('quizPraise');
     if(praise){
       praise.textContent = PRAISE_PHRASES[Math.floor(Math.random()*PRAISE_PHRASES.length)];
@@ -1538,6 +1680,7 @@ function answerSentence(btn, isCorrect){
 function finishSection(section, correct, total){
   PROGRESS[section.id] = {done:true, correct, total};
   saveProgress();
+  haptic('HEAVY');
   const ratio = correct/total;
   document.getElementById('cEmoji').textContent = ratio===1 ? '🌟' : ratio>=0.5 ? '🎉' : '💪';
   document.getElementById('cTitle').textContent = 'Tebrikler! ' + section.title + ' tamamlandı!';
@@ -1547,7 +1690,15 @@ function finishSection(section, correct, total){
 
 /* ===================== INIT ===================== */
 renderMap();
-if(AUTH.type){ enterHome(); }
+if(isNativePlatform() && window.Capacitor.Plugins.StatusBar){
+  try{
+    window.Capacitor.Plugins.StatusBar.setBackgroundColor({ color:'#FFFDF7' });
+    window.Capacitor.Plugins.StatusBar.setStyle({ style:'LIGHT' });
+  }catch(e){}
+}
+setTimeout(()=>{
+  if(AUTH.type){ enterHome(); } else { showScreen('loginScreen'); }
+}, 700);
 </script>
 </body>
 </html>
