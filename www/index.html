@@ -239,6 +239,8 @@ button{font-family:inherit;color:inherit;}
   cursor:pointer; color:var(--ink); text-align:left; font-family:'Nunito';
 }
 .homeBtn span{ flex:1; }
+.toggleState{ font-weight:800; font-size:.85rem; color:var(--good); }
+.toggleState.off{ color:var(--bad); opacity:.8; }
 
 .mapTopRow{ display:flex; padding:0 20px; }
 
@@ -335,6 +337,10 @@ button{font-family:inherit;color:inherit;}
       <button class="homeBtn" onclick="continueLearning()">⏩ <span>Kaldığın Yerden Devam Et</span></button>
       <button class="homeBtn" onclick="showProfile()">👤 <span>Profilim</span></button>
       <button class="homeBtn" onclick="showSettings()">⚙️ <span>Ayarlar</span></button>
+    </div>
+    <div class="homeMenu" style="margin-top:10px;">
+      <button class="homeBtn toggleBtn" id="micToggleBtn" onclick="toggleMic()">🎙️ <span>Mikrofon</span> <b class="toggleState" id="micToggleState">Açık</b></button>
+      <button class="homeBtn toggleBtn" id="soundToggleBtn" onclick="toggleSound()">🔊 <span>Ses</span> <b class="toggleState" id="soundToggleState">Açık</b></button>
     </div>
   </div>
 </div>
@@ -705,9 +711,29 @@ function testSound(){
   if(msg) msg.textContent = 'Ses çalınıyor 🔊';
   speak('Merhaba! Ses çalışıyor.', 'tr-TR');
 }
+let SOUND_ON = true, MIC_ON = true;
+try{ SOUND_ON = localStorage.getItem('kk_sound_on') !== '0'; }catch(e){}
+try{ MIC_ON = localStorage.getItem('kk_mic_on') !== '0'; }catch(e){}
+function renderToggleButtons(){
+  const micState = document.getElementById('micToggleState');
+  const soundState = document.getElementById('soundToggleState');
+  if(micState){ micState.textContent = MIC_ON ? 'Açık' : 'Kapalı'; micState.classList.toggle('off', !MIC_ON); }
+  if(soundState){ soundState.textContent = SOUND_ON ? 'Açık' : 'Kapalı'; soundState.classList.toggle('off', !SOUND_ON); }
+}
+function toggleMic(){
+  MIC_ON = !MIC_ON;
+  try{ localStorage.setItem('kk_mic_on', MIC_ON ? '1' : '0'); }catch(e){}
+  renderToggleButtons();
+}
+function toggleSound(){
+  SOUND_ON = !SOUND_ON;
+  try{ localStorage.setItem('kk_sound_on', SOUND_ON ? '1' : '0'); }catch(e){}
+  renderToggleButtons();
+}
 function goHome(){
   const greet = document.getElementById('homeGreeting');
   greet.textContent = AUTH.type==='guest' ? 'Misafir olarak deniyorsun ✨' : ('Tekrar hoş geldin, ' + (AUTH.username||'') + '! 👋');
+  renderToggleButtons();
   showScreen('homeScreen');
 }
 function continueLearning(){
@@ -737,18 +763,20 @@ function shuffle(arr){ const a=arr.slice(); for(let i=a.length-1;i>0;i--){ const
 function isNativePlatform(){
   try{ return !!(window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform()); }catch(e){ return false; }
 }
-function speak(text, lang){
+function speak(text, lang, rate){
   lang = lang || 'en-US';
+  rate = rate || 0.85;
+  if(!SOUND_ON){ return Promise.resolve(); }
   if(isNativePlatform() && window.Capacitor.Plugins.TextToSpeech){
     return window.Capacitor.Plugins.TextToSpeech.speak({
-      text, lang, rate:0.85, pitch:1.0, volume:1.0, category:'ambient'
+      text, lang, rate, pitch:1.0, volume:1.0, category:'ambient'
     }).catch(()=>{});
   }
   return new Promise((resolve)=>{
     try{
       speechSynthesis.cancel();
       const u = new SpeechSynthesisUtterance(text);
-      u.lang = lang; u.rate = 0.85;
+      u.lang = lang; u.rate = rate;
       u.onend = ()=>resolve();
       u.onerror = ()=>resolve();
       speechSynthesis.speak(u);
@@ -866,9 +894,15 @@ function onListenTap(){
   document.getElementById('listenHint').style.display = 'none';
   document.getElementById('listenBtn').classList.remove('listenPulse');
   clearTimeout(narrateTimer1);
-  speak(currentWord().en, 'en-US').then(()=>{
-    setTimeout(()=>{ speak('Haydi şimdi bu kelimeyi İngilizce söyle.', 'tr-TR'); }, 350);
-  });
+  const en = currentWord().en;
+  speak(en, 'en-US', 0.85)
+    .then(()=> new Promise(r=>setTimeout(r,200)))
+    .then(()=> speak(en, 'en-US', 0.5))
+    .then(()=> new Promise(r=>setTimeout(r,200)))
+    .then(()=> speak(en, 'en-US', 0.85))
+    .then(()=>{
+      setTimeout(()=>{ speak('Haydi şimdi bu kelimeyi İngilizce söyle.', 'tr-TR'); }, 350);
+    });
 }
 
 function advanceWord(){
@@ -927,13 +961,20 @@ function startListening(lang){
 
   fb.className = 'micFeedback'; fb.textContent = '';
 
+  if(!MIC_ON){
+    fb.className = 'micFeedback retry';
+    fb.textContent = 'Mikrofon kapalı — Ayarlar\'dan açabilirsin.';
+    return;
+  }
+
   function passStage(){
     resultVal.textContent = '✓ ' + expected;
     resultBox.classList.remove('revealed');
     resultBox.classList.add('good');
     playDing();
+    setTimeout(()=>{ speak(expected, speechLang); }, 300);
     if(!isTR){ unlockTurkishStage(); }
-    else{ setTimeout(advanceWord, isLast?1400:900); }
+    else{ setTimeout(advanceWord, isLast?1800:1300); }
   }
   function retryStage(){
     fb.className = 'micFeedback retry';
@@ -946,7 +987,7 @@ function startListening(lang){
     fb.textContent = 'Dinliyorum...';
     const NativeSR = window.Capacitor.Plugins.SpeechRecognition;
     NativeSR.requestPermissions().then(()=>{
-      return NativeSR.start({ language: speechLang, maxResults: 3, prompt: '', popup: false, partialResults: false });
+      return NativeSR.start({ language: speechLang, maxResults: 3, prompt: '', popup: true, partialResults: false });
     }).then((res)=>{
       btn.classList.remove('recording');
       const heard = (res && res.matches && res.matches.length) ? res.matches.join(' ') : '';
