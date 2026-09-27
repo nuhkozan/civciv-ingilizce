@@ -951,8 +951,22 @@ function renderWord(){
 
   clearTimeout(narrateTimer1);
   const listenPhrase = wIdx < 2 ? 'Hoparlör işaretine dokun ve dinle.' : 'Dokun ve dinle.';
-  document.getElementById('actionCaption').textContent = listenPhrase;
-  narrateTimer1 = setTimeout(()=>{ speak(listenPhrase, 'tr-TR'); }, 700);
+  const captionEl = document.getElementById('actionCaption');
+
+  if(wCurrentSection.id === 0 && wIdx === 0){
+    const introMsg = 'Bu ilk bölüm, uygulamayı tanıman için hazırlandı. Sonrası çok daha eğlenceli olacak!';
+    captionEl.textContent = introMsg;
+    stopSpeaking();
+    narrateTimer1 = setTimeout(()=>{
+      speak(introMsg, 'tr-TR').then(()=>{
+        captionEl.textContent = listenPhrase;
+        setTimeout(()=>{ speak(listenPhrase, 'tr-TR'); }, 300);
+      });
+    }, 500);
+  } else {
+    captionEl.textContent = listenPhrase;
+    narrateTimer1 = setTimeout(()=>{ speak(listenPhrase, 'tr-TR'); }, 700);
+  }
 }
 let narrateTimer1 = null;
 function stopSpeaking(){
