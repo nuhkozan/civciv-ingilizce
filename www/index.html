@@ -32,7 +32,7 @@ button{font-family:inherit;color:inherit;}
 
 /* ---------- MAP ---------- */
 #mapHeader{
-  padding:calc(env(safe-area-inset-top,0px) + 18px) 20px 8px; text-align:center;
+  padding:18px 20px 8px; text-align:center;
 }
 #mapHeader h1{font-size:1.6rem;}
 #mapHeader p{margin:2px 0 0;font-weight:700;opacity:.6;font-size:.85rem;}
@@ -76,7 +76,11 @@ button{font-family:inherit;color:inherit;}
 
 /* ---------- WORD CARD ---------- */
 .wordsWrap{ max-width:none; padding:0; }
-.wordsWrap .topbar{ padding-left:14px; padding-right:14px; }
+.actionCaption{
+  padding:calc(env(safe-area-inset-top,0px) + 12px) 16px 4px;
+  text-align:center; font-weight:800; font-size:1rem; color:var(--bad); min-height:1.3em;
+}
+.wordsWrap .topbar{ padding:14px 14px 10px; }
 .wordsWrap .count{ padding-bottom:6px; }
 .stage{ flex:1; display:flex; min-height:0; padding:0 8px 8px; }
 .card{
@@ -247,6 +251,12 @@ button{font-family:inherit;color:inherit;}
 .toggleState.off{ color:var(--bad); opacity:.8; }
 
 .mapTopRow{ display:flex; padding:0 20px; }
+.welcomeBanner{
+  padding:calc(env(safe-area-inset-top,0px) + 14px) 20px 10px;
+  background:rgba(29,122,67,.07);
+}
+.welcomeGreet{ margin:0 0 8px; font-weight:800; font-size:1.05rem; }
+.welcomeCount{ margin:6px 0 0; font-weight:800; font-size:.75rem; opacity:.6; text-align:right; }
 
 .profileAvatar{ font-size:4rem; width:96px; height:96px; border-radius:50%; background:var(--card); display:flex; align-items:center; justify-content:center; box-shadow:0 4px 0 rgba(0,0,0,.06); }
 .profileName{ font-family:'Baloo 2'; font-weight:800; font-size:1.3rem; margin-top:12px; }
@@ -416,6 +426,11 @@ button{font-family:inherit;color:inherit;}
 <!-- MAP -->
 <div class="screen" id="mapScreen">
   <div class="wrap" style="padding:0;">
+    <div class="welcomeBanner">
+      <p class="welcomeGreet" id="mapGreeting"></p>
+      <div class="progressTrack"><div class="progressFill" id="totalWordsFill" style="background:var(--good);"></div></div>
+      <p class="welcomeCount" id="totalWordsLabel"></p>
+    </div>
     <div id="mapHeader">
       <div class="mapTopRow"><button class="backBtn" onclick="goHome()">🏠</button></div>
       <h1>Civciv İngilizce 🐣</h1>
@@ -428,6 +443,7 @@ button{font-family:inherit;color:inherit;}
 <!-- WORDS -->
 <div class="screen" id="wordsScreen">
   <div class="wrap wordsWrap">
+    <div class="actionCaption" id="actionCaption"></div>
     <div class="topbar">
       <button class="backBtn" onclick="goMap()">‹</button>
       <div class="progressTrack"><div class="progressFill" id="wordsProgress"></div></div>
@@ -794,7 +810,15 @@ function showScreen(id){ document.querySelectorAll('.screen').forEach(s=>s.class
 function goMap(){ renderMap(); showScreen('mapScreen'); }
 
 /* ===================== MAP ===================== */
+const TOTAL_WORD_GOAL = 300;
 function renderMap(){
+  const greet = document.getElementById('mapGreeting');
+  greet.textContent = AUTH.type==='guest' ? 'Hoşgeldin, Misafir! 👋' : ('Hoşgeldin, ' + (AUTH.username||'') + '! 👋');
+  const wordsLearned = wordSections.filter(s=>isDone(s.id)).reduce((a,s)=>a+s.words.length,0);
+  const pct = Math.min(100, Math.round((wordsLearned/TOTAL_WORD_GOAL)*100));
+  document.getElementById('totalWordsFill').style.width = pct + '%';
+  document.getElementById('totalWordsLabel').textContent = wordsLearned + ' / ' + TOTAL_WORD_GOAL + ' kelime';
+
   const doneCount = SECTIONS.filter(s=>s.type!=='placeholder' && isDone(s.id)).length;
   const totalReal = SECTIONS.filter(s=>s.type!=='placeholder').length;
   document.getElementById('mapSub').textContent = doneCount + ' / ' + totalReal + ' bölüm tamamlandı';
@@ -896,6 +920,7 @@ function renderWord(){
 
   clearTimeout(narrateTimer1);
   const listenPhrase = wIdx < 2 ? 'Hoparlör işaretine dokun ve dinle.' : 'Dokun ve dinle.';
+  document.getElementById('actionCaption').textContent = listenPhrase;
   narrateTimer1 = setTimeout(()=>{ speak(listenPhrase, 'tr-TR'); }, 700);
 }
 let narrateTimer1 = null;
@@ -912,6 +937,7 @@ function onListenTap(){
   clearTimeout(narrateTimer1);
   const en = currentWord().en;
   const sayEnPhrase = wIdx < 2 ? 'Haydi şimdi bu kelimeyi İngilizce söyle.' : 'Şimdi İngilizce söyle.';
+  document.getElementById('actionCaption').textContent = sayEnPhrase;
   speak(en, 'en-US', 0.85)
     .then(()=> new Promise(r=>setTimeout(r,200)))
     .then(()=> speak(en, 'en-US', 0.5))
@@ -933,6 +959,7 @@ function unlockTurkishStage(){
   document.getElementById('micTRBox').classList.remove('wbox-locked');
   document.getElementById('micBtnTR').disabled = false;
   const phrase = wIdx < 2 ? 'Şimdi de Türkçesini söyle.' : 'Türkçesini söyle.';
+  document.getElementById('actionCaption').textContent = phrase;
   setTimeout(()=>{ speak(phrase, 'tr-TR'); }, 300);
 }
 function skipSpeak(){
@@ -1004,6 +1031,7 @@ function startListening(lang){
     if(attempts >= 2){ passStage(); return; }
     fb.className = 'micFeedback retry';
     fb.textContent = 'Hadi birlikte tekrar söyleyelim!';
+    document.getElementById('actionCaption').textContent = 'Tekrar söyle!';
     setTimeout(()=>{ speak(expected, speechLang); }, 250);
   }
 
