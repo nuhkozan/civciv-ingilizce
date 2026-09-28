@@ -70,6 +70,17 @@ jobs:
           convert splash.png -resize 1600x1600 android/app/src/main/res/drawable-port-xxhdpi/splash.png
           convert splash.png -resize 1920x1920 android/app/src/main/res/drawable-port-xxxhdpi/splash.png
 
+      - name: Set launch theme background
+        shell: bash
+        run: |
+          STYLES=android/app/src/main/res/values/styles.xml
+          if grep -q 'Theme.SplashScreen' "$STYLES" && ! grep -q 'windowSplashScreenBackground' "$STYLES"; then
+            sed -i '/<style name="AppTheme.NoActionBarLaunch"/a\        <item name="windowSplashScreenBackground">#FFFDF7</item>' "$STYLES"
+          fi
+          if ! grep -q 'android:windowBackground' "$STYLES"; then
+            sed -i '/<style name="AppTheme.NoActionBar"/a\        <item name="android:windowBackground">#FFFDF7</item>' "$STYLES"
+          fi
+
       - name: Grant execute permission for gradlew
         run: chmod +x android/gradlew
 
