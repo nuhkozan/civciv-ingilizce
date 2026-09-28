@@ -1,17 +1,17 @@
-
 {
   "appId": "com.civcivingilizce.app",
   "appName": "Civciv İngilizce",
   "webDir": "www",
   "bundledWebRuntime": false,
+  "backgroundColor": "#FFFDF7",
   "android": { "allowMixedContent": false },
   "plugins": {
     "SplashScreen": {
-      "launchShowDuration": 1800,
+      "launchShowDuration": 1000,
       "launchAutoHide": true,
       "backgroundColor": "#FFFDF7",
       "androidSplashResourceName": "splash",
-      "androidScaleType": "CENTER_CROP",
+      "androidScaleType": "FIT_CENTER",
       "showSpinner": false,
       "splashFullScreen": false,
       "splashImmersive": false
