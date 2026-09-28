@@ -90,7 +90,7 @@ button{font-family:inherit;color:inherit;}
 .stage{ flex:1; display:flex; min-height:0; padding:0 8px 8px; }
 .card{
   flex:1; min-height:0; min-width:0;
-  border-radius:26px; padding:12px 12px 32px 12px;
+  border-radius:26px; padding:12px 12px 44px 12px;
   box-shadow:0 10px 0 rgba(0,0,0,.05),0 14px 30px rgba(30,50,90,.10);
   position:relative; overflow:hidden; animation:pop .3s cubic-bezier(.2,1.4,.4,1);
   background-color:#FFFDF7;
@@ -175,19 +175,13 @@ button{font-family:inherit;color:inherit;}
 .micBtn:disabled{ cursor:default; }
 .micBtn.recording{ background:var(--bad); animation:micPulse 1s infinite; }
 @keyframes micPulse{ 0%{box-shadow:0 0 0 0 rgba(194,59,59,.5);} 70%{box-shadow:0 0 0 16px rgba(194,59,59,0);} 100%{box-shadow:0 0 0 0 rgba(194,59,59,0);} }
-.micFeedback{
-  position:absolute; left:10px; right:10px; bottom:30px; text-align:center;
-  font-family:'Baloo 2'; font-weight:800; font-size:.95rem; pointer-events:none; z-index:2;
+.navRow{
+  position:absolute; left:0; right:0; bottom:6px; z-index:2;
+  display:flex; justify-content:center; gap:36px;
 }
-.micFeedback.good{ color:var(--good); }
-.micFeedback.retry{ color:var(--bad); }
-.prevLink{
-  position:absolute; top:10px; left:14px; z-index:2;
-  border:none; background:none; font-weight:700; opacity:.5; font-size:.75rem; cursor:pointer; text-decoration:underline; color:var(--ink);
-}
-.skipLink{
-  position:absolute; left:0; right:0; bottom:6px; z-index:2; text-align:center;
-  border:none; background:none; font-weight:700; opacity:.5; font-size:.75rem; cursor:pointer; text-decoration:underline; color:var(--ink);
+.navLink{
+  border:none; background:none; font-weight:800; opacity:.65; font-size:var(--fs-sm);
+  cursor:pointer; text-decoration:underline; color:var(--ink); padding:6px 10px;
 }
 
 /* ---------- QUIZ / SENTENCE ---------- */
@@ -200,7 +194,7 @@ button{font-family:inherit;color:inherit;}
 }
 .qPrompt{ font-weight:800; font-size:1rem; opacity:.6; margin-bottom:6px; }
 .qVisual{
-  width:100%; max-width:260px; aspect-ratio:2/1; border-radius:26px;
+  width:100%; max-width:220px; aspect-ratio:2/1; border-radius:26px;
   display:flex; align-items:center; justify-content:center; gap:18px;
   margin:10px auto 14px;
 }
@@ -209,17 +203,22 @@ button{font-family:inherit;color:inherit;}
 .qWord{ font-family:'Baloo 2'; font-weight:800; font-size:2rem; margin:4px 0; }
 .qSentence{ font-family:'Baloo 2'; font-weight:700; font-size:1.4rem; line-height:1.5; margin:10px 0; }
 .blank{ display:inline-block; min-width:64px; border-bottom:4px solid rgba(0,0,0,.18); }
-.options{ display:grid; grid-template-columns:1fr 1fr; gap:12px; width:100%; margin-top:18px; }
+.options{ display:flex; flex-direction:column; gap:12px; width:100%; margin-top:14px; }
 .opt{
-  border:none; border-radius:18px; padding:16px 8px; background:rgba(0,0,0,.045);
-  font-weight:800; font-size:1.8rem; cursor:pointer; color:var(--ink);
-  display:flex; flex-direction:column; align-items:center; gap:4px;
+  width:100%; min-height:66px; border-radius:20px; padding:12px 20px;
+  background:var(--card); border:2px solid rgba(32,24,10,.14); box-shadow:0 4px 0 rgba(0,0,0,.10);
+  font-weight:800; font-size:var(--fs-md); cursor:pointer; color:var(--ink);
+  display:flex; flex-direction:row; align-items:center; justify-content:flex-start; gap:16px;
+  text-align:left; transition:transform .08s ease, box-shadow .08s ease;
 }
-.opt .lbl{ font-size:.85rem; font-family:'Nunito'; }
-.opt .optEmoji{ font-size:1.9rem; }
-.opt.correct{ background:var(--good); color:#fff; }
-.opt.wrong{ background:var(--bad); color:#fff; }
+.opt:active:not(:disabled){ transform:translateY(3px); box-shadow:0 1px 0 rgba(0,0,0,.10); }
+.opt.optBig{ justify-content:center; font-size:2.6rem; }
+.opt .lbl{ font-size:var(--fs-md); font-family:'Nunito'; }
+.opt .optEmoji{ font-size:2.1rem; }
+.opt.correct{ background:var(--good); border-color:var(--good); color:#fff; }
+.opt.wrong{ background:var(--bad); border-color:var(--bad); color:#fff; }
 .opt:disabled{ cursor:default; }
+.quizWrap .topbar{ padding:14px 4px 10px; }
 .speakAgain{
   margin-top:10px; border:none; background:none; font-weight:800; opacity:.5; font-size:.85rem; cursor:pointer;
 }
@@ -296,6 +295,9 @@ button{font-family:inherit;color:inherit;}
   cursor:pointer; color:var(--ink); text-align:left; font-family:'Nunito';
 }
 .homeBtn span{ flex:1; }
+.togglesRow{ flex-direction:row; gap:10px; }
+.togglesRow .toggleBtn{ flex:1; flex-direction:column; justify-content:center; gap:2px; padding:12px 8px; text-align:center; }
+.togglesRow .toggleBtn span{ flex:none; font-size:var(--fs-sm); }
 .toggleState{ font-weight:800; font-size:.85rem; color:var(--good); }
 .toggleState.off{ color:var(--bad); opacity:.8; }
 
@@ -366,8 +368,32 @@ button{font-family:inherit;color:inherit;}
 <!-- BOOT LOADING -->
 <div class="screen active" id="bootScreen">
   <div class="wrap" style="align-items:center;justify-content:center;text-align:center;">
+    <svg class="mascot" viewBox="0 0 240 240" xmlns="http://www.w3.org/2000/svg">
+        <path d="M20 190 Q10 150 45 140 Q35 175 55 205 Q30 210 20 190 Z" fill="#FFFDF7" stroke="#E9DCB8" stroke-width="3"/>
+        <path d="M220 190 Q230 150 195 140 Q205 175 185 205 Q210 210 220 190 Z" fill="#FFFDF7" stroke="#E9DCB8" stroke-width="3"/>
+        <path d="M100 205 L96 218 M100 205 L104 218 M100 205 L92 213" stroke="#F4841D" stroke-width="5" stroke-linecap="round"/>
+        <path d="M140 205 L136 218 M140 205 L144 218 M140 205 L148 213" stroke="#F4841D" stroke-width="5" stroke-linecap="round"/>
+        <ellipse cx="55" cy="150" rx="18" ry="26" fill="#FFC93C" transform="rotate(-25 55 150)"/>
+        <ellipse cx="185" cy="150" rx="18" ry="26" fill="#FFC93C" transform="rotate(25 185 150)"/>
+        <circle cx="120" cy="140" r="78" fill="#FFDA4D"/>
+        <path d="M104 62 Q98 34 112 24 Q112 46 118 64 Z" fill="#FFC93C"/>
+        <path d="M122 60 Q122 30 138 22 Q132 46 134 62 Z" fill="#FFC93C"/>
+        <circle cx="76" cy="150" r="14" fill="#FFAABB"/>
+        <circle cx="164" cy="150" r="14" fill="#FFAABB"/>
+        <circle cx="93" cy="128" r="24" fill="#20180a"/>
+        <circle cx="147" cy="128" r="24" fill="#20180a"/>
+        <circle cx="93" cy="128" r="19" fill="#ffffff"/>
+        <circle cx="147" cy="128" r="19" fill="#ffffff"/>
+        <circle cx="96" cy="131" r="10" fill="#20180a"/>
+        <circle cx="150" cy="131" r="10" fill="#20180a"/>
+        <circle cx="90" cy="124" r="4" fill="#ffffff"/>
+        <circle cx="144" cy="124" r="4" fill="#ffffff"/>
+        <path d="M108 152 Q120 142 132 152 Q127 174 120 179 Q113 174 108 152 Z" fill="#F4841D"/>
+        <path d="M112 156 Q120 152 128 156 Q124 166 120 168 Q116 166 112 156 Z" fill="#D9660A"/>
+      </svg>
+    <h1 style="margin-top:10px;">Civciv İngilizce</h1>
+    <p class="slogan" style="margin:4px 0 18px;">Konuşarak öğren</p>
     <div class="bootSpinner"></div>
-    <p class="bootLabel">Yükleniyor...</p>
   </div>
 </div>
 
@@ -520,12 +546,17 @@ button{font-family:inherit;color:inherit;}
     <div class="homeMenu">
       <button class="homeBtn" onclick="goMap()">🚀 <span>Hadi Öğrenmeye Başlayalım</span></button>
       <button class="homeBtn" onclick="continueLearning()">⏩ <span>Kaldığın Yerden Devam Et</span></button>
+      <button class="homeBtn" onclick="openMembership('home')">👑 <span>Üyelik Seçenekleri</span></button>
       <button class="homeBtn" onclick="showProfile()">👤 <span>Profilim</span></button>
       <button class="homeBtn" onclick="showSettings()">⚙️ <span>Ayarlar</span></button>
     </div>
-    <div class="homeMenu" style="margin-top:10px;">
+    <div class="homeMenu togglesRow" style="margin-top:10px;">
       <button class="homeBtn toggleBtn" id="micToggleBtn" onclick="toggleMic()">🎙️ <span>Mikrofon</span> <b class="toggleState" id="micToggleState">Açık</b></button>
       <button class="homeBtn toggleBtn" id="soundToggleBtn" onclick="toggleSound()">🔊 <span>Ses</span> <b class="toggleState" id="soundToggleState">Açık</b></button>
+    </div>
+    <div class="appFooter">
+      <div>Civciv İngilizce v1.0.0</div>
+      <div>© 2026 Civciv İngilizce — Kozan Games</div>
     </div>
   </div>
 </div>
@@ -636,7 +667,7 @@ button{font-family:inherit;color:inherit;}
       <h2 style="font-size:1.1rem;">Üyelik Planları</h2>
     </div>
     <div style="flex:1; display:flex; flex-direction:column; gap:14px; padding:16px 4px 20px; overflow-y:auto;">
-      <p style="font-weight:700; opacity:.6; font-size:.85rem; text-align:center; margin:0 0 4px;">
+      <p id="membershipIntro" style="font-weight:700; opacity:.6; font-size:.85rem; text-align:center; margin:0 0 4px;">
         Tüm bölümlere, tüm kelimelere ve gelecekteki içeriklere sınırsız erişim.
       </p>
       <div class="planCard" onclick="openPayment('pro')">
@@ -766,9 +797,10 @@ button{font-family:inherit;color:inherit;}
           <div class="resultVal" id="resultTRVal">❓</div>
         </div>
 
-        <div class="micFeedback" id="micFeedback"></div>
-        <button class="prevLink" id="prevWordLink" onclick="prevWord()">← Önceki</button>
-        <button class="skipLink" onclick="skipSpeak()">kendin ilerle →</button>
+        <div class="navRow">
+          <button class="navLink" id="prevWordLink" onclick="prevWord()">← Önceki</button>
+          <button class="navLink" onclick="skipSpeak()">Sonraki →</button>
+        </div>
       </div>
     </div>
     <div class="count" id="wCount"></div>
@@ -777,7 +809,8 @@ button{font-family:inherit;color:inherit;}
 
 <!-- QUIZ -->
 <div class="screen" id="quizScreen">
-  <div class="wrap">
+  <div class="wrap quizWrap">
+    <div class="actionCaption" id="quizCaption"></div>
     <div class="topbar">
       <button class="backBtn" onclick="goMap()">‹</button>
       <div class="progressTrack"><div class="progressFill" id="quizProgress" style="background:var(--sun);"></div></div>
@@ -816,14 +849,14 @@ const CAT_COLORS = {
   nature:'#48B0E0', verbs:'#E05C6E'
 };
 
-function W(en,tr,e1,e2,phon){ return {en,tr,e1,e2,phon}; }
+function W(en,tr,e1,e2,phon,trNote){ return {en,tr,e1,e2,phon,trNote}; }
 
 const SECTIONS = [
  {id:0,type:'words',cat:'greetings',title:'Merhaba!',icon:'👋',words:[
    W('Hello','Merhaba','👋','😊','he-lou'), W('Hi','Selam','🙋','😄','hay'), W('Goodbye','Güle Güle','👋','🚶','gud-bay'),
    W('Please','Lütfen','🙏','✨','pliz'), W('Thank You','Teşekkürler','🙏','❤️','senk yu'), W('Yes','Evet','✅','😊','yes'),
    W('No','Hayır','❌','🙅','nou'), W('I','Ben','☝️','🧑','ay'), W('You','Sen','👉','🧑','yu'),
-   W('He / She','O','👤','🧍','hi / şi')
+   W('He','O','👨','🧍','hi','erkek'), W('She','O','👩','🧍','şi','kadın'), W('It','O','📦','🐾','it','nesne / hayvan')
  ]},
  {id:1,type:'words',cat:'animals',title:'Hayvanlar',icon:'🐾',words:[
    W('Duck','Ördek','🦆','🐥','dak'), W('Cat','Kedi','🐱','🐾','ket'), W('Dog','Köpek','🐶','🦴','dog'),
@@ -925,7 +958,11 @@ const SCENES = {
 
 'You': '<svg viewBox="0 0 200 160"><ellipse cx="90" cy="140" rx="10" ry="6" fill="#F4841D"/><ellipse cx="110" cy="140" rx="10" ry="6" fill="#F4841D"/><circle cx="100" cy="90" r="44" fill="#FFDA4D"/><path d="M84 48 Q80 28 92 22 Q88 38 92 52 Z" fill="#FFC93C"/><path d="M102 46 Q102 26 116 20 Q110 38 112 50 Z" fill="#FFC93C"/><circle cx="72" cy="98" r="7" fill="#FFAABB"/><circle cx="128" cy="98" r="7" fill="#FFAABB"/><circle cx="82" cy="86" r="13" fill="#20180a"/><circle cx="82" cy="86" r="10" fill="#fff"/><circle cx="84" cy="88" r="5" fill="#20180a"/><circle cx="118" cy="86" r="13" fill="#20180a"/><circle cx="118" cy="86" r="10" fill="#fff"/><circle cx="120" cy="88" r="5" fill="#20180a"/><path d="M89 110 Q100 102 111 110 Q108 126 100 130 Q92 126 89 110 Z" fill="#F4841D"/><ellipse cx="40" cy="106" rx="14" ry="20" fill="#FFC93C" transform="rotate(20 40 106)"/><g class="g-poke" style="transform-origin:144px 96px;"><ellipse cx="180" cy="96" rx="12" ry="19" fill="#FFC93C" transform="rotate(-88 180 96)"/></g></svg>',
 
-'He / She': '<svg viewBox="0 0 200 160"><g class="g-bob" style="transform-origin:65px 95px;"><ellipse cx="58" cy="138" rx="8" ry="5" fill="#F4841D"/><ellipse cx="72" cy="138" rx="8" ry="5" fill="#F4841D"/><circle cx="65" cy="96" r="32" fill="#FFDA4D"/><path d="M56 70 Q53 56 61 52 Q59 62 61 72 Z" fill="#FFC93C"/><circle cx="54" cy="96" r="9.5" fill="#20180a"/><circle cx="54" cy="96" r="7" fill="#fff"/><circle cx="56" cy="98" r="3.6" fill="#20180a"/><circle cx="76" cy="96" r="9.5" fill="#20180a"/><circle cx="76" cy="96" r="7" fill="#fff"/><circle cx="78" cy="98" r="3.6" fill="#20180a"/><path d="M58 108 Q65 103 72 108 Q70 117 65 120 Q60 117 58 108 Z" fill="#F4841D"/><ellipse cx="36" cy="98" rx="9" ry="14" fill="#FFC93C" transform="rotate(20 36 98)"/><ellipse cx="94" cy="98" rx="9" ry="14" fill="#FFC93C" transform="rotate(-20 94 98)"/></g><g class="g-bob" style="transform-origin:135px 95px; animation-delay:.6s;"><ellipse cx="128" cy="138" rx="8" ry="5" fill="#F4841D"/><ellipse cx="142" cy="138" rx="8" ry="5" fill="#F4841D"/><circle cx="135" cy="96" r="32" fill="#FFDA4D"/><path d="M141 70 Q144 56 152 54 Q148 64 149 72 Z" fill="#FFC93C"/><circle cx="124" cy="96" r="9.5" fill="#20180a"/><circle cx="124" cy="96" r="7" fill="#fff"/><circle cx="126" cy="98" r="3.6" fill="#20180a"/><circle cx="146" cy="96" r="9.5" fill="#20180a"/><circle cx="146" cy="96" r="7" fill="#fff"/><circle cx="148" cy="98" r="3.6" fill="#20180a"/><path d="M128 108 Q135 103 142 108 Q140 117 135 120 Q130 117 128 108 Z" fill="#F4841D"/><ellipse cx="106" cy="98" rx="9" ry="14" fill="#FFC93C" transform="rotate(20 106 98)"/><ellipse cx="164" cy="98" rx="9" ry="14" fill="#FFC93C" transform="rotate(-20 164 98)"/></g></svg>'
+'He': '<svg viewBox="0 0 200 160"><g class="g-bob" style="transform-origin:100px 90px;"><ellipse cx="90" cy="140" rx="10" ry="6" fill="#F4841D"/><ellipse cx="110" cy="140" rx="10" ry="6" fill="#F4841D"/><circle cx="100" cy="90" r="44" fill="#FFDA4D"/><path d="M62 68 Q100 12 138 68 Z" fill="#3B7DD8"/><path d="M118 62 L168 72 Q150 82 116 74 Z" fill="#2F66B5"/><circle cx="72" cy="100" r="7" fill="#FFAABB"/><circle cx="128" cy="100" r="7" fill="#FFAABB"/><circle cx="82" cy="88" r="13" fill="#20180a"/><circle cx="82" cy="88" r="10" fill="#fff"/><circle cx="84" cy="90" r="5" fill="#20180a"/><circle cx="118" cy="88" r="13" fill="#20180a"/><circle cx="118" cy="88" r="10" fill="#fff"/><circle cx="120" cy="90" r="5" fill="#20180a"/><path d="M89 110 Q100 102 111 110 Q108 126 100 130 Q92 126 89 110 Z" fill="#F4841D"/><ellipse cx="40" cy="106" rx="14" ry="20" fill="#FFC93C" transform="rotate(20 40 106)"/><ellipse cx="160" cy="106" rx="14" ry="20" fill="#FFC93C" transform="rotate(-20 160 106)"/></g></svg>',
+
+'She': '<svg viewBox="0 0 200 160"><g class="g-bob" style="transform-origin:100px 90px;"><ellipse cx="90" cy="140" rx="10" ry="6" fill="#F4841D"/><ellipse cx="110" cy="140" rx="10" ry="6" fill="#F4841D"/><circle cx="100" cy="90" r="44" fill="#FFDA4D"/><path d="M100 48 L68 28 L68 66 Z" fill="#FF6FA5"/><path d="M100 48 L132 28 L132 66 Z" fill="#FF6FA5"/><circle cx="100" cy="48" r="8" fill="#E0457F"/><circle cx="72" cy="100" r="7" fill="#FFAABB"/><circle cx="128" cy="100" r="7" fill="#FFAABB"/><circle cx="82" cy="88" r="13" fill="#20180a"/><circle cx="82" cy="88" r="10" fill="#fff"/><circle cx="84" cy="90" r="5" fill="#20180a"/><circle cx="118" cy="88" r="13" fill="#20180a"/><circle cx="118" cy="88" r="10" fill="#fff"/><circle cx="120" cy="90" r="5" fill="#20180a"/><path d="M89 110 Q100 102 111 110 Q108 126 100 130 Q92 126 89 110 Z" fill="#F4841D"/><ellipse cx="40" cy="106" rx="14" ry="20" fill="#FFC93C" transform="rotate(20 40 106)"/><ellipse cx="160" cy="106" rx="14" ry="20" fill="#FFC93C" transform="rotate(-20 160 106)"/></g></svg>',
+
+'It': '<svg viewBox="0 0 200 160"><g class="g-bob" style="transform-origin:80px 90px;"><ellipse cx="70" cy="140" rx="9" ry="5" fill="#F4841D"/><ellipse cx="90" cy="140" rx="9" ry="5" fill="#F4841D"/><circle cx="80" cy="92" r="40" fill="#FFDA4D"/><path d="M70 56 Q66 38 76 32 Q74 46 78 58 Z" fill="#FFC93C"/><circle cx="58" cy="100" r="6" fill="#FFAABB"/><circle cx="102" cy="100" r="6" fill="#FFAABB"/><circle cx="68" cy="88" r="12" fill="#20180a"/><circle cx="68" cy="88" r="9" fill="#fff"/><circle cx="72" cy="90" r="4.5" fill="#20180a"/><circle cx="96" cy="88" r="12" fill="#20180a"/><circle cx="96" cy="88" r="9" fill="#fff"/><circle cx="100" cy="90" r="4.5" fill="#20180a"/><path d="M72 108 Q80 101 88 108 Q86 120 80 124 Q74 120 72 108 Z" fill="#F4841D"/><ellipse cx="38" cy="104" rx="12" ry="18" fill="#FFC93C" transform="rotate(20 38 104)"/><g class="g-poke" style="transform-origin:112px 98px;"><ellipse cx="132" cy="96" rx="11" ry="17" fill="#FFC93C" transform="rotate(-85 132 96)"/></g></g><g class="g-bounce"><circle cx="172" cy="120" r="18" fill="#E14B4B"/><path d="M156 114 Q172 106 188 114" stroke="#fff" stroke-width="4" fill="none" stroke-linecap="round"/></g></svg>'
 };
 wordSections.forEach(s=>{ s.words.forEach(w=>w.cat=s.cat); });
 const ALL_WORDS = wordSections.flatMap(s=>s.words);
@@ -954,6 +991,20 @@ function loadUsers(){
   try{ return JSON.parse(localStorage.getItem('kk_users')||'{}'); }catch(e){ return {}; }
 }
 function saveUsers(users){ try{ localStorage.setItem('kk_users', JSON.stringify(users)); }catch(e){} }
+function loadPlans(){ try{ return JSON.parse(localStorage.getItem('kk_plans')||'{}'); }catch(e){ return {}; } }
+function isPremium(){ return !!(AUTH.plan && AUTH.planExpires && AUTH.planExpires > Date.now()); }
+function grantPlan(planId, expires, viaCode){
+  AUTH.type = 'member';
+  if(!AUTH.username) AUTH.username = 'Üye';
+  AUTH.plan = planId; AUTH.planExpires = expires;
+  if(viaCode) AUTH.viaCode = true;
+  saveAuth();
+  try{ const p = loadPlans(); p[AUTH.username] = {plan:planId, planExpires:expires}; localStorage.setItem('kk_plans', JSON.stringify(p)); }catch(e){}
+}
+function restorePlan(){
+  const p = loadPlans()[AUTH.username];
+  if(p && p.planExpires > Date.now()){ AUTH.plan = p.plan; AUTH.planExpires = p.planExpires; saveAuth(); }
+}
 function isValidEmail(email){ return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email); }
 
 function doLogin(){
@@ -969,18 +1020,21 @@ function doLogin(){
   REMEMBER_ME = document.getElementById('rememberMe').checked;
   AUTH = {type:'member', username:email};
   saveAuth();
+  restorePlan();
   enterHome();
 }
 function doGoogleLogin(){
   REMEMBER_ME = true;
   AUTH = {type:'member', username:'Google Kullanıcısı'};
   saveAuth();
+  restorePlan();
   enterHome();
 }
 function doGuestLogin(){
   REMEMBER_ME = true;
   AUTH = {type:'guest', username:'Misafir'};
   saveAuth();
+  restorePlan();
   enterHome();
 }
 function logout(){
@@ -1018,6 +1072,7 @@ function doRegister(){
   REMEMBER_ME = true;
   AUTH = {type:'member', username:email};
   saveAuth();
+  restorePlan();
   enterHome();
 }
 function goForgotPassword(){
@@ -1079,8 +1134,15 @@ const PLANS = {
 let membershipReturnScreen = 'settingsScreen';
 let selectedPlanId = null;
 function openMembership(fromWhere){
-  membershipReturnScreen = fromWhere==='gate' ? 'gateScreen' : 'settingsScreen';
-  document.getElementById('membershipBackBtn').onclick = ()=> showScreen(membershipReturnScreen);
+  membershipReturnScreen = fromWhere;
+  document.getElementById('membershipBackBtn').onclick = ()=>{
+    if(fromWhere==='map') goMap();
+    else if(fromWhere==='home') goHome();
+    else showScreen('settingsScreen');
+  };
+  document.getElementById('membershipIntro').textContent = fromWhere==='map'
+    ? 'İlk 3 bölüm ücretsizdi 🎉 Öğrenmeye devam etmek için bir plan seç.'
+    : 'Tüm bölümlere, tüm kelimelere ve gelecekteki içeriklere sınırsız erişim.';
   document.getElementById('promoCodeInput').value = '';
   document.getElementById('promoMsg').textContent = '';
   showScreen('membershipScreen');
@@ -1101,11 +1163,7 @@ function completePayment(){
   msg.className = 'settingsMsg';
   msg.textContent = 'İşleniyor...';
   setTimeout(()=>{
-    AUTH.type = 'member';
-    if(!AUTH.username) AUTH.username = 'Üye';
-    AUTH.plan = selectedPlanId;
-    AUTH.planExpires = Date.now() + p.days*24*60*60*1000;
-    saveAuth();
+    grantPlan(selectedPlanId, Date.now() + p.days*24*60*60*1000);
     haptic('MEDIUM');
     msg.textContent = p.trial + ' günlük ücretsiz deneme başladı! 🎉';
     setTimeout(()=>{ goMap(); }, 1200);
@@ -1127,12 +1185,8 @@ function redeemPromoCode(){
   used.push(code);
   saveUsedCodes(used);
   REMEMBER_ME = true;
-  AUTH.type = 'member';
   if(!AUTH.username) AUTH.username = 'Admin';
-  AUTH.plan = 'master';
-  AUTH.planExpires = Date.now() + 36500*24*60*60*1000;
-  AUTH.viaCode = true;
-  saveAuth();
+  grantPlan('master', Date.now() + 36500*24*60*60*1000, true);
   msg.style.color = 'var(--good)';
   msg.textContent = 'Kod kabul edildi! Sınırsız Plan ücretsiz aktif 🎉';
   setTimeout(()=>{ goMap(); }, 1300);
@@ -1153,21 +1207,42 @@ function openContact(){
   document.getElementById('contactStatus').textContent = '';
   showScreen('contactScreen');
 }
-function sendContact(){
+const WEB3FORMS_KEY = ''; // web3forms.com'dan e-postana gelen "Access Key" buraya yapıştırılacak
+async function sendContact(){
   const name = document.getElementById('contactName').value.trim();
   const email = document.getElementById('contactEmail').value.trim();
   const body = document.getElementById('contactMsg').value.trim();
   const status = document.getElementById('contactStatus');
+  status.style.color = '';
   if(!body){ status.textContent = 'Lütfen bir mesaj yaz.'; return; }
-  const subject = encodeURIComponent('Civciv İngilizce - Destek Talebi');
-  const fullBody = encodeURIComponent(
-    (name ? 'Ad: ' + name + '\n' : '') +
-    (email ? 'E-posta: ' + email + '\n\n' : '\n') +
-    body
-  );
-  window.location.href = 'mailto:' + SUPPORT_EMAIL + '?subject=' + subject + '&body=' + fullBody;
-  status.style.color = 'var(--good)';
-  status.textContent = 'E-posta uygulaman açılıyor...';
+  try{
+    const q = JSON.parse(localStorage.getItem('kk_feedback')||'[]');
+    q.push({name, email, body, ts:Date.now()});
+    localStorage.setItem('kk_feedback', JSON.stringify(q));
+  }catch(e){}
+  if(!WEB3FORMS_KEY){
+    const subject = encodeURIComponent('Civciv İngilizce - Geri Bildirim');
+    const fullBody = encodeURIComponent((name?'Ad: '+name+'\n':'')+(email?'E-posta: '+email+'\n\n':'\n')+body);
+    window.location.href = 'mailto:' + SUPPORT_EMAIL + '?subject=' + subject + '&body=' + fullBody;
+    return;
+  }
+  status.textContent = 'Gönderiliyor...';
+  try{
+    const payload = { access_key: WEB3FORMS_KEY, subject:'Civciv İngilizce - Geri Bildirim', from_name: name || 'Kullanıcı', message: body, botcheck:'' };
+    if(email) payload.email = email;
+    const res = await fetch('https://api.web3forms.com/submit', {
+      method:'POST', headers:{'Content-Type':'application/json','Accept':'application/json'}, body: JSON.stringify(payload)
+    });
+    const data = await res.json();
+    if(data && data.success){
+      status.style.color = 'var(--good)';
+      status.textContent = 'Geri bildiriminiz alındı. En kısa sürede size dönüş yapılacaktır. 🙏';
+      document.getElementById('contactMsg').value = '';
+      haptic('MEDIUM');
+    } else { throw new Error('fail'); }
+  }catch(e){
+    status.textContent = 'Şu an gönderilemedi. İnternet bağlantını kontrol edip tekrar dener misin?';
+  }
 }
 let SOUND_ON = true, MIC_ON = true;
 try{ SOUND_ON = localStorage.getItem('kk_sound_on') !== '0'; }catch(e){}
@@ -1282,14 +1357,14 @@ function renderMap(){
     if(s.id===14){ const d=document.createElement('div'); d.className='divider'; d.textContent='🚧 Yakında gelecek bölümler'; path.appendChild(d); }
 
     const progLocked = s.type==='placeholder' ? true : !isUnlocked(s.id);
-    const memberLocked = AUTH.type==='guest' && i>=GUEST_LIMIT;
+    const memberLocked = !isPremium() && i>=GUEST_LIMIT;
     const locked = progLocked || memberLocked;
     const btn = document.createElement('button');
     btn.className = 'node' + (locked?' locked':'');
     const color = s.type==='sentence' ? s.color : (s.type==='placeholder' ? '#B9C4D6' : CAT_COLORS[s.cat]);
     const done = s.type!=='placeholder' && isDone(s.id);
     const arrowIcon = progLocked ? '🔒' : (memberLocked ? '👑' : '›');
-    const subLabel = s.type==='placeholder' ? 'Yakında' : (memberLocked ? 'Üyelik gerekli' : (s.type==='words' ? '10 kelime + 4 soru' : 'Cümle kurma oyunu'));
+    const subLabel = s.type==='placeholder' ? 'Yakında' : (memberLocked ? 'Üyelik gerekli' : (s.type==='words' ? (s.words.length + ' kelime + 4 soru') : 'Cümle kurma oyunu'));
     btn.innerHTML = `
       <div class="bubble" style="background:${color}">${s.icon}${done?'<span class="check">✓</span>':''}</div>
       <div class="info">
@@ -1304,7 +1379,7 @@ function renderMap(){
 
 function openSection(id){
   const idx = SECTIONS.findIndex(x=>x.id===id);
-  if(AUTH.type==='guest' && idx>=GUEST_LIMIT){ showScreen('gateScreen'); return; }
+  if(!isPremium() && idx>=GUEST_LIMIT){ openMembership('map'); return; }
   const s = SECTIONS.find(x=>x.id===id);
   if(s.type==='words'){ openWords(s); }
   else if(s.type==='sentence'){ openSentence(s); }
@@ -1365,54 +1440,62 @@ function renderWord(){
   resultTRBox.classList.remove('good','revealed');
   document.getElementById('resultTRVal').textContent = '❓';
 
-  const fb = document.getElementById('micFeedback');
-  fb.textContent = ''; fb.className = 'micFeedback';
-
-  document.getElementById('prevWordLink').style.display = wIdx>0 ? 'block' : 'none';
+  document.getElementById('prevWordLink').style.visibility = wIdx>0 ? 'visible' : 'hidden';
   attemptCountEN = 0; attemptCountTR = 0;
 
-  clearTimeout(narrateTimer1);
-  const listenPhrase = wIdx < 2 ? 'Hoparlör işaretine dokun ve dinle.' : 'Dokun ve dinle.';
+  stopSpeaking();
+  const tok = speechToken;
+  const listenPhrase = isLongForm() ? 'Hoparlör işaretine dokun ve dinle.' : 'Dokun ve dinle.';
   const captionEl = document.getElementById('actionCaption');
 
   if(wCurrentSection.id === 0 && wIdx === 0){
     const introMsg = 'Bu ilk bölüm, uygulamayı tanıman için hazırlandı. Sonrası çok daha eğlenceli olacak!';
     captionEl.textContent = introMsg;
-    stopSpeaking();
-    narrateTimer1 = setTimeout(()=>{
-      speak(introMsg, 'tr-TR').then(()=>{
-        captionEl.textContent = listenPhrase;
-        setTimeout(()=>{ speak(listenPhrase, 'tr-TR'); }, 300);
-      });
+    narrateTimer1 = setTimeout(async ()=>{
+      await speak(introMsg, 'tr-TR'); if(tok!==speechToken) return;
+      captionEl.textContent = listenPhrase;
+      await sleep(300); if(tok!==speechToken) return;
+      speak(listenPhrase, 'tr-TR');
     }, 500);
   } else {
     captionEl.textContent = listenPhrase;
-    narrateTimer1 = setTimeout(()=>{ speak(listenPhrase, 'tr-TR'); }, 700);
+    narrateTimer1 = setTimeout(()=>{ if(tok===speechToken) speak(listenPhrase, 'tr-TR'); }, 700);
   }
 }
 let narrateTimer1 = null;
+let speechToken = 0;
+const sleep = ms => new Promise(r=>setTimeout(r,ms));
+function isLongForm(){ return wCurrentSection && wCurrentSection.id===0 && wIdx<2; }
+function trShow(w){ return w.trNote ? (w.tr + ' (' + w.trNote + ')') : w.tr; }
+function setCaption(text){ const el=document.getElementById('actionCaption'); if(el) el.textContent = text; }
+function cleanForSpeech(t){ return (t||'').replace(/[\u{1F000}-\u{1FFFF}\u{2600}-\u{27BF}\u{FE0F}\u{200D}★☆]/gu,'').replace(/\([^)]*\)/g,'').replace(/\s+/g,' ').trim(); }
 function stopSpeaking(){
+  speechToken++;
+  clearTimeout(narrateTimer1);
   try{ speechSynthesis.cancel(); }catch(e){}
   if(isNativePlatform() && window.Capacitor.Plugins.TextToSpeech){
     try{ window.Capacitor.Plugins.TextToSpeech.stop(); }catch(e){}
   }
 }
-function onListenTap(){
+function speakLater(ms, text, lang, rate){
+  const t = speechToken;
+  setTimeout(()=>{ if(t===speechToken) speak(text, lang, rate); }, ms);
+}
+async function onListenTap(){
   stopSpeaking();
+  const tok = speechToken;
   document.getElementById('listenHint').style.display = 'none';
   document.getElementById('listenBtn').classList.remove('listenPulse');
-  clearTimeout(narrateTimer1);
   const en = currentWord().en;
-  const sayEnPhrase = wIdx < 2 ? 'Haydi şimdi bu kelimeyi İngilizce söyle.' : 'Şimdi İngilizce söyle.';
-  document.getElementById('actionCaption').textContent = sayEnPhrase;
-  speak(en, 'en-US', 0.85)
-    .then(()=> new Promise(r=>setTimeout(r,200)))
-    .then(()=> speak(en, 'en-US', 0.5))
-    .then(()=> new Promise(r=>setTimeout(r,200)))
-    .then(()=> speak(en, 'en-US', 0.85))
-    .then(()=>{
-      setTimeout(()=>{ speak(sayEnPhrase, 'tr-TR'); }, 350);
-    });
+  const sayEnPhrase = isLongForm() ? 'Haydi şimdi mikrofon işaretine dokun ve bu kelimeyi İngilizce söyle.' : 'Şimdi İngilizce söyle.';
+  setCaption(sayEnPhrase);
+  await speak(en, 'en-US', 0.85); if(tok!==speechToken) return;
+  await sleep(200); if(tok!==speechToken) return;
+  await speak(en, 'en-US', 0.5); if(tok!==speechToken) return;
+  await sleep(200); if(tok!==speechToken) return;
+  await speak(en, 'en-US', 0.85); if(tok!==speechToken) return;
+  await sleep(350); if(tok!==speechToken) return;
+  speak(sayEnPhrase, 'tr-TR');
 }
 function prevWord(){
   if(wIdx>0){ stopSpeaking(); wIdx--; renderWord(); }
@@ -1425,11 +1508,12 @@ function advanceWord(){
 function unlockTurkishStage(){
   document.getElementById('micTRBox').classList.remove('wbox-locked');
   document.getElementById('micBtnTR').disabled = false;
-  const phrase = wIdx < 2 ? 'Şimdi de Türkçesini söyle.' : 'Türkçesini söyle.';
-  document.getElementById('actionCaption').textContent = phrase;
-  setTimeout(()=>{ speak(phrase, 'tr-TR'); }, 300);
+  const phrase = isLongForm() ? 'Şimdi de Türkçesini söyle.' : 'Türkçesini söyle.';
+  setCaption(phrase);
+  speakLater(300, phrase, 'tr-TR');
 }
 function skipSpeak(){
+  stopSpeaking();
   advanceWord();
 }
 
@@ -1471,41 +1555,36 @@ function startListening(lang){
   if(btn.disabled) return;
   const resultBox = document.getElementById(isTR?'resultTRBox':'resultENBox');
   const resultVal = document.getElementById(isTR?'resultTRVal':'resultENVal');
-  const fb = document.getElementById('micFeedback');
   const isLast = wIdx === wCurrentSection.words.length-1;
   const expected = isTR ? w.tr : w.en;
+  const shown = isTR ? trShow(w) : w.en;
   const speechLang = isTR ? 'tr-TR' : 'en-US';
 
-  fb.className = 'micFeedback'; fb.textContent = '';
-
   if(!MIC_ON){
-    fb.className = 'micFeedback retry';
-    fb.textContent = 'Mikrofon kapalı — Ayarlar\'dan açabilirsin.';
+    setCaption('Mikrofon kapalı — Ayarlar\'dan açabilirsin.');
     return;
   }
 
   function passStage(){
-    resultVal.textContent = '✓ ' + expected;
+    resultVal.textContent = '✓ ' + shown;
     resultBox.classList.remove('revealed');
     resultBox.classList.add('good');
     playDing();
     haptic('MEDIUM');
-    setTimeout(()=>{ speak(expected, speechLang); }, 300);
+    speakLater(300, expected, speechLang);
     if(!isTR){ unlockTurkishStage(); }
-    else{ setTimeout(advanceWord, isLast?1800:1300); }
+    else{ setCaption('Tebrikler!'); setTimeout(advanceWord, isLast?1800:1300); }
   }
   function retryStage(){
     const attempts = isTR ? (++attemptCountTR) : (++attemptCountEN);
     if(attempts >= 2){ passStage(); return; }
-    fb.className = 'micFeedback retry';
-    fb.textContent = 'Hadi birlikte tekrar söyleyelim!';
-    document.getElementById('actionCaption').textContent = 'Tekrar söyle!';
-    setTimeout(()=>{ speak(expected, speechLang); }, 250);
+    setCaption('Hadi birlikte tekrar söyleyelim!');
+    speakLater(250, expected, speechLang);
   }
 
   if(isNativePlatform() && window.Capacitor.Plugins.SpeechRecognition){
     btn.classList.add('recording');
-    fb.textContent = 'Dinliyorum...';
+    setCaption('Dinliyorum...');
     const NativeSR = window.Capacitor.Plugins.SpeechRecognition;
     NativeSR.requestPermissions().then(()=>{
       return NativeSR.start({ language: speechLang, maxResults: 3, prompt: '', popup: true, partialResults: false });
@@ -1528,7 +1607,7 @@ function startListening(lang){
   recognizer.lang = speechLang;
   recognizer.maxAlternatives = 3;
   btn.classList.add('recording');
-  fb.textContent = 'Dinliyorum...';
+  setCaption('Dinliyorum...');
 
   recognizer.onresult = (e)=>{
     let heard = '';
@@ -1540,8 +1619,7 @@ function startListening(lang){
   };
   recognizer.onerror = ()=>{
     btn.classList.remove('recording');
-    fb.className = 'micFeedback retry';
-    fb.textContent = 'Hadi birlikte tekrar söyleyelim!';
+    setCaption('Hadi birlikte tekrar söyleyelim!');
   };
   recognizer.onend = ()=>{ btn.classList.remove('recording'); };
   try{ recognizer.start(); }catch(e){ passStage(); }
@@ -1550,11 +1628,7 @@ function startListening(lang){
 /* ===================== QUIZ FLOW ===================== */
 let qSection, qQuestions, qIdx, qCorrect;
 function openQuiz(section){
-  clearTimeout(narrateTimer1);
-  try{ speechSynthesis.cancel(); }catch(e){}
-  if(isNativePlatform() && window.Capacitor.Plugins.TextToSpeech){
-    try{ window.Capacitor.Plugins.TextToSpeech.stop(); }catch(e){}
-  }
+  stopSpeaking();
   qSection = section;
   const picked = shuffle(section.words).slice(0,4);
   const types = shuffle(['emojiForEn','enForEmoji','trForEn','listenPick']);
@@ -1564,8 +1638,20 @@ function openQuiz(section){
   renderQuiz();
 }
 function distractorsFor(word, section, n){
-  const others = section.words.filter(w=>w.en!==word.en);
+  const others = section.words.filter(w=>w.en!==word.en && trShow(w)!==trShow(word));
   return shuffle(others).slice(0,n);
+}
+async function askQuestion(q, w, prompt){
+  stopSpeaking();
+  const tok = speechToken;
+  const cap = document.getElementById('quizCaption');
+  if(cap) cap.textContent = prompt;
+  await sleep(250); if(tok!==speechToken) return;
+  await speak(prompt, 'tr-TR'); if(tok!==speechToken) return;
+  if(q.type==='emojiForEn' || q.type==='trForEn' || q.type==='listenPick'){
+    await sleep(150); if(tok!==speechToken) return;
+    speak(w.en, 'en-US');
+  }
 }
 function renderQuiz(){
   document.getElementById('quizProgress').style.width = Math.round((qIdx/qQuestions.length)*100)+'%';
@@ -1574,55 +1660,54 @@ function renderQuiz(){
   const dists = distractorsFor(w, qSection, 2);
   const card = document.getElementById('qCard');
   let optionsHtml = '';
-  let correctKey;
+  let prompt = '';
   const praiseDiv = '<div class="quizPraise" id="quizPraise"></div>';
 
   if(q.type==='emojiForEn' || q.type==='listenPick'){
     const opts = shuffle([w, ...dists]);
-    correctKey = w.e1;
-    optionsHtml = opts.map(o=>`<button class="opt" data-key="${o.e1}" onclick="answerQuiz(this,'${correctKey===o.e1?'1':'0'}')">${o.e1}</button>`).join('');
+    prompt = q.type==='listenPick' ? 'Dinlediğin kelime hangisi?' : 'Bu resim hangisi?';
+    optionsHtml = opts.map(o=>`<button class="opt optBig" onclick="answerQuiz(this,'${o.en===w.en?'1':'0'}')">${o.e1}</button>`).join('');
     card.innerHTML = `
-      <div class="qPrompt">${q.type==='listenPick' ? 'Dinlediğin kelime hangisi?' : 'Bu resim hangisi?'}</div>
-      <div class="qWord">${w.en}</div>
+      ${q.type==='listenPick' ? '' : `<div class="qWord">${w.en}</div>`}
       <div class="qVisual"><span class="qVisualEmoji">${q.type==='listenPick' ? '🎧' : '🤔'}</span></div>
       ${q.type==='listenPick' ? `<button class="speakAgain" onclick="speak('${w.en}')">🔊 Tekrar dinle</button>` : ''}
       <div class="options">${optionsHtml}</div>${praiseDiv}`;
-    if(q.type==='listenPick'){ setTimeout(()=>speak(w.en),300); document.querySelector('#qCard .qWord').style.display='none'; }
   } else if(q.type==='enForEmoji'){
     const opts = shuffle([w, ...dists]);
-    optionsHtml = opts.map(o=>`<button class="opt" data-key="${o.en}" onclick="answerQuiz(this,'${o.en===w.en?'1':'0'}')"><span class="optEmoji">${o.e1}</span><span class="lbl">${o.en}</span></button>`).join('');
+    prompt = 'Bu ne demek?';
+    optionsHtml = opts.map(o=>`<button class="opt" onclick="answerQuiz(this,'${o.en===w.en?'1':'0'}')"><span class="optEmoji">${o.e1}</span><span class="lbl">${o.en}</span></button>`).join('');
     card.innerHTML = `
-      <div class="qPrompt">Bu ne demek?</div>
       <div class="qVisual"><span class="qVisualEmoji">${w.e1}</span><span class="qVisualEmoji">${w.e2}</span></div>
       <div class="options">${optionsHtml}</div>${praiseDiv}`;
   } else if(q.type==='trForEn'){
     const opts = shuffle([w, ...dists]);
-    optionsHtml = opts.map(o=>`<button class="opt" data-key="${o.tr}" onclick="answerQuiz(this,'${o.tr===w.tr?'1':'0'}')"><span class="optEmoji">${o.e1}</span><span class="lbl">${o.tr}</span></button>`).join('');
+    prompt = 'Türkçesi ne?';
+    optionsHtml = opts.map(o=>`<button class="opt" onclick="answerQuiz(this,'${trShow(o)===trShow(w)?'1':'0'}')"><span class="optEmoji">${o.e1}</span><span class="lbl">${trShow(o)}</span></button>`).join('');
     card.innerHTML = `
-      <div class="qPrompt">Türkçesi ne?</div>
       <div class="qVisual"><span class="qVisualEmoji">${w.e1}</span><span class="qVisualEmoji">${w.e2}</span></div>
       <div class="qWord" style="font-size:1.5rem;">${w.en}</div>
       <div class="options">${optionsHtml}</div>${praiseDiv}`;
   }
+  askQuestion(q, w, prompt);
 }
 const PRAISE_PHRASES = ['Harika! 🎉','Tebrikler! 🌟','Süpersin! 🥳','Çok iyi! 👏','Bravo! ✨','Mükemmel! 💫'];
 function answerQuiz(btn, isCorrect){
   document.querySelectorAll('#qCard .opt').forEach(b=>b.disabled=true);
+  stopSpeaking();
   if(isCorrect==='1'){
     btn.classList.add('correct'); qCorrect++;
     haptic('MEDIUM');
+    const phrase = PRAISE_PHRASES[Math.floor(Math.random()*PRAISE_PHRASES.length)];
     const praise = document.getElementById('quizPraise');
-    if(praise){
-      praise.textContent = PRAISE_PHRASES[Math.floor(Math.random()*PRAISE_PHRASES.length)];
-      praise.classList.add('show');
-    }
+    if(praise){ praise.textContent = phrase; praise.classList.add('show'); }
+    speak(cleanForSpeech(phrase), 'tr-TR');
   }
   else{ btn.classList.add('wrong'); }
   setTimeout(()=>{
     qIdx++;
     if(qIdx < qQuestions.length){ renderQuiz(); }
     else{ finishSection(qSection, qCorrect, qQuestions.length); }
-  }, 1000);
+  }, isCorrect==='1' ? 1500 : 1000);
 }
 
 /* ===================== SENTENCE FLOW ===================== */
@@ -1684,6 +1769,8 @@ function finishSection(section, correct, total){
   const ratio = correct/total;
   document.getElementById('cEmoji').textContent = ratio===1 ? '🌟' : ratio>=0.5 ? '🎉' : '💪';
   document.getElementById('cTitle').textContent = 'Tebrikler! ' + section.title + ' tamamlandı!';
+  stopSpeaking();
+  speakLater(500, cleanForSpeech('Tebrikler! ' + section.title + ' bölümünü tamamladın!'), 'tr-TR');
   document.getElementById('cStars').textContent = '★'.repeat(Math.max(1,Math.round(ratio*4))) + '☆'.repeat(4-Math.max(1,Math.round(ratio*4))) + '  (' + correct + '/' + total + ')';
   showScreen('completeScreen');
 }
@@ -1698,7 +1785,7 @@ if(isNativePlatform() && window.Capacitor.Plugins.StatusBar){
 }
 setTimeout(()=>{
   if(AUTH.type){ enterHome(); } else { showScreen('loginScreen'); }
-}, 700);
+}, 1300);
 </script>
 </body>
 </html>
