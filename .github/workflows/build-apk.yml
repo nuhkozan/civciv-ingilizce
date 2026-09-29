@@ -34,8 +34,8 @@ jobs:
 
       - name: Add permissions to manifest
         run: |
-          sed -i '/<manifest /a\    <uses-permission android:name="android.permission.RECORD_AUDIO" />' android/app/src/main/AndroidManifest.xml
-          sed -i '/<manifest /a\    <uses-permission android:name="android.permission.INTERNET" />' android/app/src/main/AndroidManifest.xml
+          sed -i '/<manifest /a\ <uses-permission android:name="android.permission.RECORD_AUDIO" />' android/app/src/main/AndroidManifest.xml
+          sed -i '/<manifest /a\ <uses-permission android:name="android.permission.INTERNET" />' android/app/src/main/AndroidManifest.xml
 
       - name: Install ImageMagick
         run: sudo apt-get update && sudo apt-get install -y imagemagick
@@ -75,10 +75,10 @@ jobs:
         run: |
           STYLES=android/app/src/main/res/values/styles.xml
           if grep -q 'Theme.SplashScreen' "$STYLES" && ! grep -q 'windowSplashScreenBackground' "$STYLES"; then
-            sed -i '/<style name="AppTheme.NoActionBarLaunch"/a\        <item name="windowSplashScreenBackground">#FFFDF7</item>' "$STYLES"
+            sed -i '/<style name="AppTheme.NoActionBarLaunch"/a\ <item name="windowSplashScreenBackground">#FFFDF7</item>' "$STYLES"
           fi
           if ! grep -q 'android:windowBackground' "$STYLES"; then
-            sed -i '/<style name="AppTheme.NoActionBar"/a\        <item name="android:windowBackground">#FFFDF7</item>' "$STYLES"
+            sed -i '/<style name="AppTheme.NoActionBar"/a\ <item name="android:windowBackground">#FFFDF7</item>' "$STYLES"
           fi
 
       - name: Grant execute permission for gradlew
@@ -105,20 +105,20 @@ jobs:
           path = "android/app/build.gradle"
           s = open(path).read()
           signing_block = (
-              "\n    signingConfigs {\n"
-              "        release {\n"
-              "            storeFile file(\"release.keystore\")\n"
-              "            storePassword System.getenv(\"ANDROID_KEYSTORE_PASSWORD\")\n"
-              "            keyAlias System.getenv(\"ANDROID_KEY_ALIAS\")\n"
-              "            keyPassword System.getenv(\"ANDROID_KEY_PASSWORD\")\n"
-              "        }\n"
-              "    }\n"
+              "\n signingConfigs {\n"
+              " release {\n"
+              " storeFile file(\"release.keystore\")\n"
+              " storePassword System.getenv(\"ANDROID_KEYSTORE_PASSWORD\")\n"
+              " keyAlias System.getenv(\"ANDROID_KEY_ALIAS\")\n"
+              " keyPassword System.getenv(\"ANDROID_KEY_PASSWORD\")\n"
+              " }\n"
+              " }\n"
           )
           s = s.replace("android {", "android {" + signing_block, 1)
           m = re.search(r"buildTypes\s*\{.*?release\s*\{", s, re.S)
           if m:
               pos = m.end()
-              s = s[:pos] + "\n            signingConfig signingConfigs.release" + s[pos:]
+              s = s[:pos] + "\n signingConfig signingConfigs.release" + s[pos:]
           open(path, "w").write(s)
 
       - name: Build release AAB
