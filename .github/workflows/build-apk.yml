@@ -92,3 +92,46 @@ jobs:
         with:
           name: civciv-ingilizce-debug-apk
           path: android/app/build/outputs/apk/debug/app-debug.apk
+
+      - name: Decode release keystore
+        if: ${{ secrets.ANDROID_KEYSTORE_BASE64 != '' }}
+        run: echo "${{ secrets.ANDROID_KEYSTORE_BASE64 }}" | base64 -d > android/app/release.keystore
+
+      - name: Configure release signing
+        if: ${{ secrets.ANDROID_KEYSTORE_BASE64 != '' }}
+        shell: python
+        run: |
+          import re
+          path = "android/app/build.gradle"
+          s = open(path).read()
+          signing_block = (
+              "\n    signingConfigs {\n"
+              "        release {\n"
+              "            storeFile file(\"release.keystore\")\n"
+              "            storePassword System.getenv(\"ANDROID_KEYSTORE_PASSWORD\")\n"
+              "            keyAlias System.getenv(\"ANDROID_KEY_ALIAS\")\n"
+              "            keyPassword System.getenv(\"ANDROID_KEY_PASSWORD\")\n"
+              "        }\n"
+              "    }\n"
+          )
+          s = s.replace("android {", "android {" + signing_block, 1)
+          m = re.search(r"buildTypes\s*\{.*?release\s*\{", s, re.S)
+          if m:
+              pos = m.end()
+              s = s[:pos] + "\n            signingConfig signingConfigs.release" + s[pos:]
+          open(path, "w").write(s)
+
+      - name: Build release AAB
+        if: ${{ secrets.ANDROID_KEYSTORE_BASE64 != '' }}
+        env:
+          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+        run: cd android && ./gradlew bundleRelease
+
+      - name: Upload AAB artifact
+        if: ${{ secrets.ANDROID_KEYSTORE_BASE64 != '' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: civciv-ingilizce-release-aab
+          path: android/app/build/outputs/bundle/release/app-release.aab
