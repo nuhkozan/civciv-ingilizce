@@ -1,14 +1,19 @@
 {
   "name": "civciv-ingilizce",
   "version": "1.0.0",
+  "description": "Civciv Ingilizce - cocuklar icin Ingilizce ogrenme uygulamasi",
   "dependencies": {
     "@capacitor/core": "^7.0.0",
     "@capacitor/android": "^7.0.0",
     "@capacitor/splash-screen": "^7.0.0",
     "@capacitor/status-bar": "^7.0.0",
     "@capacitor/haptics": "^7.0.0",
+    "@capacitor/browser": "^7.0.0",
+    "@capacitor/app": "^7.0.0",
     "@capacitor-community/text-to-speech": "^6.0.0",
     "@capacitor-community/speech-recognition": "^6.0.0"
   },
-  "devDependencies": { "@capacitor/cli": "^7.0.0" }
+  "devDependencies": {
+    "@capacitor/cli": "^7.0.0"
+  }
 }
