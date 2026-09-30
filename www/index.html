@@ -1668,9 +1668,47 @@ async function doLogin(){
   await fetchProfile();
   enterHome();
 }
-function doGoogleLogin(){
+const GOOGLE_REDIRECT = 'com.civcivingilizce.app://login-callback';
+async function doGoogleLogin(){
   const msg = document.getElementById('authMsg');
-  msg.textContent = 'Google ile giriş yakında burada olacak.';
+  msg.textContent = '';
+  try{
+    const { data, error } = await sb.auth.signInWithOAuth({
+      provider: 'google',
+      options: { redirectTo: GOOGLE_REDIRECT, skipBrowserRedirect: true }
+    });
+    if(error || !data || !data.url){ msg.textContent = 'Google ile giriş başlatılamadı.'; return; }
+    if(isNativePlatform() && window.Capacitor.Plugins.Browser){
+      REMEMBER_ME = true;
+      await window.Capacitor.Plugins.Browser.open({ url: data.url });
+    } else {
+      window.location.href = data.url;
+    }
+  }catch(e){ msg.textContent = 'Google ile giriş başlatılamadı.'; }
+}
+async function finishGoogleLogin(url){
+  try{
+    const u = new URL(url);
+    let code = u.searchParams.get('code');
+    if(code){
+      await sb.auth.exchangeCodeForSession(code);
+    } else if(u.hash){
+      const params = new URLSearchParams(u.hash.slice(1));
+      const access_token = params.get('access_token');
+      const refresh_token = params.get('refresh_token');
+      if(access_token) await sb.auth.setSession({ access_token, refresh_token });
+    }
+    const { data: { session } } = await sb.auth.getSession();
+    if(isNativePlatform() && window.Capacitor.Plugins.Browser){
+      try{ window.Capacitor.Plugins.Browser.close(); }catch(e){}
+    }
+    if(session && session.user){
+      AUTH = { type:'member', username: session.user.email, userId: session.user.id };
+      saveAuth();
+      await fetchProfile();
+      enterHome();
+    }
+  }catch(e){}
 }
 function doGuestLogin(){
   REMEMBER_ME = true;
@@ -2434,6 +2472,15 @@ function finishSection(section, correct, total){
 }
 
 /* ===================== INIT ===================== */
+if(isNativePlatform() && window.Capacitor.Plugins.App){
+  try{
+    window.Capacitor.Plugins.App.addListener('appUrlOpen', (data)=>{
+      if(data && data.url && data.url.indexOf('login-callback')>-1){
+        finishGoogleLogin(data.url);
+      }
+    });
+  }catch(e){}
+}
 renderMap();
 if(isNativePlatform() && window.Capacitor.Plugins.StatusBar){
   try{
