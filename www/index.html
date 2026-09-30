@@ -846,7 +846,21 @@ button{font-family:inherit;color:inherit;}
 const CAT_COLORS = {
   greetings:'#FFC857', animals:'#57C785', toys:'#5B8DEF', food:'#FF9F45', vehicles:'#4FB6C9',
   colors:'#B27CFF', body:'#FF7CA3', family:'#F2A65A', numbers:'#6C7BFF',
-  nature:'#48B0E0', verbs:'#E05C6E'
+  nature:'#48B0E0', verbs:'#E05C6E',
+  clothes:'#3FB6A8', emotions:'#FF8FB3', home:'#C9955C', school:'#6E9BE0', opposites:'#8D6DE3',
+  sports:'#3FA65C', jobs:'#E0A63F', time:'#7C6BC4', shapes:'#E0637C', kitchen:'#D98C3F',
+  insects:'#8CAF3F', sea:'#2E9BC7', music:'#B25CE0', vegetables:'#5CAF4A', fruits2:'#E0574F',
+  drinks:'#4FA6A0', seasons:'#5C8DE0', places:'#C97A3F', tech:'#5C6BC9', verbs2:'#D9575C',
+  wildanimals2:'#4A9D5F', farmanimals:'#C98B4A', space:'#4A4FC9', numbers2:'#6C7BFF', games:'#E0A63F',
+  selfcare:'#5CB0B8', weather2:'#5C8DE0', numbers3:'#6C7BFF', jobs2:'#E0A63F', natureobjects:'#7A9D4A',
+  accessories:'#C95C9E', holidays:'#E0574F', actions2:'#E05C6E', countries:'#4A6FC9', tools:'#8A8A8A',
+  snacks:'#E0934F', home2:'#C98B4A', traits:'#5CAF7A', ordinals:'#6C7BFF', directions:'#5C8DE0',
+  babyanimals:'#5CAF7A', birds:'#4FA6C9', geography:'#A67C52', traffic:'#E0574F', subjects:'#5C7DE0',
+  opposites2:'#8D6DE3', clocktime:'#7C6BC4', breakfast:'#E0934F', beach:'#3FB6C9', shopping:'#E0A63F',
+  circus:'#E0574F', gardening:'#5CAF4A', books:'#6E9BE0', zooanimals2:'#4A9D5F', senses:'#C95C9E',
+  science2:'#5C6BC9', sportsgear:'#3FA65C', cooking:'#E0934F', winteractivities:'#4FB6C9', dailyexpressions:'#FFC857',
+  dinosaurs:'#5C8D4A', fantasy:'#8D5CE0', materials:'#8A8A6A', months:'#7C6BC4', animalsounds:'#57C785',
+  exercise:'#E0574F', people:'#5C8DE0', quantities:'#6C7BFF', construction:'#C98B4A', travel:'#4FB6C9'
 };
 
 function W(en,tr,e1,e2,phon,trNote){ return {en,tr,e1,e2,phon,trNote}; }
@@ -930,11 +944,426 @@ const SECTIONS = [
  {id:13,type:'sentence',title:'Cümle Kur: Neler Yapabilirim?',icon:'📝',color:'#B27CFF',
    templates:[ {parts:['The ',0,' can ',1,'.'], pools:['animals','verbs']} ]
  },
- {id:14,type:'placeholder',title:'Giysiler',icon:'👕'},
- {id:15,type:'placeholder',title:'Duygularım',icon:'😊'},
- {id:16,type:'placeholder',title:'Evim',icon:'🏠'},
- {id:17,type:'placeholder',title:'Okulum',icon:'🎒'},
- {id:18,type:'placeholder',title:'Zıt Kelimeler',icon:'⚖️'}
+ {id:14,type:'words',cat:'clothes',title:'Giysiler',icon:'👕',words:[
+   W('Shirt','Gömlek','👕','🧺','şört'), W('Pants','Pantolon','👖','🧺','pents'), W('Dress','Elbise','👗','💃','dres'),
+   W('Shoes','Ayakkabı','👟','🦶','şuz'), W('Socks','Çorap','🧦','👣','saks'), W('Hat','Şapka','🎩','😎','het'),
+   W('Coat','Mont','🧥','❄️','kout'), W('Skirt','Etek','👗','🌸','skört'), W('Gloves','Eldiven','🧤','❄️','glavz'),
+   W('Pajamas','Pijama','🛌','🌙','pıcamız')
+ ]},
+ {id:15,type:'words',cat:'emotions',title:'Duygularım',icon:'😊',words:[
+   W('Happy','Mutlu','😊','🎉','hepi'), W('Sad','Üzgün','😢','💧','sed'), W('Angry','Kızgın','😠','💢','engri'),
+   W('Scared','Korkmuş','😱','👻','skerd'), W('Tired','Yorgun','😴','🥱','tayırd'), W('Surprised','Şaşkın','😲','❗','sırprayzd'),
+   W('Sick','Hasta','🤒','🌡️','sik'), W('Sleepy','Uykulu','😪','🌙','slipi'), W('Excited','Heyecanlı','🤩','✨','iksaytıd'),
+   W('Shy','Utangaç','🙈','😳','şay')
+ ]},
+ {id:16,type:'words',cat:'home',title:'Evim',icon:'🏠',words:[
+   W('Kitchen','Mutfak','🍳','🥘','kiçın'), W('Bedroom','Yatak Odası','🛏️','🌙','bedrum'), W('Bathroom','Banyo','🛁','🚿','bethrum'),
+   W('Living Room','Oturma Odası','🛋️','📺','livink rum'), W('Door','Kapı','🚪','🔑','dor'), W('Window','Pencere','🪟','☀️','vindou'),
+   W('Table','Masa','🍽️','🪑','teybıl'), W('Chair','Sandalye','🪑','🧑','çer'), W('Bed','Yatak','🛏️','😴','bed'),
+   W('Lamp','Lamba','💡','🌟','lemp')
+ ]},
+ {id:17,type:'words',cat:'school',title:'Okulum',icon:'🎒',words:[
+   W('School','Okul','🏫','🎒','skul'), W('Pencil','Kalem','✏️','📝','pensıl'), W('Notebook','Defter','📓','✏️','noutbuk'),
+   W('Backpack','Sırt Çantası','🎒','📚','bekpek'), W('Eraser','Silgi','🧽','📄','ireysır'), W('Ruler','Cetvel','📏','📐','rulır'),
+   W('Scissors','Makas','✂️','📄','sizırz'), W('Glue','Yapıştırıcı','🧴','📎','glu'), W('Desk','Sıra','🪑','📚','desk'),
+   W('Board','Tahta','📋','✏️','bord')
+ ]},
+ {id:18,type:'words',cat:'opposites',title:'Zıt Kelimeler',icon:'⚖️',words:[
+   W('Big','Büyük','🐘','📏','big'), W('Small','Küçük','🐜','📏','smol'), W('Hot','Sıcak','🔥','🥵','hat'),
+   W('Cold','Soğuk','❄️','🥶','kould'), W('Fast','Hızlı','🏎️','💨','fest'), W('Slow','Yavaş','🐢','🦥','slou'),
+   W('Up','Yukarı','⬆️','🚀','ap'), W('Down','Aşağı','⬇️','🕳️','daun'), W('Open','Açık','🔓','🚪','oupın'),
+   W('Closed','Kapalı','🔒','🚪','klouzd')
+ ]},
+ {id:19,type:'words',cat:'sports',title:'Sporlar',icon:'⚽',words:[
+   W('Football','Futbol','⚽','🥅','futbol'), W('Basketball','Basketbol','🏀','🏆','besketbol'), W('Tennis','Tenis','🎾','🏆','tenis'),
+   W('Swimming','Yüzme','🏊','🌊','suiming'), W('Running','Koşu','🏃','💨','raning'), W('Cycling','Bisiklete Binme','🚴','🚲','saykling'),
+   W('Skating','Paten','⛸️','❄️','skeyting'), W('Volleyball','Voleybol','🏐','🥅','volibol'), W('Jump Rope','İp Atlama','🪢','🤸','camp roup'),
+   W('Karate','Karate','🥋','🥊','kırati')
+ ]},
+ {id:20,type:'words',cat:'jobs',title:'Meslekler',icon:'👩‍⚕️',words:[
+   W('Doctor','Doktor','👨‍⚕️','💉','daktır'), W('Police Officer','Polis','👮','🚔','pılis afisır'), W('Firefighter','İtfaiyeci','👨‍🚒','🚒','fayrfaytır'),
+   W('Farmer','Çiftçi','👨‍🌾','🌾','farmır'), W('Pilot','Pilot','👨‍✈️','✈️','paylıt'), W('Chef','Aşçı','👨‍🍳','🍳','şef'),
+   W('Nurse','Hemşire','👩‍⚕️','💊','nörs'), W('Driver','Şoför','🚕','🧑','drayvır'), W('Dentist','Diş Hekimi','🦷','🪥','dentist'),
+   W('Vet','Veteriner','🐶','💉','vet')
+ ]},
+ {id:21,type:'words',cat:'time',title:'Zaman',icon:'⏰',words:[
+   W('Today','Bugün','☀️','📅','tıdey'), W('Tomorrow','Yarın','🌅','📅','tımarou'), W('Yesterday','Dün','🌇','📅','yestırdey'),
+   W('Morning','Sabah','🌄','☀️','morning'), W('Night','Gece','🌙','⭐','nayt'), W('Monday','Pazartesi','📅','☕','mandey'),
+   W('Sunday','Pazar','📅','🛌','sandey'), W('Week','Hafta','📆','7️⃣','uik'), W('Day','Gün','☀️','📆','dey'),
+   W('Now','Şimdi','⏰','👉','nau')
+ ]},
+ {id:22,type:'words',cat:'shapes',title:'Şekiller',icon:'🔺',words:[
+   W('Circle','Daire','⚪','🔵','sörkıl'), W('Square','Kare','⬜','🟦','skuer'), W('Triangle','Üçgen','🔺','📐','trayengıl'),
+   W('Rectangle','Dikdörtgen','📏','🟧','rektengıl'), W('Heart','Kalp','❤️','💗','hart'), W('Oval','Oval','🥚','⚪','ouvıl'),
+   W('Diamond','Elmas','💎','🔷','daymınd'), W('Cube','Küp','🎲','📦','kyub'), W('Line','Çizgi','➖','📏','layn'),
+   W('Dot','Nokta','🔴','⚫','dat')
+ ]},
+ {id:23,type:'words',cat:'kitchen',title:'Mutfak Eşyaları',icon:'🍽️',words:[
+   W('Spoon','Kaşık','🥄','🍲','spun'), W('Fork','Çatal','🍴','🍝','fork'), W('Knife','Bıçak','🔪','🍞','nayf'),
+   W('Plate','Tabak','🍽️','🍕','pleyt'), W('Cup','Bardak','☕','🥤','kap'), W('Pot','Tencere','🍲','🔥','pat'),
+   W('Pan','Tava','🍳','🔥','pen'), W('Bowl','Kase','🥣','🍜','boul'), W('Bottle','Şişe','🍼','💧','batıl'),
+   W('Napkin','Peçete','🧻','🍽️','nepkin')
+ ]},
+ {id:24,type:'words',cat:'insects',title:'Böcekler',icon:'🐝',words:[
+   W('Bee','Arı','🐝','🌸','bi'), W('Butterfly','Kelebek','🦋','🌷','bataflay'), W('Ant','Karınca','🐜','🍃','ent'),
+   W('Ladybug','Uğur Böceği','🐞','🍀','leydibag'), W('Spider','Örümcek','🕷️','🕸️','spaydır'), W('Snail','Salyangoz','🐌','🍃','sneyl'),
+   W('Fly','Sinek','🪰','🍯','flay'), W('Caterpillar','Tırtıl','🐛','🍃','ketırpilır'), W('Mosquito','Sivrisinek','🦟','💉','mıskitou'),
+   W('Worm','Solucan','🪱','🍂','vörm')
+ ]},
+ {id:25,type:'words',cat:'sea',title:'Deniz Canlıları',icon:'🐬',words:[
+   W('Shark','Köpekbalığı','🦈','🌊','şark'), W('Whale','Balina','🐳','🌊','veyl'), W('Dolphin','Yunus','🐬','🌊','dalfin'),
+   W('Octopus','Ahtapot','🐙','🌊','aktıpıs'), W('Crab','Yengeç','🦀','🏖️','kreb'), W('Starfish','Deniz Yıldızı','⭐','🌊','starfiş'),
+   W('Jellyfish','Denizanası','🪼','🌊','celifiş'), W('Seahorse','Denizatı','🐠','🌊','sihors'), W('Turtle','Kaplumbağa','🐢','🌊','törtıl'),
+   W('Shell','Deniz Kabuğu','🐚','🌊','şel')
+ ]},
+ {id:26,type:'words',cat:'music',title:'Müzik Aletleri',icon:'🎸',words:[
+   W('Piano','Piyano','🎹','🎶','piyanou'), W('Guitar','Gitar','🎸','🎶','gitar'), W('Violin','Keman','🎻','🎶','vayolin'),
+   W('Trumpet','Trompet','🎺','🎶','trampıt'), W('Saxophone','Saksafon','🎷','🎶','seksıfoun'), W('Drum','Davul','🥁','🎶','dram'),
+   W('Microphone','Mikrofon','🎤','🎶','maykrıfoun'), W('Accordion','Akordeon','🪗','🎶','ıkordiın'), W('Bell','Çan','🔔','🎶','bel'),
+   W('Harp','Arp','🎼','✨','harp')
+ ]},
+ {id:27,type:'words',cat:'vegetables',title:'Sebzeler',icon:'🥕',words:[
+   W('Carrot','Havuç','🥕','🐰','kerıt'), W('Potato','Patates','🥔','🍟','pıteytou'), W('Tomato','Domates','🍅','🥗','tımeytou'),
+   W('Onion','Soğan','🧅','😢','anyın'), W('Cucumber','Salatalık','🥒','🥗','kyukambır'), W('Pepper','Biber','🫑','🌶️','pepır'),
+   W('Corn','Mısır','🌽','🍿','korn'), W('Broccoli','Brokoli','🥦','🥗','brakıli'), W('Pumpkin','Bal Kabağı','🎃','🥧','pampkin'),
+   W('Pea','Bezelye','🫛','🟢','pi')
+ ]},
+ {id:28,type:'words',cat:'fruits2',title:'Meyveler',icon:'🍇',words:[
+   W('Grape','Üzüm','🍇','🌿','greyp'), W('Strawberry','Çilek','🍓','🍰','strobıri'), W('Pineapple','Ananas','🍍','🏖️','paynepıl'),
+   W('Mango','Mango','🥭','☀️','mengou'), W('Peach','Şeftali','🍑','🌸','piç'), W('Cherry','Kiraz','🍒','🌳','çeri'),
+   W('Lemon','Limon','🍋','💧','lemın'), W('Pear','Armut','🍐','🌳','per'), W('Kiwi','Kivi','🥝','🟢','kiwi'),
+   W('Plum','Erik','🟣','🌳','plam')
+ ]},
+ {id:29,type:'words',cat:'drinks',title:'İçecekler',icon:'🥤',words:[
+   W('Water','Su','💧','🥤','vatır'), W('Juice','Meyve Suyu','🧃','🍊','cus'), W('Tea','Çay','🍵','☕','ti'),
+   W('Lemonade','Limonata','🍋','🥤','lemıneyd'), W('Soda','Gazoz','🥤','🫧','soudı'), W('Hot Chocolate','Sıcak Çikolata','☕','🍫','hat çakılıt'),
+   W('Smoothie','Meyve Şurubu','🥤','🍓','smuti'), W('Ice Tea','Buzlu Çay','🧊','🍵','ays ti'), W('Milkshake','Milkshake','🥤','🍦','milkşeyk'),
+   W('Coffee','Kahve','☕','🫘','kofi')
+ ]},
+ {id:30,type:'words',cat:'seasons',title:'Mevsimler ve Hava',icon:'🌦️',words:[
+   W('Spring','İlkbahar','🌸','🌷','spring'), W('Summer','Yaz','☀️','🏖️','samır'), W('Autumn','Sonbahar','🍂','🍁','otım'),
+   W('Winter','Kış','❄️','⛄','vintır'), W('Season','Mevsim','🌦️','📅','sizın'), W('Sunny','Güneşli','☀️','😎','sani'),
+   W('Rainy','Yağmurlu','🌧️','☂️','reyni'), W('Snowy','Karlı','❄️','⛄','snoui'), W('Windy','Rüzgarlı','💨','🍃','vindi'),
+   W('Cloudy','Bulutlu','☁️','🌥️','klaudi')
+ ]},
+ {id:31,type:'words',cat:'places',title:'Şehrimiz',icon:'🏞️',words:[
+   W('Park','Park','🏞️','🌳','park'), W('Market','Market','🛒','🏪','markıt'), W('Hospital','Hastane','🏥','🚑','haspitıl'),
+   W('Library','Kütüphane','📚','🤫','laybreri'), W('Zoo','Hayvanat Bahçesi','🦁','🎪','zu'), W('Beach','Plaj','🏖️','🌊','biç'),
+   W('Playground','Oyun Parkı','🛝','🎠','pleygraund'), W('Restaurant','Restoran','🍽️','🍕','restırant'), W('Bakery','Fırın','🥖','🍞','beykıri'),
+   W('Cinema','Sinema','🎬','🍿','sinımı')
+ ]},
+ {id:32,type:'words',cat:'tech',title:'Teknoloji',icon:'📱',words:[
+   W('Phone','Telefon','📱','📞','foun'), W('Computer','Bilgisayar','💻','⌨️','kımpyutır'), W('Television','Televizyon','📺','🎬','telıvijın'),
+   W('Tablet','Tablet','📱','✏️','teblıt'), W('Camera','Kamera','📷','📸','kemırı'), W('Headphones','Kulaklık','🎧','🎵','hedfounz'),
+   W('Remote Control','Kumanda','🎮','📺','rimout kıntroul'), W('Clock','Saat','⏰','🕐','klak'), W('Radio','Radyo','📻','🎶','reydiou'),
+   W('Lightbulb','Ampul','💡','🔌','laytbalb')
+ ]},
+ {id:33,type:'words',cat:'verbs2',title:'Daha Fazla Eylem',icon:'🖍️',words:[
+   W('Read','Oku','📖','👀','rid'), W('Write','Yaz','✍️','📝','rayt'), W('Draw','Çiz','🎨','✏️','dro'),
+   W('Play','Oyna','🎮','⚽','pley'), W('Cook','Pişir','🍳','👨‍🍳','kuk'), W('Clean','Temizle','🧹','🧽','klin'),
+   W('Help','Yardım Et','🤝','❤️','help'), W('Study','Ders Çalış','📚','✏️','stadi'), W('Watch','İzle','👀','📺','vaç'),
+   W('Listen','Dinle','👂','🎧','lisın')
+ ]},
+ {id:34,type:'words',cat:'wildanimals2',title:'Orman Hayvanları',icon:'🐯',words:[
+   W('Tiger','Kaplan','🐯','🐾','taygır'), W('Monkey','Maymun','🐒','🍌','manki'), W('Giraffe','Zürafa','🦒','🌳','cıref'),
+   W('Zebra','Zebra','🦓','⚫','zibrı'), W('Fox','Tilki','🦊','🍂','faks'), W('Wolf','Kurt','🐺','🌙','vulf'),
+   W('Deer','Geyik','🦌','🌲','dir'), W('Rabbit','Tavşan','🐰','🥕','rebıt'), W('Squirrel','Sincap','🐿️','🌰','skvörıl'),
+   W('Owl','Baykuş','🦉','🌙','aul')
+ ]},
+ {id:35,type:'words',cat:'farmanimals',title:'Çiftlik Hayvanları',icon:'🐄',words:[
+   W('Horse','At','🐴','🐎','hors'), W('Sheep','Koyun','🐑','☁️','şip'), W('Goat','Keçi','🐐','🌿','gout'),
+   W('Pig','Domuz','🐷','🟤','pig'), W('Chicken','Tavuk','🐔','🥚','çikın'), W('Rooster','Horoz','🐓','☀️','rustır'),
+   W('Donkey','Eşek','🫏','🥕','danki'), W('Turkey','Hindi','🦃','🍂','törki'), W('Goose','Kaz','🪿','💧','gus'),
+   W('Bull','Boğa','🐂','🔴','bul')
+ ]},
+ {id:36,type:'words',cat:'space',title:'Uzay',icon:'🚀',words:[
+   W('Planet','Gezegen','🪐','🌌','plenıt'), W('Earth','Dünya','🌍','🌎','örth'), W('Rocket','Roket','🚀','🔥','rakıt'),
+   W('Astronaut','Astronot','👨‍🚀','🌕','estrınot'), W('Spaceship','Uzay Gemisi','🛸','⭐','speysşip'), W('Alien','Uzaylı','👽','🛸','eyliın'),
+   W('Comet','Kuyruklu Yıldız','☄️','🌌','kamıt'), W('Galaxy','Galaksi','🌌','⭐','gelıksi'), W('Telescope','Teleskop','🔭','🌠','telıskoup'),
+   W('Satellite','Uydu','🛰️','🌍','setılayt')
+ ]},
+ {id:37,type:'words',cat:'numbers2',title:'Sayılar 11-20',icon:'🔢',words:[
+   W('Eleven','On Bir','🔢','1️⃣','ilevın'), W('Twelve','On İki','🔢','🕐','tvelv'), W('Thirteen','On Üç','🔢','🎈','thörtin'),
+   W('Fourteen','On Dört','🔢','❤️','fortin'), W('Fifteen','On Beş','🔢','⚽','fiftin'), W('Sixteen','On Altı','🔢','🎂','sikstin'),
+   W('Seventeen','On Yedi','🔢','🌈','sevıntin'), W('Eighteen','On Sekiz','🔢','🎓','eytin'), W('Nineteen','On Dokuz','🔢','⭐','nayntin'),
+   W('Twenty','Yirmi','🔢','🙌','tventi')
+ ]},
+ {id:38,type:'words',cat:'games',title:'Oyun ve Eğlence',icon:'🎲',words:[
+   W('Game','Oyun','🎮','🎲','geym'), W('Marbles','Bilye','🔵','⚪','marbılz'), W('Hopscotch','Seksek','🦶','🔢','hapskaç'),
+   W('Hide and Seek','Saklambaç','🙈','🔍','hayd ın sik'), W('Tag','Ebe Oyunu','🏃','👆','teg'), W('Card Game','Kart Oyunu','🃏','🎴','kard geym'),
+   W('Board Game','Kutu Oyunu','🎲','📋','bord geym'), W('Video Game','Video Oyunu','🎮','📺','vidiou geym'), W('Swing','Salıncak','🎠','🌳','sving'),
+   W('Slide','Kaydırak','🛝','🎢','slayd')
+ ]},
+ {id:39,type:'words',cat:'selfcare',title:'Kişisel Bakım',icon:'🧼',words:[
+   W('Toothbrush','Diş Fırçası','🪥','🦷','tuthbraş'), W('Soap','Sabun','🧼','🫧','soup'), W('Shampoo','Şampuan','🧴','🫧','şempu'),
+   W('Towel','Havlu','🧻','💧','tauıl'), W('Comb','Tarak','💇','✨','koum'), W('Mirror','Ayna','🪞','✨','mirır'),
+   W('Bandage','Bant','🩹','❤️','bendıc'), W('Medicine','İlaç','💊','🏥','medısın'), W('Thermometer','Termometre','🌡️','🤒','thırmamıtır'),
+   W('Tissue','Mendil','🤧','📦','tişu')
+ ]},
+ {id:40,type:'words',cat:'weather2',title:'Hava Olayları',icon:'⛈️',words:[
+   W('Thunder','Gök Gürültüsü','⛈️','😱','thandır'), W('Lightning','Şimşek','⚡','⛈️','laytning'), W('Storm','Fırtına','🌪️','☁️','storm'),
+   W('Fog','Sis','🌫️','😶','fag'), W('Hurricane','Kasırga','🌀','🌊','hörıkeyn'), W('Ice','Buz','🧊','❄️','ays'),
+   W('Puddle','Su Birikintisi','💦','👢','padıl'), W('Umbrella','Şemsiye','☂️','🌧️','ambrelı'), W('Fireworks','Havai Fişek','🎆','✨','fayrvörks'),
+   W('Rain Boots','Yağmur Çizmesi','👢','☔','reyn buts')
+ ]},
+ {id:41,type:'words',cat:'numbers3',title:'Sayılar - Onlar',icon:'💯',words:[
+   W('Thirty','Otuz','🔢','3️⃣','thörti'), W('Forty','Kırk','🔢','4️⃣','forti'), W('Fifty','Elli','🔢','5️⃣','fifti'),
+   W('Sixty','Altmış','🔢','6️⃣','siksti'), W('Seventy','Yetmiş','🔢','7️⃣','sevınti'), W('Eighty','Seksen','🔢','8️⃣','eyti'),
+   W('Ninety','Doksan','🔢','9️⃣','naynti'), W('Hundred','Yüz','💯','🔟','handrıd'), W('Zero','Sıfır','0️⃣','⭕','ziırou'),
+   W('Thousand','Bin','🔢','✨','thauzınd')
+ ]},
+ {id:42,type:'words',cat:'jobs2',title:'Meslekler (Devam)',icon:'👷',words:[
+   W('Engineer','Mühendis','👷','🔧','encinir'), W('Scientist','Bilim İnsanı','🧑‍🔬','🧪','sayıntist'), W('Athlete','Sporcu','🏃','🏅','ethlit'),
+   W('Musician','Müzisyen','🎤','🎸','myuzişın'), W('Actor','Oyuncu','🎭','🎬','ektır'), W('Photographer','Fotoğrafçı','📷','📸','fıtagrıfır'),
+   W('Writer','Yazar','✍️','📚','raytır'), W('Singer','Şarkıcı','🎤','🎶','singır'), W('Baker','Fırıncı','👨‍🍳','🥖','beykır'),
+   W('Cleaner','Temizlikçi','🧹','🧽','klinır')
+ ]},
+ {id:43,type:'words',cat:'natureobjects',title:'Doğa Nesneleri',icon:'🏞️',words:[
+   W('Leaf','Yaprak','🍃','🌳','lif'), W('Grass','Çim','🌱','🟢','gres'), W('Rock','Taş','🪨','⛰️','rak'),
+   W('Mountain','Dağ','⛰️','🏔️','mauntın'), W('River','Nehir','🏞️','💧','rivır'), W('Lake','Göl','🏞️','💧','leyk'),
+   W('Forest','Orman','🌲','🌳','farıst'), W('Sand','Kum','🏖️','🐚','send'), W('Soil','Toprak','🟤','🌱','soyıl'),
+   W('Seed','Tohum','🌱','🌻','sid')
+ ]},
+ {id:44,type:'words',cat:'accessories',title:'Takılar',icon:'💍',words:[
+   W('Watch','Kol Saati','⌚','🕐','vaç'), W('Necklace','Kolye','📿','✨','neklıs'), W('Ring','Yüzük','💍','✨','ring'),
+   W('Bracelet','Bilezik','📿','✨','breyslıt'), W('Earrings','Küpe','💎','✨','irringz'), W('Glasses','Gözlük','👓','👀','glesız'),
+   W('Sunglasses','Güneş Gözlüğü','🕶️','☀️','sanglesız'), W('Bag','Çanta','👜','🛍️','beg'), W('Wallet','Cüzdan','👛','💰','valıt'),
+   W('Belt','Kemer','🥋','👖','belt')
+ ]},
+ {id:45,type:'words',cat:'holidays',title:'Bayramlar ve Kutlamalar',icon:'🎉',words:[
+   W('Birthday','Doğum Günü','🎂','🎉','börthdey'), W('Party','Parti','🎉','🎊','parti'), W('Present','Hediye','🎁','🎀','prezınt'),
+   W('Candle','Mum','🕯️','🎂','kendıl'), W('Card','Kart','💌','✉️','kard'), W('New Year','Yeni Yıl','🎆','🎉','nu yiır'),
+   W('Holiday','Tatil','🏖️','✈️','halıdey'), W('Celebration','Kutlama','🎉','🎊','selıbreyşın'), W('Surprise','Sürpriz','🎁','😮','sırprayz'),
+   W('Confetti','Konfeti','🎊','✨','kınfeti')
+ ]},
+ {id:46,type:'words',cat:'actions2',title:'Fiziksel Hareketler',icon:'🧗',words:[
+   W('Climb','Tırman','🧗','⛰️','klaym'), W('Crawl','Emekle','👶','🐛','krol'), W('Hop','Zıpla','🐇','⬆️','hap'),
+   W('Kick','Tekmele','🦵','⚽','kik'), W('Throw','At','🤾','🏀','throu'), W('Catch','Yakala','🧤','⚾','keç'),
+   W('Push','İt','🤚','📦','puş'), W('Pull','Çek','✊','🪢','pul'), W('Carry','Taşı','🎒','💪','keri'),
+   W('Stand','Ayakta Dur','🧍','⬆️','stend')
+ ]},
+ {id:47,type:'words',cat:'countries',title:'Ülkeler',icon:'🌍',words:[
+   W('Turkey','Türkiye','🇹🇷','🌍','törki'), W('England','İngiltere','🇬🇧','🌍','inglınd'), W('America','Amerika','🇺🇸','🌎','ımerıkı'),
+   W('France','Fransa','🇫🇷','🗼','frens'), W('Germany','Almanya','🇩🇪','🌍','cörmıni'), W('Japan','Japonya','🇯🇵','🌸','cıpen'),
+   W('Italy','İtalya','🇮🇹','🍕','itıli'), W('Spain','İspanya','🇪🇸','🌍','speyn'), W('China','Çin','🇨🇳','🐉','çaynı'),
+   W('Egypt','Mısır','🇪🇬','🐫','icipt')
+ ]},
+ {id:48,type:'words',cat:'tools',title:'Aletler',icon:'🔨',words:[
+   W('Hammer','Çekiç','🔨','🔩','hemır'), W('Screwdriver','Tornavida','🪛','🔩','skrudrayvır'), W('Nail','Çivi','📌','🔨','neyl'),
+   W('Saw','Testere','🪚','🪵','so'), W('Ladder','Merdiven','🪜','🧗','ledır'), W('Broom','Süpürge','🧹','🧺','brum'),
+   W('Bucket','Kova','🪣','💧','bakıt'), W('Shovel','Kürek','⛏️','🕳️','şavıl'), W('Wrench','Anahtar','🔧','🔩','renç'),
+   W('Toolbox','Alet Kutusu','🧰','🔧','tulbaks')
+ ]},
+ {id:49,type:'words',cat:'snacks',title:'Atıştırmalıklar',icon:'🍪',words:[
+   W('Cookie','Kurabiye','🍪','🥛','kuki'), W('Chocolate','Çikolata','🍫','🍬','çaklıt'), W('Candy','Şeker','🍬','🍭','kendi'),
+   W('Popcorn','Patlamış Mısır','🍿','🎬','papkorn'), W('Chips','Cips','🍟','🧂','çips'), W('Pizza','Pizza','🍕','🧀','pitsa'),
+   W('Sandwich','Sandviç','🥪','🍞','sendviç'), W('Hot Dog','Sosisli','🌭','🍞','hat dog'), W('Pasta','Makarna','🍝','🍅','pasta'),
+   W('Soup','Çorba','🍲','🥄','sup')
+ ]},
+ {id:50,type:'words',cat:'home2',title:'Ev Eşyaları',icon:'🛋️',words:[
+   W('Sofa','Kanepe','🛋️','🏠','soufı'), W('Pillow','Yastık','🛏️','😴','pilou'), W('Blanket','Battaniye','🛌','❤️','blenkıt'),
+   W('Curtain','Perde','🪟','✨','körtın'), W('Carpet','Halı','🟥','🏠','karpıt'), W('Shelf','Raf','📚','🏠','şelf'),
+   W('Closet','Dolap','🚪','👕','klazıt'), W('Sink','Lavabo','🚰','💧','sink'), W('Trash Can','Çöp Kutusu','🗑️','♻️','treş ken'),
+   W('Key','Anahtar','🔑','🚪','ki')
+ ]},
+ {id:51,type:'words',cat:'traits',title:'Karakter Özelliklerim',icon:'😇',words:[
+   W('Kind','Nazik','😇','❤️','kaynd'), W('Brave','Cesur','🦁','💪','breyv'), W('Smart','Zeki','🧠','💡','smart'),
+   W('Funny','Komik','😂','🤡','fani'), W('Friendly','Arkadaş Canlısı','🤝','😊','frendli'), W('Strong','Güçlü','💪','🏋️','strong'),
+   W('Honest','Dürüst','🤝','✅','anıst'), W('Polite','Kibar','🙏','😊','pılayt'), W('Curious','Meraklı','🤔','🔍','kyuriıs'),
+   W('Generous','Cömert','🎁','❤️','cenırıs')
+ ]},
+ {id:52,type:'words',cat:'ordinals',title:'Sıra Sayıları',icon:'🥇',words:[
+   W('First','Birinci','🥇','1️⃣','först'), W('Second','İkinci','🥈','2️⃣','sekınd'), W('Third','Üçüncü','🥉','3️⃣','thörd'),
+   W('Fourth','Dördüncü','🔢','4️⃣','forth'), W('Fifth','Beşinci','🔢','5️⃣','fifth'), W('Last','Sonuncu','🏁','🔚','lest'),
+   W('Next','Sonraki','➡️','⏭️','nekst'), W('Middle','Ortanca','↔️','🎯','midıl'), W('Half','Yarım','🌗','🍕','hef'),
+   W('Whole','Bütün','🌕','🍰','houl')
+ ]},
+ {id:53,type:'words',cat:'directions',title:'Yönler',icon:'🧭',words:[
+   W('Left','Sol','⬅️','🤚','left'), W('Right','Sağ','➡️','✋','rayt'), W('Straight','Düz','⬆️','🛣️','streyt'),
+   W('Here','Burada','📍','👇','hiır'), W('There','Orada','👉','📍','ther'), W('Near','Yakın','🤏','📍','niır'),
+   W('Far','Uzak','🔭','🌍','far'), W('Between','Arasında','↔️','📦','bitwin'), W('Behind','Arkasında','⬅️','🙈','bihaynd'),
+   W('In Front Of','Önünde','➡️','👀','in frant ıv')
+ ]},
+ {id:54,type:'words',cat:'babyanimals',title:'Hayvan Yavruları',icon:'🐤',words:[
+   W('Puppy','Köpek Yavrusu','🐶','🐾','papi'), W('Kitten','Kedi Yavrusu','🐱','🐾','kitın'), W('Chick','Civciv','🐤','🥚','çik'),
+   W('Calf','Buzağı','🐄','🐮','kaf'), W('Foal','Tay','🐴','🐎','foul'), W('Lamb','Kuzu','🐑','🌿','lem'),
+   W('Piglet','Domuz Yavrusu','🐷','🐖','piglıt'), W('Cub','Yavru (Aslan)','🐻','🦁','kab'), W('Duckling','Ördek Yavrusu','🐥','🦆','daklıng'),
+   W('Tadpole','İribaş','🐸','💧','tedpoul')
+ ]},
+ {id:55,type:'words',cat:'birds',title:'Kuşlar',icon:'🦜',words:[
+   W('Eagle','Kartal','🦅','🏔️','igıl'), W('Parrot','Papağan','🦜','🌈','perıt'), W('Peacock','Tavus Kuşu','🦚','💚','pikak'),
+   W('Penguin','Penguen','🐧','❄️','pengvin'), W('Flamingo','Flamingo','🦩','💗','flımingou'), W('Swan','Kuğu','🦢','🌊','svan'),
+   W('Crow','Karga','🐦‍⬛','⚫','krou'), W('Sparrow','Serçe','🐦','🌿','sperou'), W('Woodpecker','Ağaçkakan','🐦','🌳','vudpekır'),
+   W('Hummingbird','Sinekkuşu','🐦','🌺','haminkbörd')
+ ]},
+ {id:56,type:'words',cat:'geography',title:'Dünya ve Coğrafya',icon:'🌋',words:[
+   W('Ocean','Okyanus','🌊','🐋','ouşın'), W('Island','Ada','🏝️','🌊','aylınd'), W('Desert','Çöl','🏜️','☀️','dezırt'),
+   W('Valley','Vadi','⛰️','🌾','veli'), W('Volcano','Yanardağ','🌋','🔥','valkeynou'), W('Waterfall','Şelale','💦','🏞️','vatırfol'),
+   W('Cave','Mağara','🕳️','🦇','keyv'), W('Hill','Tepe','⛰️','🌱','hil'), W('Jungle','Yağmur Ormanı','🌴','🐒','cangıl'),
+   W('Cliff','Uçurum','🏔️','🌊','klif')
+ ]},
+ {id:57,type:'words',cat:'traffic',title:'Trafik',icon:'🚦',words:[
+   W('Traffic Light','Trafik Işığı','🚦','🚗','trefik layt'), W('Road','Yol','🛣️','🚗','roud'), W('Sidewalk','Kaldırım','🚶','🛣️','saydvok'),
+   W('Crosswalk','Yaya Geçidi','🚸','🚶','krasvok'), W('Stop Sign','Dur Tabelası','🛑','🚗','stap sayn'), W('Bridge','Köprü','🌉','🚗','bric'),
+   W('Tunnel','Tünel','🚇','🚗','tanıl'), W('Parking','Otopark','🅿️','🚗','parking'), W('Gas Station','Benzin İstasyonu','⛽','🚗','ges steyşın'),
+   W('Map','Harita','🗺️','📍','mep')
+ ]},
+ {id:58,type:'words',cat:'subjects',title:'Okul Dersleri',icon:'📚',words:[
+   W('Math','Matematik','🔢','➕','meth'), W('Science','Fen','🔬','🧪','sayıns'), W('Art','Resim','🎨','🖌️','art'),
+   W('Music','Müzik','🎵','🎶','myuzik'), W('History','Tarih','📜','🏛️','histıri'), W('Geography','Coğrafya','🗺️','🌍','cioğrıfi'),
+   W('English','İngilizce','🇬🇧','🔤','inglış'), W('PE','Beden Eğitimi','⚽','🏃','pi i'), W('Reading','Okuma','📖','👀','riding'),
+   W('Writing','Yazma','✍️','📝','rayting')
+ ]},
+ {id:59,type:'words',cat:'opposites2',title:'Zıt Kelimeler 2',icon:'⚖️',words:[
+   W('Full','Dolu','🥤','💯','ful'), W('Empty','Boş','🈳','🥤','empti'), W('Light','Hafif','🪶','☁️','layt'),
+   W('Heavy','Ağır','🏋️','🪨','hevi'), W('Hard','Sert','🪨','💪','hard'), W('Soft','Yumuşak','🧸','☁️','saft'),
+   W('Wet','Islak','💧','🌧️','vet'), W('Dry','Kuru','☀️','🏜️','dray'), W('Loud','Gürültülü','📢','🔊','laud'),
+   W('Quiet','Sessiz','🤫','🔇','kuayıt')
+ ]},
+ {id:60,type:'words',cat:'clocktime',title:'Saat Kavramları',icon:'🕐',words:[
+   W('O\'Clock','Tam','🕐','⏰','ıklak'), W('Half Past','Buçuk','🕜','⏰','hef pest'), W('Quarter','Çeyrek','🕒','⏰','kuortır'),
+   W('Hour','Saat','⏰','🕐','auır'), W('Minute','Dakika','⏱️','🕐','minit'), W('Second','Saniye','⏱️','⚡','sekınd'),
+   W('Early','Erken','🌅','⏰','örli'), W('Late','Geç','🌇','⏰','leyt'), W('Soon','Yakında','⏳','➡️','sun'),
+   W('Later','Sonra','⏳','⬅️','leytır')
+ ]},
+ {id:61,type:'words',cat:'breakfast',title:'Kahvaltı',icon:'🥞',words:[
+   W('Toast','Kızarmış Ekmek','🍞','🧈','toust'), W('Cereal','Mısır Gevreği','🥣','🥛','siriıl'), W('Honey','Bal','🍯','🐝','hani'),
+   W('Jam','Reçel','🍓','🍞','cem'), W('Butter','Tereyağı','🧈','🍞','batır'), W('Pancake','Krep','🥞','🍯','penkeyk'),
+   W('Waffle','Waffle','🧇','🍓','vafıl'), W('Yogurt','Yoğurt','🥣','🍓','yogırt'), W('Sausage','Sosis','🌭','🍳','sasıc'),
+   W('Omelette','Omlet','🍳','🧀','amlıt')
+ ]},
+ {id:62,type:'words',cat:'beach',title:'Plaj ve Yüzme',icon:'🏄',words:[
+   W('Swimsuit','Mayo','🩱','🏊','suimsut'), W('Sunscreen','Güneş Kremi','🧴','☀️','sanskrin'), W('Beach Ball','Plaj Topu','🏐','🏖️','biç bol'),
+   W('Sandcastle','Kum Kalesi','🏰','🏖️','sendkasıl'), W('Flip Flops','Terlik','🩴','🏖️','flip flaps'), W('Snorkel','Şnorkel','🤿','🌊','snorkıl'),
+   W('Surfboard','Sörf Tahtası','🏄','🌊','sörfbord'), W('Lifeguard','Cankurtaran','🏊','🚨','layfgard'), W('Wave','Dalga','🌊','🏄','veyv'),
+   W('Cooler','Soğutucu Çanta','🧊','🥤','kulır')
+ ]},
+ {id:63,type:'words',cat:'shopping',title:'Alışveriş',icon:'🛒',words:[
+   W('Money','Para','💰','💵','mani'), W('Coin','Madeni Para','🪙','💰','koyn'), W('Price','Fiyat','🏷️','💰','prays'),
+   W('Shop','Dükkan','🏪','🛍️','şap'), W('Cashier','Kasiyer','🧑‍💼','💳','keşiır'), W('Basket','Sepet','🧺','🛒','baskıt'),
+   W('Cart','Alışveriş Arabası','🛒','🏪','kart'), W('Receipt','Fiş','🧾','💳','risit'), W('Discount','İndirim','🏷️','💸','diskaunt'),
+   W('Buy','Satın Al','🛍️','💰','bay')
+ ]},
+ {id:64,type:'words',cat:'circus',title:'Sirk',icon:'🎪',words:[
+   W('Clown','Palyaço','🤡','🎪','klaun'), W('Circus','Sirk','🎪','🎡','sörkıs'), W('Magician','Sihirbaz','🎩','✨','mıcişın'),
+   W('Ferris Wheel','Dönme Dolap','🎡','🎠','feris vil'), W('Roller Coaster','Hız Treni','🎢','😱','roulır koustır'), W('Carousel','Atlıkarınca','🎠','🐴','kerısel'),
+   W('Ticket','Bilet','🎫','🎪','tikıt'), W('Show','Gösteri','🎭','✨','şou'), W('Juggler','Hokkabaz','🤹','🎪','caglır'),
+   W('Acrobat','Akrobat','🤸','🎪','ekrıbet')
+ ]},
+ {id:65,type:'words',cat:'gardening',title:'Bahçıvanlık',icon:'🌱',words:[
+   W('Plant','Bitki','🌱','🪴','plent'), W('Watering Can','Sulama Kabı','🚿','💧','vatıring ken'), W('Flowerpot','Saksı','🪴','🌸','flauırpat'),
+   W('Greenhouse','Sera','🏡','🌿','grinhaus'), W('Fertilizer','Gübre','🧪','🌱','förtılayzır'), W('Sprout','Filiz','🌱','☀️','spraut'),
+   W('Root','Kök','🌱','🟤','rut'), W('Branch','Dal','🌿','🌳','brenç'), W('Bush','Çalı','🌳','🍃','buş'),
+   W('Garden','Bahçe','🌷','🌳','gardın')
+ ]},
+ {id:66,type:'words',cat:'books',title:'Kitaplar',icon:'📖',words:[
+   W('Book','Kitap','📕','📖','buk'), W('Story','Hikaye','📖','✨','stori'), W('Fairy Tale','Masal','🧚','📖','feri teyl'),
+   W('Page','Sayfa','📄','📖','peyc'), W('Cover','Kapak','📕','🖼️','kavır'), W('Dictionary','Sözlük','📔','🔤','dikşıneri'),
+   W('Magazine','Dergi','📰','📖','megızin'), W('Comic','Çizgi Roman','📗','🦸','kamik'), W('Bookmark','Ayraç','🔖','📖','bukmark'),
+   W('Chapter','Bölüm','📖','🔢','çeptır')
+ ]},
+ {id:67,type:'words',cat:'zooanimals2',title:'Hayvanat Bahçesi',icon:'🦛',words:[
+   W('Hippo','Su Aygırı','🦛','💧','hipou'), W('Rhino','Gergedan','🦏','🌿','raynou'), W('Crocodile','Timsah','🐊','🌊','krakıdayl'),
+   W('Kangaroo','Kanguru','🦘','🇦🇺','kengıru'), W('Panda','Panda','🐼','🎋','pendı'), W('Koala','Koala','🐨','🌳','kouala'),
+   W('Camel','Deve','🐫','🏜️','kemıl'), W('Gorilla','Goril','🦍','🌴','gırilı'), W('Cheetah','Çita','🐆','💨','çitı'),
+   W('Hedgehog','Kirpi','🦔','🍂','hecihag')
+ ]},
+ {id:68,type:'words',cat:'senses',title:'Duyularım',icon:'👃',words:[
+   W('See','Gör','👁️','👀','si'), W('Hear','Duy','👂','🔊','hiır'), W('Smell','Kokla','👃','🌸','smel'),
+   W('Taste','Tat','👅','🍭','teyst'), W('Touch','Dokun','✋','🧸','taç'), W('Sound','Ses','🔊','👂','saund'),
+   W('Flavor','Lezzet','😋','🍰','fleyvır'), W('Texture','Doku','🖐️','🧶','tekstır'), W('Sense','Duyu','🧠','✨','sens'),
+   W('Scent','Koku','👃','🌺','sent')
+ ]},
+ {id:69,type:'words',cat:'science2',title:'Basit Bilim',icon:'🧪',words:[
+   W('Magnet','Mıknatıs','🧲','⚙️','megnıt'), W('Shadow','Gölge','👤','☀️','şedou'), W('Reflection','Yansıma','🪞','✨','riflekşın'),
+   W('Bubble','Kabarcık','🫧','💧','babıl'), W('Steam','Buhar','💨','♨️','stim'), W('Energy','Enerji','⚡','💪','enırci'),
+   W('Electricity','Elektrik','⚡','💡','ilektrisiti'), W('Experiment','Deney','🧪','🔬','ikspermınt'), W('Microscope','Mikroskop','🔬','🧫','maykrıskoup'),
+   W('Battery','Pil','🔋','⚡','betıri')
+ ]},
+ {id:70,type:'words',cat:'sportsgear',title:'Spor Ekipmanları',icon:'🏅',words:[
+   W('Helmet','Kask','⛑️','🚴','helmıt'), W('Racket','Raket','🎾','🏸','rekıt'), W('Goal','Kale','🥅','⚽','goul'),
+   W('Whistle','Düdük','🔔','🏃','visıl'), W('Medal','Madalya','🏅','🥇','medıl'), W('Trophy','Kupa','🏆','🥇','troufi'),
+   W('Net','Ağ','🥅','⚽','net'), W('Uniform','Forma','👕','⚽','yunıform'), W('Stopwatch','Kronometre','⏱️','🏃','stapvaç'),
+   W('Scoreboard','Skor Tablosu','📊','⚽','skorbord')
+ ]},
+ {id:71,type:'words',cat:'cooking',title:'Yemek Pişirme',icon:'👨‍🍳',words:[
+   W('Boil','Kaynat','♨️','🍲','boyl'), W('Bake','Fırınla','🍞','🔥','beyk'), W('Fry','Kızart','🍳','🔥','fray'),
+   W('Mix','Karıştır','🥄','🥣','miks'), W('Cut','Kes','🔪','🥕','kat'), W('Peel','Soy','🍌','🔪','pil'),
+   W('Pour','Dök','🫗','🥤','por'), W('Stir','Çevir','🥄','🍲','stör'), W('Serve','Servis Yap','🍽️','😋','sörv'),
+   W('Recipe','Tarif','📋','👨‍🍳','resıpi')
+ ]},
+ {id:72,type:'words',cat:'winteractivities',title:'Kış Aktiviteleri',icon:'⛄',words:[
+   W('Snowman','Kardan Adam','⛄','❄️','snoumen'), W('Snowball','Kar Topu','⚪','❄️','snoubol'), W('Sled','Kızak','🛷','❄️','sled'),
+   W('Ice Skating','Buz Pateni','⛸️','❄️','ays skeyting'), W('Skiing','Kayak','⛷️','🏔️','skiing'), W('Mitten','Parmaksız Eldiven','🧤','❄️','mitın'),
+   W('Scarf','Atkı','🧣','❄️','skarf'), W('Snowflake','Kar Tanesi','❄️','✨','snouflayk'), W('Icicle','Buz Sarkıtı','🧊','❄️','aysikıl'),
+   W('Fireplace','Şömine','🔥','🏠','fayrpleys')
+ ]},
+ {id:73,type:'words',cat:'dailyexpressions',title:'Günlük İfadeler',icon:'👋',words:[
+   W('Sorry','Özür Dilerim','😔','🙏','sari'), W('Excuse Me','Affedersiniz','🙋','🙏','ikskyuz mi'), W('Congratulations','Tebrikler','🎉','👏','kıngrecıleyşınz'),
+   W('Good Job','Aferin','👍','⭐','gud cab'), W('Good Morning','Günaydın','🌞','👋','gud morning'), W('Good Night','İyi Geceler','🌙','😴','gud nayt'),
+   W('See You','Görüşürüz','👋','😊','si yu'), W('Take Care','Kendine İyi Bak','🤗','❤️','teyk ker'), W('Have Fun','İyi Eğlenceler','🎉','😄','hev fan'),
+   W('You\'re Welcome','Rica Ederim','😊','🙏','yur velkım')
+ ]},
+ {id:74,type:'words',cat:'dinosaurs',title:'Dinozorlar',icon:'🦖',words:[
+   W('T-Rex','T-Rex','🦖','🦴','tirreks'), W('Triceratops','Triceratops','🦕','🦴','trayserıtaps'), W('Stegosaurus','Stegosaurus','🦕','🌿','stegısorıs'),
+   W('Pterodactyl','Pterodaktil','🦅','🦴','terıdektıl'), W('Velociraptor','Velociraptor','🦖','💨','vılasireptır'), W('Fossil','Fosil','🦴','🪨','fasıl'),
+   W('Dinosaur Egg','Dinozor Yumurtası','🥚','🦖','daynısor eg'), W('Bone','Kemik','🦴','🐕','boun'), W('Museum','Müze','🏛️','🦴','myuziım'),
+   W('Skeleton','İskelet','💀','🦴','skelıtın')
+ ]},
+ {id:75,type:'words',cat:'fantasy',title:'Fantastik Dünya',icon:'🐉',words:[
+   W('Superhero','Süper Kahraman','🦸','💪','superhirou'), W('Cape','Pelerin','🦸‍♂️','💨','keyp'), W('Mask','Maske','🎭','🦸','mesk'),
+   W('Power','Güç','⚡','💪','pauır'), W('Villain','Kötü Adam','🦹','😈','vilın'), W('Dragon','Ejderha','🐉','🔥','dregın'),
+   W('Princess','Prenses','👸','👑','prinses'), W('Prince','Prens','🤴','👑','prins'), W('Castle','Şato','🏰','👑','kasıl'),
+   W('Knight','Şövalye','⚔️','🛡️','nayt')
+ ]},
+ {id:76,type:'words',cat:'materials',title:'Malzemeler',icon:'🧵',words:[
+   W('Wood','Ahşap','🪵','🌳','vud'), W('Metal','Metal','⚙️','🔩','metıl'), W('Plastic','Plastik','🧴','♻️','plestik'),
+   W('Glass','Cam','🪟','✨','gles'), W('Paper','Kağıt','📄','✂️','peypır'), W('Fabric','Kumaş','🧵','👕','febrik'),
+   W('Stone','Taş','🪨','⛰️','stoun'), W('Leather','Deri','👞','🐄','ledhır'), W('Rubber','Lastik','⚫','🚗','rabır'),
+   W('Cotton','Pamuk','☁️','👕','katın')
+ ]},
+ {id:77,type:'words',cat:'months',title:'Aylar',icon:'📅',words:[
+   W('January','Ocak','❄️','📅','ceniuari'), W('February','Şubat','💝','📅','februari'), W('March','Mart','🌷','📅','març'),
+   W('April','Nisan','🌧️','📅','eyprıl'), W('May','Mayıs','🌸','📅','mey'), W('June','Haziran','☀️','📅','cun'),
+   W('July','Temmuz','🏖️','📅','culay'), W('August','Ağustos','🌻','📅','ogıst'), W('September','Eylül','🍂','📅','septembır'),
+   W('October','Ekim','🎃','📅','aktoubır')
+ ]},
+ {id:78,type:'words',cat:'animalsounds',title:'Hayvan Sesleri',icon:'🔊',words:[
+   W('Woof','Hav Hav','🐶','🔊','vuf'), W('Meow','Miyav','🐱','🔊','miyau'), W('Moo','Mö','🐄','🔊','mu'),
+   W('Oink','Oink','🐷','🔊','oynk'), W('Quack','Vak Vak','🦆','🔊','kvek'), W('Roar','Kükreme','🦁','🔊','ror'),
+   W('Baa','Meee','🐑','🔊','ba'), W('Tweet','Cik Cik','🐦','🔊','tvit'), W('Neigh','Kişneme','🐴','🔊','ney'),
+   W('Buzz','Vızıltı','🐝','🔊','baz')
+ ]},
+ {id:79,type:'words',cat:'exercise',title:'Egzersiz',icon:'🤸',words:[
+   W('Warm Up','Isın','🤸','🔥','vorm ap'), W('Exercise','Egzersiz Yap','🏋️','💪','eksırsayz'), W('Stretch','Esne','🤸‍♀️','💪','streç'),
+   W('Push-up','Şınav','💪','🏋️','puşap'), W('Sit-up','Mekik','🧎','💪','sitap'), W('Yoga','Yoga','🧘','🕉️','yougı'),
+   W('Balance','Denge','🤸','⚖️','belıns'), W('Flexible','Esnek','🤸‍♂️','💪','fleksıbıl'), W('Healthy','Sağlıklı','🥗','💪','helthi'),
+   W('Fit','Zinde','💪','🏃','fit')
+ ]},
+ {id:80,type:'words',cat:'people',title:'İnsanlar',icon:'🧑',words:[
+   W('Baby','Bebek','👶','🍼','beybi'), W('Child','Çocuk','🧒','🎈','çayld'), W('Boy','Erkek Çocuk','👦','⚽','boy'),
+   W('Girl','Kız Çocuk','👧','🎀','görl'), W('Man','Adam','👨','👔','men'), W('Woman','Kadın','👩','👗','vumın'),
+   W('Adult','Yetişkin','🧑','💼','ıdalt'), W('Friend','Arkadaş','🤝','😊','frend'), W('Neighbor','Komşu','🏠','👋','neybır'),
+   W('Guest','Misafir','🚪','👋','gest')
+ ]},
+ {id:81,type:'words',cat:'quantities',title:'Ölçüler ve Miktarlar',icon:'⚖️',words:[
+   W('Many','Çok','🔢','➕','meni'), W('Few','Az','🔢','➖','fyu'), W('More','Daha Fazla','➕','📈','mor'),
+   W('Less','Daha Az','➖','📉','les'), W('All','Hepsi','💯','✅','ol'), W('None','Hiçbiri','⭕','❌','nan'),
+   W('Some','Biraz','🤏','➕','sam'), W('Enough','Yeterli','✋','✅','inaf'), W('Too Much','Çok Fazla','📈','😅','tu maç'),
+   W('Equal','Eşit','⚖️','🟰','ikwıl')
+ ]},
+ {id:82,type:'words',cat:'construction',title:'Yapı ve İnşaat',icon:'🏗️',words:[
+   W('Building','Bina','🏢','🏗️','bilding'), W('Crane','Vinç','🏗️','📦','kreyn'), W('Bricks','Tuğla','🧱','🏠','briks'),
+   W('Construction Worker','İnşaat İşçisi','👷','🏗️','kınstrakşın vörkır'), W('House','Ev','🏠','🚪','haus'), W('Skyscraper','Gökdelen','🏙️','☁️','skayskreypır'),
+   W('Wall','Duvar','🧱','🏠','vol'), W('Roof','Çatı','🏠','☂️','ruf'), W('Floor','Zemin','🏠','👣','flor'),
+   W('Cement','Çimento','🧱','🏗️','siment')
+ ]},
+ {id:83,type:'words',cat:'travel',title:'Yolculuk',icon:'🧳',words:[
+   W('Trip','Gezi','🚗','🗺️','trip'), W('Suitcase','Bavul','🧳','✈️','sutkeys'), W('Hotel','Otel','🏨','🛏️','houtel'),
+   W('Vacation','Tatil','🏖️','☀️','veykeyşın'), W('Adventure','Macera','🗺️','🧭','ıdvençır'), W('Explore','Keşfet','🔍','🌍','iksplor'),
+   W('Journey','Yolculuk','🛤️','🎒','cörni'), W('Postcard','Kartpostal','💌','🗺️','poustkard'), W('Souvenir','Hediyelik Eşya','🎁','✈️','suvınir'),
+   W('Tourist','Turist','📸','🗺️','turist')
+ ]}
 ];
 
 const wordSections = SECTIONS.filter(s=>s.type==='words');
@@ -1338,7 +1767,7 @@ function showScreen(id){ document.querySelectorAll('.screen').forEach(s=>s.class
 function goMap(){ renderMap(); showScreen('mapScreen'); }
 
 /* ===================== MAP ===================== */
-const TOTAL_WORD_GOAL = 300;
+const TOTAL_WORD_GOAL = 1000;
 function renderMap(){
   const greet = document.getElementById('mapGreeting');
   greet.textContent = AUTH.type==='guest' ? 'Hoşgeldin, Misafir! 👋' : ('Hoşgeldin, ' + (AUTH.username||'') + '! 👋');
@@ -1354,7 +1783,6 @@ function renderMap(){
   path.innerHTML = '';
   SECTIONS.forEach((s,i)=>{
     if(s.id===11){ const d=document.createElement('div'); d.className='divider'; d.textContent='✨ İlk 100 kelime tamamlandı! Şimdi cümle kuralım ✨'; path.appendChild(d); }
-    if(s.id===14){ const d=document.createElement('div'); d.className='divider'; d.textContent='🚧 Yakında gelecek bölümler'; path.appendChild(d); }
 
     const progLocked = s.type==='placeholder' ? true : !isUnlocked(s.id);
     const memberLocked = !isPremium() && i>=GUEST_LIMIT;
