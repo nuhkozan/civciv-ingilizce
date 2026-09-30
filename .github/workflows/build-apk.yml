@@ -36,8 +36,24 @@ jobs:
 
       - name: Add permissions to manifest
         run: |
-          sed -i '/<manifest /a\ <uses-permission android:name="android.permission.RECORD_AUDIO" />' android/app/src/main/AndroidManifest.xml
-          sed -i '/<manifest /a\ <uses-permission android:name="android.permission.INTERNET" />' android/app/src/main/AndroidManifest.xml
+          sed -i '/<manifest /a\    <uses-permission android:name="android.permission.RECORD_AUDIO" />' android/app/src/main/AndroidManifest.xml
+          sed -i '/<manifest /a\    <uses-permission android:name="android.permission.INTERNET" />' android/app/src/main/AndroidManifest.xml
+
+      - name: Add Google Sign-In deep link
+        shell: python
+        run: |
+          path = "android/app/src/main/AndroidManifest.xml"
+          s = open(path).read()
+          deep_link_filter = (
+              " <intent-filter>\n"
+              " <action android:name=\"android.intent.action.VIEW\" />\n"
+              " <category android:name=\"android.intent.category.DEFAULT\" />\n"
+              " <category android:name=\"android.intent.category.BROWSABLE\" />\n"
+              " <data android:scheme=\"com.civcivingilizce.app\" android:host=\"login-callback\" />\n"
+              " </intent-filter>\n"
+          )
+          s = s.replace("</activity>", deep_link_filter + " </activity>", 1)
+          open(path, "w").write(s)
 
       - name: Install ImageMagick
         run: sudo apt-get update && sudo apt-get install -y imagemagick
@@ -77,10 +93,10 @@ jobs:
         run: |
           STYLES=android/app/src/main/res/values/styles.xml
           if grep -q 'Theme.SplashScreen' "$STYLES" && ! grep -q 'windowSplashScreenBackground' "$STYLES"; then
-            sed -i '/<style name="AppTheme.NoActionBarLaunch"/a\ <item name="windowSplashScreenBackground">#FFFDF7</item>' "$STYLES"
+            sed -i '/<style name="AppTheme.NoActionBarLaunch"/a\        <item name="windowSplashScreenBackground">#FFFDF7</item>' "$STYLES"
           fi
           if ! grep -q 'android:windowBackground' "$STYLES"; then
-            sed -i '/<style name="AppTheme.NoActionBar"/a\ <item name="android:windowBackground">#FFFDF7</item>' "$STYLES"
+            sed -i '/<style name="AppTheme.NoActionBar"/a\        <item name="android:windowBackground">#FFFDF7</item>' "$STYLES"
           fi
 
       - name: Grant execute permission for gradlew
