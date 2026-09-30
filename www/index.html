@@ -362,6 +362,7 @@ button{font-family:inherit;color:inherit;}
 .settingsMsg{ font-weight:800; opacity:.5; font-size:.82rem; text-align:center; min-height:1.2em; }
 </style>
 </head>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <body>
 
 <!-- LOGIN -->
@@ -1616,63 +1617,69 @@ let AUTH = {type:null};
 try{
   AUTH = JSON.parse(localStorage.getItem('kk_auth') || sessionStorage.getItem('kk_auth') || 'null') || {type:null};
 }catch(e){ AUTH = {type:null}; }
+
+const SUPABASE_URL = 'https://elsfotlpczqyqlcxnudz.supabase.co';
+const SUPABASE_ANON_KEY = 'sb_publishable_Chxzn1cS-jl7UctxrCttvQ_GyqTCnmW';
+const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+  auth: { persistSession: true, autoRefreshToken: true }
+});
+
 function saveAuth(){
   try{
     if(REMEMBER_ME){ localStorage.setItem('kk_auth', JSON.stringify(AUTH)); sessionStorage.removeItem('kk_auth'); }
     else{ sessionStorage.setItem('kk_auth', JSON.stringify(AUTH)); localStorage.removeItem('kk_auth'); }
   }catch(e){}
 }
-function loadUsers(){
-  try{ return JSON.parse(localStorage.getItem('kk_users')||'{}'); }catch(e){ return {}; }
-}
-function saveUsers(users){ try{ localStorage.setItem('kk_users', JSON.stringify(users)); }catch(e){} }
-function loadPlans(){ try{ return JSON.parse(localStorage.getItem('kk_plans')||'{}'); }catch(e){ return {}; } }
 function isPremium(){ return !!(AUTH.plan && AUTH.planExpires && AUTH.planExpires > Date.now()); }
-function grantPlan(planId, expires, viaCode){
-  AUTH.type = 'member';
-  if(!AUTH.username) AUTH.username = 'Üye';
-  AUTH.plan = planId; AUTH.planExpires = expires;
-  if(viaCode) AUTH.viaCode = true;
+async function applyProfile(profile){
+  if(!profile) return;
+  AUTH.plan = profile.plan || null;
+  AUTH.planExpires = profile.plan_expires ? new Date(profile.plan_expires).getTime() : null;
+  AUTH.viaCode = !!profile.via_code;
   saveAuth();
-  try{ const p = loadPlans(); p[AUTH.username] = {plan:planId, planExpires:expires}; localStorage.setItem('kk_plans', JSON.stringify(p)); }catch(e){}
 }
-function restorePlan(){
-  const p = loadPlans()[AUTH.username];
-  if(p && p.planExpires > Date.now()){ AUTH.plan = p.plan; AUTH.planExpires = p.planExpires; saveAuth(); }
+async function fetchProfile(){
+  try{
+    const { data, error } = await sb.from('profiles').select('*').eq('id', AUTH.userId).single();
+    if(!error) await applyProfile(data);
+  }catch(e){}
 }
 function isValidEmail(email){ return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email); }
 
-function doLogin(){
+async function doLogin(){
   const email = document.getElementById('loginEmail').value.trim().toLowerCase();
   const pass = document.getElementById('loginPass').value;
   const msg = document.getElementById('authMsg');
   msg.textContent = '';
   if(!email || !pass){ msg.textContent = 'Lütfen e-posta ve şifreni gir.'; return; }
   if(!isValidEmail(email)){ msg.textContent = 'Geçerli bir e-posta adresi gir.'; return; }
-  const users = loadUsers();
-  const user = users[email];
-  if(!user || user.password !== pass){ msg.textContent = 'E-posta veya şifre hatalı.'; return; }
+  msg.textContent = 'Giriş yapılıyor...';
+  const { data, error } = await sb.auth.signInWithPassword({ email, password: pass });
+  if(error){
+    msg.textContent = error.message.toLowerCase().includes('confirm')
+      ? 'Önce e-postana gelen onay bağlantısına tıklaman gerekiyor.'
+      : 'E-posta veya şifre hatalı.';
+    return;
+  }
+  msg.textContent = '';
   REMEMBER_ME = document.getElementById('rememberMe').checked;
-  AUTH = {type:'member', username:email};
+  AUTH = {type:'member', username:email, userId:data.user.id};
   saveAuth();
-  restorePlan();
+  await fetchProfile();
   enterHome();
 }
 function doGoogleLogin(){
-  REMEMBER_ME = true;
-  AUTH = {type:'member', username:'Google Kullanıcısı'};
-  saveAuth();
-  restorePlan();
-  enterHome();
+  const msg = document.getElementById('authMsg');
+  msg.textContent = 'Google ile giriş yakında burada olacak.';
 }
 function doGuestLogin(){
   REMEMBER_ME = true;
   AUTH = {type:'guest', username:'Misafir'};
   saveAuth();
-  restorePlan();
   enterHome();
 }
-function logout(){
+async function logout(){
+  try{ await sb.auth.signOut(); }catch(e){}
   AUTH = {type:null};
   try{ localStorage.removeItem('kk_auth'); sessionStorage.removeItem('kk_auth'); }catch(e){}
   showScreen('loginScreen');
@@ -1689,7 +1696,7 @@ function goRegister(){
 function toggleKvkkText(){
   document.getElementById('kvkkText').classList.toggle('show');
 }
-function doRegister(){
+async function doRegister(){
   const email = document.getElementById('regEmail').value.trim().toLowerCase();
   const pass = document.getElementById('regPass').value;
   const pass2 = document.getElementById('regPass2').value;
@@ -1700,14 +1707,24 @@ function doRegister(){
   if(pass.length < 6){ msg.textContent = 'Şifre en az 6 karakter olmalı.'; return; }
   if(pass !== pass2){ msg.textContent = 'Şifreler eşleşmiyor.'; return; }
   if(!kvkk){ msg.textContent = 'Devam etmek için KVKK onayını işaretlemelisin.'; return; }
-  const users = loadUsers();
-  if(users[email]){ msg.textContent = 'Bu e-posta zaten kayıtlı, giriş yapmayı dener misin?'; return; }
-  users[email] = {password:pass, createdAt:Date.now()};
-  saveUsers(users);
+  msg.textContent = 'Hesap oluşturuluyor...';
+  const { data, error } = await sb.auth.signUp({ email, password: pass });
+  if(error){
+    msg.textContent = error.message.includes('already') || error.message.includes('registered')
+      ? 'Bu e-posta zaten kayıtlı, giriş yapmayı dener misin?'
+      : 'Kayıt olurken bir sorun oluştu, tekrar dener misin?';
+    return;
+  }
+  msg.textContent = '';
+  if(!data.session){
+    msg.style.color = 'var(--good)';
+    msg.textContent = 'Hesabın oluşturuldu! E-postana gelen bağlantıya tıklayıp onayladıktan sonra giriş yapabilirsin. 📧';
+    return;
+  }
   REMEMBER_ME = true;
-  AUTH = {type:'member', username:email};
+  AUTH = {type:'member', username:email, userId:data.user.id};
   saveAuth();
-  restorePlan();
+  await fetchProfile();
   enterHome();
 }
 function goForgotPassword(){
@@ -1716,13 +1733,14 @@ function goForgotPassword(){
   document.getElementById('forgotMsg').textContent = '';
   showScreen('forgotScreen');
 }
-function doForgotPassword(){
+async function doForgotPassword(){
   const email = document.getElementById('forgotEmail').value.trim().toLowerCase();
   const msg = document.getElementById('forgotMsg');
   if(!email || !isValidEmail(email)){ msg.className='authMsg'; msg.textContent = 'Geçerli bir e-posta adresi gir.'; return; }
   msg.className = 'authMsg';
   msg.style.color = 'var(--good)';
   msg.textContent = 'Bu e-posta sistemde kayıtlıysa, sıfırlama bağlantısı gönderildi. 📧';
+  try{ await sb.auth.resetPasswordForEmail(email); }catch(e){}
 }
 function enterHome(){
   try{
@@ -1792,36 +1810,43 @@ function openPayment(planId){
   document.getElementById('payBtnLabel').textContent = p.trial + ' Günlük Ücretsiz Denemeyi Başlat';
   showScreen('paymentScreen');
 }
-function completePayment(){
+async function completePayment(){
   const msg = document.getElementById('paymentMsg');
   const p = PLANS[selectedPlanId];
   msg.className = 'settingsMsg';
+  if(AUTH.type!=='member'){
+    msg.textContent = 'Önce giriş yapman gerekiyor.';
+    return;
+  }
   msg.textContent = 'İşleniyor...';
-  setTimeout(()=>{
-    grantPlan(selectedPlanId, Date.now() + p.days*24*60*60*1000);
-    haptic('MEDIUM');
-    msg.textContent = p.trial + ' günlük ücretsiz deneme başladı! 🎉';
-    setTimeout(()=>{ goMap(); }, 1200);
-  }, 900);
+  const { data, error } = await sb.rpc('activate_plan', { p_plan: selectedPlanId, p_days: p.days });
+  if(error || !data || !data.success){
+    msg.textContent = 'Bir sorun oluştu, tekrar dener misin?';
+    return;
+  }
+  await fetchProfile();
+  haptic('MEDIUM');
+  msg.textContent = p.trial + ' günlük ücretsiz deneme başladı! 🎉';
+  setTimeout(()=>{ goMap(); }, 1200);
 }
 
-const ADMIN_CODES = ['CIVCIV-7K2M9X', 'CIVCIV-3QT8WZ', 'CIVCIV-N5R4PL'];
-function loadUsedCodes(){ try{ return JSON.parse(localStorage.getItem('kk_used_codes')||'[]'); }catch(e){ return []; } }
-function saveUsedCodes(list){ try{ localStorage.setItem('kk_used_codes', JSON.stringify(list)); }catch(e){} }
-function redeemPromoCode(){
+async function redeemPromoCode(){
   const input = document.getElementById('promoCodeInput');
   const msg = document.getElementById('promoMsg');
   const code = input.value.trim().toUpperCase();
   msg.style.color = '';
   if(!code){ msg.textContent = 'Bir kod gir.'; return; }
-  if(!ADMIN_CODES.includes(code)){ msg.textContent = 'Geçersiz kod.'; return; }
-  const used = loadUsedCodes();
-  if(used.includes(code)){ msg.textContent = 'Bu kod daha önce kullanılmış.'; return; }
-  used.push(code);
-  saveUsedCodes(used);
-  REMEMBER_ME = true;
-  if(!AUTH.username) AUTH.username = 'Admin';
-  grantPlan('master', Date.now() + 36500*24*60*60*1000, true);
+  if(AUTH.type!=='member'){ msg.textContent = 'Önce giriş yapman gerekiyor.'; return; }
+  msg.textContent = 'Kontrol ediliyor...';
+  const { data, error } = await sb.rpc('redeem_admin_code', { p_code: code });
+  if(error || !data || !data.success){
+    const reason = data && data.error==='used' ? 'Bu kod daha önce kullanılmış.'
+                 : data && data.error==='not_authenticated' ? 'Önce giriş yapman gerekiyor.'
+                 : 'Geçersiz kod.';
+    msg.textContent = reason;
+    return;
+  }
+  await fetchProfile();
   msg.style.color = 'var(--good)';
   msg.textContent = 'Kod kabul edildi! Sınırsız Plan ücretsiz aktif 🎉';
   setTimeout(()=>{ goMap(); }, 1300);
@@ -2416,8 +2441,24 @@ if(isNativePlatform() && window.Capacitor.Plugins.StatusBar){
     window.Capacitor.Plugins.StatusBar.setStyle({ style:'LIGHT' });
   }catch(e){}
 }
-setTimeout(()=>{
-  if(AUTH.type){ enterHome(); } else { showScreen('loginScreen'); }
+setTimeout(async ()=>{
+  if(AUTH.type==='member' && AUTH.userId){
+    try{
+      const { data: { session } } = await sb.auth.getSession();
+      if(session && session.user && session.user.id===AUTH.userId){
+        await fetchProfile();
+        enterHome();
+      } else {
+        AUTH = {type:null};
+        try{ localStorage.removeItem('kk_auth'); sessionStorage.removeItem('kk_auth'); }catch(e){}
+        showScreen('loginScreen');
+      }
+    }catch(e){ showScreen('loginScreen'); }
+  } else if(AUTH.type){
+    enterHome();
+  } else {
+    showScreen('loginScreen');
+  }
 }, 1300);
 </script>
 </body>
