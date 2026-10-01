@@ -58,6 +58,10 @@ jobs:
       - name: Install ImageMagick
         run: sudo apt-get update && sudo apt-get install -y imagemagick
 
+      - name: Raise minimum Android version
+        run: |
+          sed -i 's/minSdkVersion = [0-9]\+/minSdkVersion = 24/' android/variables.gradle
+
       - name: Replace app icon
         shell: bash
         run: |
