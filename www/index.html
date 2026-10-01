@@ -474,6 +474,10 @@ button{font-family:inherit;color:inherit;}
       </svg>
       <h1 style="font-size:1.3rem;">Yeni Üye Ol</h1>
       <p class="authSub">Sadece e-posta ve şifre yeterli</p>
+      <div style="display:flex; gap:8px; width:100%;">
+        <input class="authInput" id="regFirstName" type="text" placeholder="Ad" autocomplete="given-name" style="flex:1;">
+        <input class="authInput" id="regLastName" type="text" placeholder="Soyad" autocomplete="family-name" style="flex:1;">
+      </div>
       <input class="authInput" id="regEmail" type="email" placeholder="E-posta adresi" autocomplete="username">
       <input class="authInput" id="regPass" type="password" placeholder="Şifre (en az 6 karakter)" autocomplete="new-password">
       <input class="authInput" id="regPass2" type="password" placeholder="Şifre (tekrar)" autocomplete="new-password">
@@ -1607,8 +1611,35 @@ function poolWords(pool){ return ALL_WORDS.filter(w=>w.cat===pool); }
 /* ===================== STATE ===================== */
 let PROGRESS = {};
 try{ PROGRESS = JSON.parse(localStorage.getItem('kk_progress')||'{}'); }catch(e){ PROGRESS = {}; }
-function saveProgress(){ try{ localStorage.setItem('kk_progress', JSON.stringify(PROGRESS)); }catch(e){} }
+function saveProgress(){
+  try{ localStorage.setItem('kk_progress', JSON.stringify(PROGRESS)); }catch(e){}
+  syncProgressToCloud();
+}
 function isDone(id){ return !!(PROGRESS[id] && PROGRESS[id].done); }
+async function syncProgressToCloud(){
+  if(!(AUTH.type==='member' && AUTH.userId)) return;
+  const rows = Object.keys(PROGRESS).map(id=>({
+    user_id: AUTH.userId,
+    section_id: parseInt(id, 10),
+    done: !!PROGRESS[id].done,
+    correct: (typeof PROGRESS[id].correct === 'number') ? PROGRESS[id].correct : null,
+    total: (typeof PROGRESS[id].total === 'number') ? PROGRESS[id].total : null
+  }));
+  if(rows.length===0) return;
+  try{ await sb.from('progress').upsert(rows); }catch(e){}
+}
+async function fetchProgress(){
+  if(!(AUTH.type==='member' && AUTH.userId)) return;
+  try{
+    const { data, error } = await sb.from('progress').select('*').eq('user_id', AUTH.userId);
+    if(!error && data){
+      data.forEach(row=>{
+        PROGRESS[row.section_id] = { done: row.done, correct: row.correct, total: row.total };
+      });
+      try{ localStorage.setItem('kk_progress', JSON.stringify(PROGRESS)); }catch(e){}
+    }
+  }catch(e){}
+}
 function isUnlocked(id){ if(id===SECTIONS[0].id) return true; const idx=SECTIONS.findIndex(s=>s.id===id); const prev=SECTIONS[idx-1]; if(!prev) return true; if(prev.type==='placeholder') return false; return isDone(prev.id); }
 
 const GUEST_LIMIT = 3;
@@ -1666,6 +1697,7 @@ async function doLogin(){
   AUTH = {type:'member', username:email, userId:data.user.id};
   saveAuth();
   await fetchProfile();
+  await fetchProgress();
   enterHome();
 }
 const GOOGLE_REDIRECT = 'com.civcivingilizce.app://login-callback';
@@ -1706,6 +1738,7 @@ async function finishGoogleLogin(url){
       AUTH = { type:'member', username: session.user.email, userId: session.user.id };
       saveAuth();
       await fetchProfile();
+      await fetchProgress();
       enterHome();
     }
   }catch(e){}
@@ -1723,6 +1756,8 @@ async function logout(){
   showScreen('loginScreen');
 }
 function goRegister(){
+  document.getElementById('regFirstName').value = '';
+  document.getElementById('regLastName').value = '';
   document.getElementById('regEmail').value = '';
   document.getElementById('regPass').value = '';
   document.getElementById('regPass2').value = '';
@@ -1735,18 +1770,24 @@ function toggleKvkkText(){
   document.getElementById('kvkkText').classList.toggle('show');
 }
 async function doRegister(){
+  const firstName = document.getElementById('regFirstName').value.trim();
+  const lastName = document.getElementById('regLastName').value.trim();
   const email = document.getElementById('regEmail').value.trim().toLowerCase();
   const pass = document.getElementById('regPass').value;
   const pass2 = document.getElementById('regPass2').value;
   const kvkk = document.getElementById('kvkkConsent').checked;
   const msg = document.getElementById('regMsg');
   msg.textContent = '';
+  if(!firstName || !lastName){ msg.textContent = 'Lütfen ad ve soyadını gir.'; return; }
   if(!email || !isValidEmail(email)){ msg.textContent = 'Geçerli bir e-posta adresi gir.'; return; }
   if(pass.length < 6){ msg.textContent = 'Şifre en az 6 karakter olmalı.'; return; }
   if(pass !== pass2){ msg.textContent = 'Şifreler eşleşmiyor.'; return; }
   if(!kvkk){ msg.textContent = 'Devam etmek için KVKK onayını işaretlemelisin.'; return; }
   msg.textContent = 'Hesap oluşturuluyor...';
-  const { data, error } = await sb.auth.signUp({ email, password: pass });
+  const { data, error } = await sb.auth.signUp({
+    email, password: pass,
+    options: { data: { first_name: firstName, last_name: lastName } }
+  });
   if(error){
     msg.textContent = error.message.includes('already') || error.message.includes('registered')
       ? 'Bu e-posta zaten kayıtlı, giriş yapmayı dener misin?'
@@ -1763,6 +1804,7 @@ async function doRegister(){
   AUTH = {type:'member', username:email, userId:data.user.id};
   saveAuth();
   await fetchProfile();
+  await fetchProgress();
   enterHome();
 }
 function goForgotPassword(){
@@ -2494,6 +2536,7 @@ setTimeout(async ()=>{
       const { data: { session } } = await sb.auth.getSession();
       if(session && session.user && session.user.id===AUTH.userId){
         await fetchProfile();
+        await fetchProgress();
         enterHome();
       } else {
         AUTH = {type:null};
