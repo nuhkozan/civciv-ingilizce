@@ -675,14 +675,15 @@ button{font-family:inherit;color:inherit;}
       <p id="membershipIntro" style="font-weight:700; opacity:.6; font-size:.85rem; text-align:center; margin:0 0 4px;">
         Tüm bölümlere, tüm kelimelere ve gelecekteki içeriklere sınırsız erişim.
       </p>
-      <div class="planCard" onclick="openPayment('pro')">
+      <p class="settingsMsg" id="buyMsg" style="text-align:center;"></p>
+      <div class="planCard" onclick="buyPlan('pro')">
         <div class="planName">Başlangıç Plan</div>
         <div class="planDuration">Aylık üyelik</div>
         <div class="planPrice">29.99 TL<span>/ay</span></div>
         <div class="planNote">İlk 1 gün ücretsiz, sonra 30 günde bir yenilenir</div>
         <button class="planBtn">Seç</button>
       </div>
-      <div class="planCard featured" onclick="openPayment('king')">
+      <div class="planCard featured" onclick="buyPlan('king')">
         <div class="planTag">En Popüler</div>
         <div class="planName">Aile Plan</div>
         <div class="planDuration">3 Aylık üyelik</div>
@@ -690,7 +691,7 @@ button{font-family:inherit;color:inherit;}
         <div class="planNote">İlk 3 gün ücretsiz, sonra 90 günde bir yenilenir</div>
         <button class="planBtn">Seç</button>
       </div>
-      <div class="planCard" onclick="openPayment('master')">
+      <div class="planCard" onclick="buyPlan('master')">
         <div class="planTag gold">En Avantajlı</div>
         <div class="planName">Sınırsız Plan</div>
         <div class="planDuration">Yıllık üyelik</div>
@@ -698,6 +699,7 @@ button{font-family:inherit;color:inherit;}
         <div class="planNote">İlk 7 gün ücretsiz, sonra yılda bir yenilenir</div>
         <button class="planBtn">Seç</button>
       </div>
+      <button class="linkBtn" onclick="restorePurchasesFlow()">Satın alımlarımı geri yükle</button>
 
       <div class="authDivider">veya</div>
       <div class="promoBox">
@@ -708,30 +710,6 @@ button{font-family:inherit;color:inherit;}
         </div>
         <p class="authMsg" id="promoMsg"></p>
       </div>
-    </div>
-  </div>
-</div>
-
-<!-- PAYMENT -->
-<div class="screen" id="paymentScreen">
-  <div class="wrap">
-    <div class="topbar">
-      <button class="backBtn" onclick="showScreen('membershipScreen')">‹</button>
-      <h2 style="font-size:1.1rem;">Ödeme</h2>
-    </div>
-    <div style="flex:1; display:flex; flex-direction:column; gap:14px; padding:16px 6px 20px; align-items:center;">
-      <div class="paySummary" id="paySummary"></div>
-      <input class="authInput" placeholder="Kart üzerindeki isim" style="width:100%;max-width:320px;">
-      <input class="authInput" placeholder="Kart numarası" style="width:100%;max-width:320px;">
-      <div style="display:flex; gap:10px; width:100%; max-width:320px;">
-        <input class="authInput" placeholder="AA/YY" style="flex:1;">
-        <input class="authInput" placeholder="CVC" style="flex:1;">
-      </div>
-      <button class="bigBtn" style="max-width:320px;" onclick="completePayment()"><span id="payBtnLabel">Ücretsiz Denemeyi Başlat</span></button>
-      <p class="settingsMsg" id="paymentMsg"></p>
-      <p style="font-size:.7rem; opacity:.45; font-weight:700; text-align:center; max-width:300px;">
-        Bu bir demo ödeme ekranıdır, gerçek bir ödeme alınmaz.
-      </p>
     </div>
   </div>
 </div>
@@ -1698,6 +1676,7 @@ async function doLogin(){
   saveAuth();
   await fetchProfile();
   await fetchProgress();
+  ensureRevenueCat();
   enterHome();
 }
 const GOOGLE_REDIRECT = 'com.civcivingilizce.app://login-callback';
@@ -1739,6 +1718,7 @@ async function finishGoogleLogin(url){
       saveAuth();
       await fetchProfile();
       await fetchProgress();
+  ensureRevenueCat();
       enterHome();
     }
   }catch(e){}
@@ -1805,6 +1785,7 @@ async function doRegister(){
   saveAuth();
   await fetchProfile();
   await fetchProgress();
+  ensureRevenueCat();
   enterHome();
 }
 function goForgotPassword(){
@@ -1880,34 +1861,76 @@ function openMembership(fromWhere){
   document.getElementById('promoMsg').textContent = '';
   showScreen('membershipScreen');
 }
-function openPayment(planId){
-  selectedPlanId = planId;
-  const p = PLANS[planId];
-  document.getElementById('paySummary').innerHTML =
-    '<div class="psName">'+p.name+'</div><div>'+p.duration+' üyelik</div><div class="psPrice">'+p.price+'</div>'+
-    '<div style="font-size:.78rem;font-weight:700;opacity:.6;margin-top:6px;">İlk '+p.trial+' gün ücretsiz, sonra otomatik yenilenir</div>';
-  document.getElementById('paymentMsg').textContent = '';
-  document.getElementById('payBtnLabel').textContent = p.trial + ' Günlük Ücretsiz Denemeyi Başlat';
-  showScreen('paymentScreen');
+const REVENUECAT_API_KEY = ''; // RevenueCat panelinden alınan "Public Google API Key" buraya yapıştırılacak
+const PLAN_PACKAGE_TYPE = { pro:'MONTHLY', king:'THREE_MONTH', master:'ANNUAL' };
+let rcConfigured = false;
+
+function ensureRevenueCat(){
+  if(!isNativePlatform() || !window.Capacitor.Plugins.Purchases) return false;
+  if(!REVENUECAT_API_KEY) return false;
+  if(!rcConfigured && AUTH.userId){
+    window.Capacitor.Plugins.Purchases.configure({ apiKey: REVENUECAT_API_KEY, appUserID: AUTH.userId });
+    rcConfigured = true;
+  }
+  return rcConfigured;
 }
-async function completePayment(){
-  const msg = document.getElementById('paymentMsg');
-  const p = PLANS[selectedPlanId];
-  msg.className = 'settingsMsg';
-  if(AUTH.type!=='member'){
-    msg.textContent = 'Önce giriş yapman gerekiyor.';
+
+async function buyPlan(planId){
+  const msg = document.getElementById('buyMsg');
+  msg.style.color = '';
+  if(AUTH.type!=='member'){ msg.textContent = 'Önce giriş yapman gerekiyor.'; return; }
+  if(!ensureRevenueCat()){
+    msg.textContent = 'Ödeme sistemi henüz hazır değil, lütfen daha sonra tekrar dene.';
     return;
   }
-  msg.textContent = 'İşleniyor...';
-  const { data, error } = await sb.rpc('activate_plan', { p_plan: selectedPlanId, p_days: p.days });
-  if(error || !data || !data.success){
-    msg.textContent = 'Bir sorun oluştu, tekrar dener misin?';
-    return;
+  const RC = window.Capacitor.Plugins.Purchases;
+  msg.textContent = 'Açılıyor...';
+  try{
+    const offeringsResult = await RC.getOfferings();
+    const current = offeringsResult.offerings.current;
+    const pkg = current && current.availablePackages.find(p => p.packageType === PLAN_PACKAGE_TYPE[planId]);
+    if(!pkg){ msg.textContent = 'Bu plan şu an satın alınamıyor.'; return; }
+    const { customerInfo } = await RC.purchasePackage({ aPackage: pkg });
+    await syncEntitlementToSupabase(customerInfo, planId);
+    haptic('MEDIUM');
+    msg.style.color = 'var(--good)';
+    msg.textContent = 'Üyeliğin aktif! 🎉';
+    setTimeout(()=>{ goMap(); }, 1200);
+  }catch(e){
+    if(e && e.userCancelled) { msg.textContent = ''; return; }
+    msg.textContent = 'Satın alma tamamlanamadı, tekrar dener misin?';
   }
-  await fetchProfile();
-  haptic('MEDIUM');
-  msg.textContent = p.trial + ' günlük ücretsiz deneme başladı! 🎉';
-  setTimeout(()=>{ goMap(); }, 1200);
+}
+
+async function restorePurchasesFlow(){
+  const msg = document.getElementById('buyMsg');
+  msg.style.color = '';
+  if(AUTH.type!=='member'){ msg.textContent = 'Önce giriş yapman gerekiyor.'; return; }
+  if(!ensureRevenueCat()){ msg.textContent = 'Ödeme sistemi henüz hazır değil.'; return; }
+  msg.textContent = 'Satın alımlar kontrol ediliyor...';
+  try{
+    const { customerInfo } = await window.Capacitor.Plugins.Purchases.restorePurchases();
+    const active = customerInfo.entitlements.active['premium'];
+    if(active){
+      await syncEntitlementToSupabase(customerInfo, null);
+      msg.style.color = 'var(--good)';
+      msg.textContent = 'Üyeliğin geri yüklendi! 🎉';
+      setTimeout(()=>{ goMap(); }, 1200);
+    } else {
+      msg.textContent = 'Aktif bir satın alım bulunamadı.';
+    }
+  }catch(e){ msg.textContent = 'Kontrol edilemedi, tekrar dener misin?'; }
+}
+
+async function syncEntitlementToSupabase(customerInfo, planId){
+  try{
+    const active = customerInfo.entitlements.active['premium'];
+    if(!active) return;
+    const expiresIso = active.expirationDate;
+    const days = expiresIso ? Math.max(1, Math.ceil((new Date(expiresIso).getTime() - Date.now()) / (24*60*60*1000))) : 365;
+    await sb.rpc('activate_plan', { p_plan: planId || 'master', p_days: days });
+    await fetchProfile();
+  }catch(e){}
 }
 
 async function redeemPromoCode(){
@@ -2537,6 +2560,7 @@ setTimeout(async ()=>{
       if(session && session.user && session.user.id===AUTH.userId){
         await fetchProfile();
         await fetchProgress();
+  ensureRevenueCat();
         enterHome();
       } else {
         AUTH = {type:null};
