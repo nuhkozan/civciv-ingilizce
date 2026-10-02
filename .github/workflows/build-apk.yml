@@ -64,6 +64,11 @@ jobs:
           sed -i 's/compileSdkVersion = [0-9]\+/compileSdkVersion = 36/' android/variables.gradle
           sed -i 's/targetSdkVersion = [0-9]\+/targetSdkVersion = 36/' android/variables.gradle
 
+      - name: Set unique version code
+        run: |
+          sed -i "s/versionCode [0-9]\+/versionCode ${{ github.run_number }}/" android/app/build.gradle
+          sed -i "s/versionName \"[^\"]*\"/versionName \"1.0.${{ github.run_number }}\"/" android/app/build.gradle
+
       - name: Replace app icon
         shell: bash
         run: |
