@@ -2158,7 +2158,10 @@ async function syncEntitlementToSupabase(customerInfo, planId){
     if(!active) return;
     const expiresIso = active.expirationDate;
     const days = expiresIso ? Math.max(1, Math.ceil((new Date(expiresIso).getTime() - Date.now()) / (24*60*60*1000))) : 365;
-    await sb.rpc('activate_plan', { p_plan: planId || 'master', p_days: days });
+    const PRODUCT_TO_PLAN = { civciv_pro:'pro', civciv_king:'king', civciv_master:'master' };
+    const pid = String(active.productIdentifier || '').split(':')[0];
+    const plan = planId || PRODUCT_TO_PLAN[pid] || 'master';
+    await sb.rpc('activate_plan', { p_plan: plan, p_days: days });
     await fetchProfile();
   }catch(e){}
 }
