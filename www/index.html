@@ -218,6 +218,19 @@ button{font-family:inherit;color:inherit;}
 .opt.correct{ background:var(--good); border-color:var(--good); color:#fff; }
 .opt.wrong{ background:var(--bad); border-color:var(--bad); color:#fff; }
 .opt:disabled{ cursor:default; }
+.sTr{ font-weight:800; font-size:1.05rem; color:#6b5f4a; margin:2px 0 8px; }
+.qVisual .qVisualEmoji.sm{ font-size:2.1rem; line-height:1.15; }
+.sBubble{ display:flex; align-items:center; gap:12px; background:#F3EAFF; border-radius:22px; padding:12px 16px; margin:4px 0 12px; width:100%; text-align:left; }
+.sBubble .sQ{ font-family:'Baloo 2'; font-weight:800; font-size:1.5rem; line-height:1.2; }
+.sBubble .sTr{ margin:2px 0 0; }
+.sSpeak{ width:48px; height:48px; border-radius:50%; border:none; background:#B27CFF; color:#fff; font-size:1.4rem; flex:none; box-shadow:0 4px 0 rgba(0,0,0,.15); cursor:pointer; }
+.blank.filled{ border-bottom-color:var(--good); color:var(--good); padding:0 8px; }
+.ansRow{ min-height:66px; width:100%; border-bottom:3px solid rgba(0,0,0,.14); display:flex; flex-wrap:wrap; gap:8px; align-items:center; justify-content:center; padding:6px 0; margin:6px 0 16px; }
+.chipRow{ display:flex; flex-wrap:wrap; gap:10px; justify-content:center; width:100%; }
+.chip{ min-height:52px; padding:8px 16px; border-radius:16px; background:var(--card); border:2px solid rgba(32,24,10,.14); box-shadow:0 4px 0 rgba(0,0,0,.10); font-family:'Baloo 2'; font-weight:800; font-size:1.2rem; color:var(--ink); cursor:pointer; }
+.chip:active{ transform:translateY(3px); box-shadow:0 1px 0 rgba(0,0,0,.10); }
+.ansRow.good .chip{ background:var(--good); border-color:var(--good); color:#fff; }
+.ansRow.bad .chip{ background:var(--bad); border-color:var(--bad); color:#fff; }
 .quizWrap .topbar{ padding:14px 4px 10px; }
 .speakAgain{
   margin-top:10px; border:none; background:none; font-weight:800; opacity:.5; font-size:.85rem; cursor:pointer;
@@ -871,9 +884,7 @@ const SECTIONS = [
    W('Drum','Davul','🥁','🎶','dram'), W('Robot','Robot','🤖','⚙️','rou-bot'), W('Yo-yo','Yoyo','🪀','🔁','yo-yo'),
    W('Doll','Bebek','🪆','👗','dol')
  ]},
-  {id:200,type:'sentence',title:'Cümle Kur 1',icon:'📝',color:'#B27CFF',
-   templates:[ {parts:['This is my ',0,'.'], pools:['animals']}, {parts:['This is my ',0,'.'], pools:['toys']} ]
- },
+  {id:200,type:'sentence',title:'Cümle Kur 1',icon:'📝',color:'#B27CFF', lesson:[] },
  {id:3,type:'words',cat:'food',title:'Yiyecekler',icon:'🍎',words:[
    W('Apple','Elma','🍎','🌱','e-pıl'), W('Banana','Muz','🍌','🐒','bı-na-nı'), W('Bread','Ekmek','🍞','🌾','bred'),
    W('Milk','Süt','🥛','🐄','milk'), W('Egg','Yumurta','🥚','🍳','eg'), W('Cheese','Peynir','🧀','🐭','çiz'),
@@ -892,9 +903,7 @@ const SECTIONS = [
    W('Pink','Pembe','💗','🌸','pink'), W('Black','Siyah','⚫','🌑','blek'), W('White','Beyaz','⚪','☁️','vayt'),
    W('Brown','Kahverengi','🟤','🐻','bra-vn')
  ]},
-  {id:201,type:'sentence',title:'Cümle Kur 2',icon:'📝',color:'#B27CFF',
-   templates:[ {parts:['I like ',0,'.'], pools:['food']}, {parts:['This is my ',0,'.'], pools:['vehicles']}, {parts:['It is ',0,'.'], pools:['colors']} ]
- },
+  {id:201,type:'sentence',title:'Cümle Kur 2',icon:'📝',color:'#B27CFF', lesson:[] },
  {id:6,type:'words',cat:'body',title:'Vücudum',icon:'🖐️',words:[
    W('Eye','Göz','👁️','😉','ay'), W('Ear','Kulak','👂','🎧','i-yır'), W('Nose','Burun','👃','🌸','nouz'),
    W('Mouth','Ağız','👄','😋','maus'), W('Hand','El','✋','👋','hend'), W('Foot','Ayak','🦶','👟','fut'),
@@ -913,9 +922,7 @@ const SECTIONS = [
    W('Seven','Yedi','7️⃣','🌈','se-vın'), W('Eight','Sekiz','8️⃣','🐙','eyt'), W('Nine','Dokuz','9️⃣','🎳','nayn'),
    W('Ten','On','🔟','🙌','ten')
  ]},
-  {id:202,type:'sentence',title:'Cümle Kur 3',icon:'📝',color:'#B27CFF',
-   templates:[ {parts:['This is my ',0,'.'], pools:['body']}, {parts:['This is my ',0,'.'], pools:['family']}, {parts:['I count to ',0,'.'], pools:['numbers']} ]
- },
+  {id:202,type:'sentence',title:'Cümle Kur 3',icon:'📝',color:'#B27CFF', lesson:[] },
  {id:9,type:'words',cat:'nature',title:'Doğa ve Hava',icon:'🌈',words:[
    W('Sun','Güneş','☀️','🌻','san'), W('Moon','Ay','🌙','⭐','mun'), W('Star','Yıldız','⭐','🌌','star'),
    W('Cloud','Bulut','☁️','🌧️','klaud'), W('Rain','Yağmur','🌧️','☂️','reyn'), W('Snow','Kar','❄️','⛄','snou'),
@@ -934,9 +941,7 @@ const SECTIONS = [
    W('Coat','Mont','🧥','❄️','kout'), W('Skirt','Etek','👗','🌸','skört'), W('Gloves','Eldiven','🧤','❄️','glavz'),
    W('Pajamas','Pijama','🛌','🌙','pıcamız')
  ]},
-  {id:203,type:'sentence',title:'Cümle Kur 4',icon:'📝',color:'#B27CFF',
-   templates:[ {parts:['I see a ',0,'.'], pools:['nature']}, {parts:['I can ',0,'.'], pools:['verbs']}, {parts:['I wear ',0,'.'], pools:['clothes']} ]
- },
+  {id:203,type:'sentence',title:'Cümle Kur 4',icon:'📝',color:'#B27CFF', lesson:[] },
  {id:15,type:'words',cat:'emotions',title:'Duygularım',icon:'😊',words:[
    W('Happy','Mutlu','😊','🎉','hepi'), W('Sad','Üzgün','😢','💧','sed'), W('Angry','Kızgın','😠','💢','engri'),
    W('Scared','Korkmuş','😱','⚡','skerd'), W('Tired','Yorgun','😴','🥱','tayırd'), W('Surprised','Şaşkın','😲','❗','sırprayzd'),
@@ -955,9 +960,7 @@ const SECTIONS = [
    W('Scissors','Makas','✂️','📄','sizırz'), W('Glue','Yapıştırıcı','🧴','📎','glu'), W('Desk','Sıra','🪑','📚','desk'),
    W('Board','Tahta','📋','✏️','bord')
  ]},
-  {id:204,type:'sentence',title:'Cümle Kur 5',icon:'📝',color:'#B27CFF',
-   templates:[ {parts:['I am ',0,'.'], pools:['emotions']}, {parts:['This is my ',0,'.'], pools:['home']}, {parts:['This is my ',0,'.'], pools:['school']} ]
- },
+  {id:204,type:'sentence',title:'Cümle Kur 5',icon:'📝',color:'#B27CFF', lesson:[] },
  {id:18,type:'words',cat:'opposites',title:'Zıt Kelimeler',icon:'⚖️',words:[
    W('Big','Büyük','🐘','📏','big'), W('Small','Küçük','🐜','📏','smol'), W('Hot','Sıcak','🔥','🥵','hat'),
    W('Cold','Soğuk','❄️','🥶','kould'), W('Fast','Hızlı','🏎️','💨','fest'), W('Slow','Yavaş','🐢','🦥','slou'),
@@ -976,9 +979,7 @@ const SECTIONS = [
    W('Nurse','Hemşire','👩‍⚕️','💊','nörs'), W('Driver','Şoför','🚕','🧑','drayvır'), W('Dentist','Diş Hekimi','🦷','🪥','dentist'),
    W('Vet','Veteriner','🐶','💉','vet')
  ]},
-  {id:205,type:'sentence',title:'Cümle Kur 6',icon:'📝',color:'#B27CFF',
-   templates:[ {parts:['It is ',0,'.'], pools:['opposites']}, {parts:['I like ',0,'.'], pools:['sports']}, {parts:['I want to be a ',0,'.'], pools:['jobs']} ]
- },
+  {id:205,type:'sentence',title:'Cümle Kur 6',icon:'📝',color:'#B27CFF', lesson:[] },
  {id:21,type:'words',cat:'time',title:'Zaman',icon:'⏰',words:[
    W('Today','Bugün','☀️','📅','tıdey'), W('Tomorrow','Yarın','🌅','📅','tımarou'), W('Yesterday','Dün','🌇','📅','yestırdey'),
    W('Morning','Sabah','🌄','☀️','morning'), W('Night','Gece','🌙','⭐','nayt'), W('Monday','Pazartesi','📅','☕','mandey'),
@@ -997,9 +998,7 @@ const SECTIONS = [
    W('Pan','Tava','🍳','🔥','pen'), W('Bowl','Kase','🥣','🍜','boul'), W('Bottle','Şişe','🍼','💧','batıl'),
    W('Napkin','Peçete','🧻','🍽️','nepkin')
  ]},
-  {id:206,type:'sentence',title:'Cümle Kur 7',icon:'📝',color:'#B27CFF',
-   templates:[ {parts:['It is ',0,'.'], pools:['time']}, {parts:['I see a ',0,'.'], pools:['shapes']}, {parts:['This is my ',0,'.'], pools:['kitchen']} ]
- },
+  {id:206,type:'sentence',title:'Cümle Kur 7',icon:'📝',color:'#B27CFF', lesson:[] },
  {id:24,type:'words',cat:'insects',title:'Böcekler',icon:'🐝',words:[
    W('Bee','Arı','🐝','🌸','bi'), W('Butterfly','Kelebek','🦋','🌷','bataflay'), W('Ant','Karınca','🐜','🍃','ent'),
    W('Ladybug','Uğur Böceği','🐞','🍀','leydibag'), W('Spider','Örümcek','🕷️','🕸️','spaydır'), W('Snail','Salyangoz','🐌','🍃','sneyl'),
@@ -1018,9 +1017,7 @@ const SECTIONS = [
    W('Microphone','Mikrofon','🎤','🎶','maykrıfoun'), W('Accordion','Akordeon','🪗','🎶','ıkordiın'), W('Bell','Çan','🔔','🎶','bel'),
    W('Harp','Arp','🎼','✨','harp')
  ]},
-  {id:207,type:'sentence',title:'Cümle Kur 8',icon:'📝',color:'#B27CFF',
-   templates:[ {parts:['I see a ',0,'.'], pools:['insects']}, {parts:['I see a ',0,'.'], pools:['sea']}, {parts:['I play the ',0,'.'], pools:['music']} ]
- },
+  {id:207,type:'sentence',title:'Cümle Kur 8',icon:'📝',color:'#B27CFF', lesson:[] },
  {id:27,type:'words',cat:'vegetables',title:'Sebzeler',icon:'🥕',words:[
    W('Carrot','Havuç','🥕','🐰','kerıt'), W('Potato','Patates','🥔','🍟','pıteytou'), W('Tomato','Domates','🍅','🥗','tımeytou'),
    W('Onion','Soğan','🧅','😢','anyın'), W('Cucumber','Salatalık','🥒','🥗','kyukambır'), W('Pepper','Biber','🫑','🌶️','pepır'),
@@ -1039,9 +1036,7 @@ const SECTIONS = [
    W('Smoothie','Meyve Şurubu','🥤','🍓','smuti'), W('Ice Tea','Buzlu Çay','🧊','🍵','ays ti'), W('Milkshake','Milkshake','🥤','🍦','milkşeyk'),
    W('Coffee','Kahve','☕','🫘','kofi')
  ]},
-  {id:208,type:'sentence',title:'Cümle Kur 9',icon:'📝',color:'#B27CFF',
-   templates:[ {parts:['I like ',0,'.'], pools:['vegetables']}, {parts:['I like ',0,'.'], pools:['fruits2']}, {parts:['I like ',0,'.'], pools:['drinks']} ]
- },
+  {id:208,type:'sentence',title:'Cümle Kur 9',icon:'📝',color:'#B27CFF', lesson:[] },
  {id:30,type:'words',cat:'seasons',title:'Mevsimler ve Hava',icon:'🌦️',words:[
    W('Spring','İlkbahar','🌸','🌷','spring'), W('Summer','Yaz','☀️','🏖️','samır'), W('Autumn','Sonbahar','🍂','🍁','otım'),
    W('Winter','Kış','❄️','⛄','vintır'), W('Season','Mevsim','🌦️','📅','sizın'), W('Sunny','Güneşli','☀️','😎','sani'),
@@ -1060,9 +1055,7 @@ const SECTIONS = [
    W('Remote Control','Kumanda','🎮','📺','rimout kıntroul'), W('Clock','Saat','⏰','🕐','klak'), W('Radio','Radyo','📻','🎶','reydiou'),
    W('Lightbulb','Ampul','💡','🔌','laytbalb')
  ]},
-  {id:209,type:'sentence',title:'Cümle Kur 10',icon:'📝',color:'#B27CFF',
-   templates:[ {parts:['It is ',0,'.'], pools:['seasons']}, {parts:['I go to the ',0,'.'], pools:['places']}, {parts:['This is my ',0,'.'], pools:['tech']} ]
- },
+  {id:209,type:'sentence',title:'Cümle Kur 10',icon:'📝',color:'#B27CFF', lesson:[] },
  {id:33,type:'words',cat:'verbs2',title:'Daha Fazla Eylem',icon:'🖍️',words:[
    W('Read','Oku','📖','👀','rid'), W('Write','Yaz','✍️','📝','rayt'), W('Draw','Çiz','🎨','✏️','dro'),
    W('Play','Oyna','🎮','⚽','pley'), W('Cook','Pişir','🍳','👨‍🍳','kuk'), W('Clean','Temizle','🧹','🧽','klin'),
@@ -1081,9 +1074,7 @@ const SECTIONS = [
    W('Donkey','Eşek','🫏','🥕','danki'), W('Turkey','Hindi','🦃','🍂','törki'), W('Goose','Kaz','🪿','💧','gus'),
    W('Bull','Boğa','🐂','🔴','bul')
  ]},
-  {id:210,type:'sentence',title:'Cümle Kur 11',icon:'📝',color:'#B27CFF',
-   templates:[ {parts:['I can ',0,'.'], pools:['verbs2']}, {parts:['I see a ',0,'.'], pools:['wildanimals2']}, {parts:['I see a ',0,'.'], pools:['farmanimals']} ]
- },
+  {id:210,type:'sentence',title:'Cümle Kur 11',icon:'📝',color:'#B27CFF', lesson:[] },
  {id:36,type:'words',cat:'space',title:'Uzay',icon:'🚀',words:[
    W('Planet','Gezegen','🪐','🌌','plenıt'), W('Earth','Dünya','🌍','🌎','örth'), W('Rocket','Roket','🚀','🔥','rakıt'),
    W('Astronaut','Astronot','👨‍🚀','🌕','estrınot'), W('Spaceship','Uzay Gemisi','🛸','⭐','speysşip'), W('Space Station','Uzay İstasyonu','🛰️','🌍','speys steyşın'),
@@ -1102,9 +1093,7 @@ const SECTIONS = [
    W('Board Game','Kutu Oyunu','🎲','📋','bord geym'), W('Video Game','Video Oyunu','🎮','📺','vidiou geym'), W('Swing','Salıncak','🎠','🌳','sving'),
    W('Slide','Kaydırak','🛝','🎢','slayd')
  ]},
-  {id:211,type:'sentence',title:'Cümle Kur 12',icon:'📝',color:'#B27CFF',
-   templates:[ {parts:['I see a ',0,'.'], pools:['space']}, {parts:['I count to ',0,'.'], pools:['numbers2']}, {parts:['I like ',0,'.'], pools:['games']} ]
- },
+  {id:211,type:'sentence',title:'Cümle Kur 12',icon:'📝',color:'#B27CFF', lesson:[] },
  {id:39,type:'words',cat:'selfcare',title:'Kişisel Bakım',icon:'🧼',words:[
    W('Toothbrush','Diş Fırçası','🪥','🦷','tuthbraş'), W('Soap','Sabun','🧼','🫧','soup'), W('Shampoo','Şampuan','🧴','🫧','şempu'),
    W('Towel','Havlu','🧻','💧','tauıl'), W('Comb','Tarak','💇','✨','koum'), W('Mirror','Ayna','🪞','✨','mirır'),
@@ -1123,9 +1112,7 @@ const SECTIONS = [
    W('Ninety','Doksan','🔢','9️⃣','naynti'), W('Hundred','Yüz','💯','🔟','handrıd'), W('Zero','Sıfır','0️⃣','⭕','ziırou'),
    W('Thousand','Bin','🔢','✨','thauzınd')
  ]},
-  {id:212,type:'sentence',title:'Cümle Kur 13',icon:'📝',color:'#B27CFF',
-   templates:[ {parts:['This is my ',0,'.'], pools:['selfcare']}, {parts:['I see a ',0,'.'], pools:['weather2']}, {parts:['I count to ',0,'.'], pools:['numbers3']} ]
- },
+  {id:212,type:'sentence',title:'Cümle Kur 13',icon:'📝',color:'#B27CFF', lesson:[] },
  {id:42,type:'words',cat:'jobs2',title:'Meslekler (Devam)',icon:'👷',words:[
    W('Engineer','Mühendis','👷','🔧','encinir'), W('Scientist','Bilim İnsanı','🧑‍🔬','🧪','sayıntist'), W('Athlete','Sporcu','🏃','🏅','ethlit'),
    W('Musician','Müzisyen','🎤','🎸','myuzişın'), W('Actor','Oyuncu','🎭','🎬','ektır'), W('Photographer','Fotoğrafçı','📷','📸','fıtagrıfır'),
@@ -1144,9 +1131,7 @@ const SECTIONS = [
    W('Sunglasses','Güneş Gözlüğü','🕶️','☀️','sanglesız'), W('Bag','Çanta','👜','🛍️','beg'), W('Wallet','Cüzdan','👛','💰','valıt'),
    W('Belt','Kemer','🥋','👖','belt')
  ]},
-  {id:213,type:'sentence',title:'Cümle Kur 14',icon:'📝',color:'#B27CFF',
-   templates:[ {parts:['I want to be a ',0,'.'], pools:['jobs2']}, {parts:['I see a ',0,'.'], pools:['natureobjects']}, {parts:['I wear ',0,'.'], pools:['accessories']} ]
- },
+  {id:213,type:'sentence',title:'Cümle Kur 14',icon:'📝',color:'#B27CFF', lesson:[] },
  {id:45,type:'words',cat:'holidays',title:'Bayramlar ve Kutlamalar',icon:'🎉',words:[
    W('Birthday','Doğum Günü','🎂','🎉','börthdey'), W('Party','Parti','🎉','🎊','parti'), W('Present','Hediye','🎁','🎀','prezınt'),
    W('Candle','Mum','🕯️','🎂','kendıl'), W('Card','Kart','💌','✉️','kard'), W('New Year','Yeni Yıl','🎆','🎉','nu yiır'),
@@ -1165,9 +1150,7 @@ const SECTIONS = [
    W('Italy','İtalya','🇮🇹','🍕','itıli'), W('Spain','İspanya','🇪🇸','🌍','speyn'), W('China','Çin','🇨🇳','🐼','çaynı'),
    W('Egypt','Mısır','🇪🇬','🐫','icipt')
  ]},
-  {id:214,type:'sentence',title:'Cümle Kur 15',icon:'📝',color:'#B27CFF',
-   templates:[ {parts:['I like ',0,'.'], pools:['holidays']}, {parts:['I can ',0,'.'], pools:['actions2']}, {parts:['I am from ',0,'.'], pools:['countries']} ]
- },
+  {id:214,type:'sentence',title:'Cümle Kur 15',icon:'📝',color:'#B27CFF', lesson:[] },
  {id:48,type:'words',cat:'tools',title:'Aletler',icon:'🔨',words:[
    W('Hammer','Çekiç','🔨','🔩','hemır'), W('Screwdriver','Tornavida','🪛','🔩','skrudrayvır'), W('Nail','Çivi','📌','🔨','neyl'),
    W('Saw','Testere','🪚','🪵','so'), W('Ladder','Merdiven','🪜','🧗','ledır'), W('Broom','Süpürge','🧹','🧺','brum'),
@@ -1186,9 +1169,7 @@ const SECTIONS = [
    W('Closet','Dolap','🚪','👕','klazıt'), W('Sink','Lavabo','🚰','💧','sink'), W('Trash Can','Çöp Kutusu','🗑️','♻️','treş ken'),
    W('Key','Anahtar','🔑','🚪','ki')
  ]},
-  {id:215,type:'sentence',title:'Cümle Kur 16',icon:'📝',color:'#B27CFF',
-   templates:[ {parts:['This is my ',0,'.'], pools:['tools']}, {parts:['I like ',0,'.'], pools:['snacks']}, {parts:['This is my ',0,'.'], pools:['home2']} ]
- },
+  {id:215,type:'sentence',title:'Cümle Kur 16',icon:'📝',color:'#B27CFF', lesson:[] },
  {id:51,type:'words',cat:'traits',title:'Karakter Özelliklerim',icon:'😇',words:[
    W('Kind','Nazik','😇','❤️','kaynd'), W('Brave','Cesur','🦁','💪','breyv'), W('Smart','Zeki','🧠','💡','smart'),
    W('Funny','Komik','😂','🤡','fani'), W('Friendly','Arkadaş Canlısı','🤝','😊','frendli'), W('Strong','Güçlü','💪','🏋️','strong'),
@@ -1207,9 +1188,7 @@ const SECTIONS = [
    W('Far','Uzak','🔭','🌍','far'), W('Between','Arasında','↔️','📦','bitwin'), W('Behind','Arkasında','⬅️','🙈','bihaynd'),
    W('In Front Of','Önünde','➡️','👀','in frant ıv')
  ]},
-  {id:216,type:'sentence',title:'Cümle Kur 17',icon:'📝',color:'#B27CFF',
-   templates:[ {parts:['I am ',0,'.'], pools:['traits']}, {parts:['I finished ',0,'.'], pools:['ordinals']}, {parts:['Go ',0,'.'], pools:['directions']} ]
- },
+  {id:216,type:'sentence',title:'Cümle Kur 17',icon:'📝',color:'#B27CFF', lesson:[] },
  {id:54,type:'words',cat:'babyanimals',title:'Hayvan Yavruları',icon:'🐤',words:[
    W('Puppy','Köpek Yavrusu','🐶','🐾','papi'), W('Kitten','Kedi Yavrusu','🐱','🐾','kitın'), W('Chick','Civciv','🐤','🥚','çik'),
    W('Calf','Buzağı','🐄','🐮','kaf'), W('Foal','Tay','🐴','🐎','foul'), W('Lamb','Kuzu','🐑','🌿','lem'),
@@ -1228,9 +1207,7 @@ const SECTIONS = [
    W('Cave','Mağara','🕳️','🦇','keyv'), W('Hill','Tepe','⛰️','🌱','hil'), W('Jungle','Yağmur Ormanı','🌴','🐒','cangıl'),
    W('Cliff','Uçurum','🏔️','🌊','klif')
  ]},
-  {id:217,type:'sentence',title:'Cümle Kur 18',icon:'📝',color:'#B27CFF',
-   templates:[ {parts:['I see a ',0,'.'], pools:['babyanimals']}, {parts:['I see a ',0,'.'], pools:['birds']}, {parts:['I see a ',0,'.'], pools:['geography']} ]
- },
+  {id:217,type:'sentence',title:'Cümle Kur 18',icon:'📝',color:'#B27CFF', lesson:[] },
  {id:57,type:'words',cat:'traffic',title:'Trafik',icon:'🚦',words:[
    W('Traffic Light','Trafik Işığı','🚦','🚗','trefik layt'), W('Road','Yol','🛣️','🚗','roud'), W('Sidewalk','Kaldırım','🚶','🛣️','saydvok'),
    W('Crosswalk','Yaya Geçidi','🚸','🚶','krasvok'), W('Stop Sign','Dur Tabelası','🛑','🚗','stap sayn'), W('Bridge','Köprü','🌉','🚗','bric'),
@@ -1249,9 +1226,7 @@ const SECTIONS = [
    W('Wet','Islak','💧','🌧️','vet'), W('Dry','Kuru','☀️','🏜️','dray'), W('Loud','Gürültülü','📢','🔊','laud'),
    W('Quiet','Sessiz','🤫','🔇','kuayıt')
  ]},
-  {id:218,type:'sentence',title:'Cümle Kur 19',icon:'📝',color:'#B27CFF',
-   templates:[ {parts:['I see a ',0,'.'], pools:['traffic']}, {parts:['I like ',0,'.'], pools:['subjects']}, {parts:['It is ',0,'.'], pools:['opposites2']} ]
- },
+  {id:218,type:'sentence',title:'Cümle Kur 19',icon:'📝',color:'#B27CFF', lesson:[] },
  {id:60,type:'words',cat:'clocktime',title:'Saat Kavramları',icon:'🕐',words:[
    W('O\'Clock','Tam','🕐','⏰','ıklak'), W('Half Past','Buçuk','🕜','⏰','hef pest'), W('Quarter','Çeyrek','🕒','⏰','kuortır'),
    W('Hour','Saat','⏰','🕐','auır'), W('Minute','Dakika','⏱️','🕐','minit'), W('Second','Saniye','⏱️','⚡','sekınd'),
@@ -1270,9 +1245,7 @@ const SECTIONS = [
    W('Surfboard','Sörf Tahtası','🏄','🌊','sörfbord'), W('Lifeguard','Cankurtaran','🏊','🚨','layfgard'), W('Wave','Dalga','🌊','🏄','veyv'),
    W('Cooler','Soğutucu Çanta','🧊','🥤','kulır')
  ]},
-  {id:219,type:'sentence',title:'Cümle Kur 20',icon:'📝',color:'#B27CFF',
-   templates:[ {parts:['It is ',0,'.'], pools:['clocktime']}, {parts:['I like ',0,'.'], pools:['breakfast']}, {parts:['This is my ',0,'.'], pools:['beach']} ]
- },
+  {id:219,type:'sentence',title:'Cümle Kur 20',icon:'📝',color:'#B27CFF', lesson:[] },
  {id:63,type:'words',cat:'shopping',title:'Alışveriş',icon:'🛒',words:[
    W('Money','Para','💰','💵','mani'), W('Coin','Madeni Para','🪙','💰','koyn'), W('Price','Fiyat','🏷️','💰','prays'),
    W('Shop','Dükkan','🏪','🛍️','şap'), W('Cashier','Kasiyer','🧑‍💼','💳','keşiır'), W('Basket','Sepet','🧺','🛒','baskıt'),
@@ -1291,9 +1264,7 @@ const SECTIONS = [
    W('Root','Kök','🌱','🟤','rut'), W('Branch','Dal','🌿','🌳','brenç'), W('Bush','Çalı','🌳','🍃','buş'),
    W('Garden','Bahçe','🌷','🌳','gardın')
  ]},
-  {id:220,type:'sentence',title:'Cümle Kur 21',icon:'📝',color:'#B27CFF',
-   templates:[ {parts:['This is my ',0,'.'], pools:['shopping']}, {parts:['I see a ',0,'.'], pools:['circus']}, {parts:['This is my ',0,'.'], pools:['gardening']} ]
- },
+  {id:220,type:'sentence',title:'Cümle Kur 21',icon:'📝',color:'#B27CFF', lesson:[] },
  {id:66,type:'words',cat:'books',title:'Kitaplar',icon:'📖',words:[
    W('Book','Kitap','📕','📖','buk'), W('Story','Hikaye','📖','✨','stori'), W('Bedtime Story','Uyku Öyküsü','📖','🌙','bedtaym stori'),
    W('Page','Sayfa','📄','📖','peyc'), W('Cover','Kapak','📕','🖼️','kavır'), W('Dictionary','Sözlük','📔','🔤','dikşıneri'),
@@ -1312,9 +1283,7 @@ const SECTIONS = [
    W('Flavor','Lezzet','😋','🍰','fleyvır'), W('Texture','Doku','🖐️','🧶','tekstır'), W('Sense','Duyu','🧠','✨','sens'),
    W('Scent','Koku','👃','🌺','sent')
  ]},
-  {id:221,type:'sentence',title:'Cümle Kur 22',icon:'📝',color:'#B27CFF',
-   templates:[ {parts:['I like ',0,'.'], pools:['books']}, {parts:['I see a ',0,'.'], pools:['zooanimals2']}, {parts:['I can ',0,'.'], pools:['senses']} ]
- },
+  {id:221,type:'sentence',title:'Cümle Kur 22',icon:'📝',color:'#B27CFF', lesson:[] },
  {id:69,type:'words',cat:'science2',title:'Basit Bilim',icon:'🧪',words:[
    W('Magnet','Mıknatıs','🧲','⚙️','megnıt'), W('Shadow','Gölge','👤','☀️','şedou'), W('Reflection','Yansıma','🪞','✨','riflekşın'),
    W('Bubble','Kabarcık','🫧','💧','babıl'), W('Steam','Buhar','💨','♨️','stim'), W('Energy','Enerji','⚡','💪','enırci'),
@@ -1333,9 +1302,7 @@ const SECTIONS = [
    W('Pour','Dök','🫗','🥤','por'), W('Stir','Çevir','🥄','🍲','stör'), W('Serve','Servis Yap','🍽️','😋','sörv'),
    W('Recipe','Tarif','📋','👨‍🍳','resıpi')
  ]},
-  {id:222,type:'sentence',title:'Cümle Kur 23',icon:'📝',color:'#B27CFF',
-   templates:[ {parts:['I see a ',0,'.'], pools:['science2']}, {parts:['This is my ',0,'.'], pools:['sportsgear']}, {parts:['I can ',0,'.'], pools:['cooking']} ]
- },
+  {id:222,type:'sentence',title:'Cümle Kur 23',icon:'📝',color:'#B27CFF', lesson:[] },
  {id:72,type:'words',cat:'winteractivities',title:'Kış Aktiviteleri',icon:'⛄',words:[
    W('Snowman','Kardan Adam','⛄','❄️','snoumen'), W('Snowball','Kar Topu','⚪','❄️','snoubol'), W('Sled','Kızak','🛷','❄️','sled'),
    W('Ice Skating','Buz Pateni','⛸️','❄️','ays skeyting'), W('Skiing','Kayak','⛷️','🏔️','skiing'), W('Mitten','Parmaksız Eldiven','🧤','❄️','mitın'),
@@ -1354,9 +1321,7 @@ const SECTIONS = [
    W('Dinosaur Egg','Dinozor Yumurtası','🥚','🦖','daynısor eg'), W('Bone','Kemik','🦴','🐕','boun'), W('Museum','Müze','🏛️','🦴','myuziım'),
    W('Skeleton','İskelet','💀','🦴','skelıtın')
  ]},
-  {id:223,type:'sentence',title:'Cümle Kur 24',icon:'📝',color:'#B27CFF',
-   templates:[ {parts:['I like ',0,'.'], pools:['winteractivities']}, {parts:['I see a ',0,'.'], pools:['dinosaurs']} ]
- },
+  {id:223,type:'sentence',title:'Cümle Kur 24',icon:'📝',color:'#B27CFF', lesson:[] },
  {id:75,type:'words',cat:'farming',title:'Çiftlik ve Tarım',icon:'🚜',words:[
    W('Farm','Çiftlik','🚜','🌾','farm'), W('Crop','Ürün','🌾','🚜','krap'), W('Harvest','Hasat','🌾','🧺','harvıst'),
    W('Tractor','Traktör','🚜','🌾','trektır'), W('Field','Tarla','🌾','☀️','fild'), W('Hay','Saman','🌾','🐄','hey'),
@@ -1375,9 +1340,7 @@ const SECTIONS = [
    W('July','Temmuz','🏖️','📅','culay'), W('August','Ağustos','🌻','📅','ogıst'), W('September','Eylül','🍂','📅','septembır'),
    W('October','Ekim','🎃','📅','aktoubır')
  ]},
-  {id:224,type:'sentence',title:'Cümle Kur 25',icon:'📝',color:'#B27CFF',
-   templates:[ {parts:['I see a ',0,'.'], pools:['farming']}, {parts:['I see a ',0,'.'], pools:['materials']}, {parts:['It is ',0,'.'], pools:['months']} ]
- },
+  {id:224,type:'sentence',title:'Cümle Kur 25',icon:'📝',color:'#B27CFF', lesson:[] },
  {id:78,type:'words',cat:'animalsounds',title:'Hayvan Sesleri',icon:'🔊',words:[
    W('Woof','Hav Hav','🐶','🔊','vuf'), W('Meow','Miyav','🐱','🔊','miyau'), W('Moo','Mö','🐄','🔊','mu'),
    W('Oink','Oink','🐷','🔊','oynk'), W('Quack','Vak Vak','🦆','🔊','kvek'), W('Roar','Kükreme','🦁','🔊','ror'),
@@ -1396,9 +1359,7 @@ const SECTIONS = [
    W('Adult','Yetişkin','🧑','💼','ıdalt'), W('Classmate','Sınıf Arkadaşı','🧑‍🤝‍🧑','🏫','klesmeyt'), W('Neighbor','Komşu','🏠','👋','neybır'),
    W('Guest','Misafir','🚪','👋','gest')
  ]},
-  {id:225,type:'sentence',title:'Cümle Kur 26',icon:'📝',color:'#B27CFF',
-   templates:[ {parts:['I can ',0,'.'], pools:['exercise']}, {parts:['This is my ',0,'.'], pools:['people']} ]
- },
+  {id:225,type:'sentence',title:'Cümle Kur 26',icon:'📝',color:'#B27CFF', lesson:[] },
  {id:81,type:'words',cat:'quantities',title:'Ölçüler ve Miktarlar',icon:'⚖️',words:[
    W('Many','Çok','🔢','➕','meni'), W('Few','Az','🔢','➖','fyu'), W('More','Daha Fazla','➕','📈','mor'),
    W('Less','Daha Az','➖','📉','les'), W('All','Hepsi','💯','✅','ol'), W('None','Hiçbiri','⭕','❌','nan'),
@@ -1417,9 +1378,7 @@ const SECTIONS = [
    W('Journey','Yolculuk','🛤️','🎒','cörni'), W('Postcard','Kartpostal','💌','🗺️','poustkard'), W('Souvenir','Hediyelik Eşya','🎁','✈️','suvınir'),
    W('Tourist','Turist','📸','🗺️','turist')
  ]},
-  {id:226,type:'sentence',title:'Cümle Kur 27',icon:'📝',color:'#B27CFF',
-   templates:[ {parts:['I have ',0,'.'], pools:['quantities']}, {parts:['I see a ',0,'.'], pools:['construction']}, {parts:['I like ',0,'.'], pools:['travel']} ]
- },
+  {id:226,type:'sentence',title:'Cümle Kur 27',icon:'📝',color:'#B27CFF', lesson:[] },
  {id:84,type:'words',cat:'health',title:'Sağlık',icon:'🩺',words:[
    W('Injection','İğne','💉','🏥','incekşın'), W('Cast','Alçı','🦴','🩹','kest'), W('Wheelchair','Tekerlekli Sandalye','♿','🏥','vilçer'),
    W('Stethoscope','Steteskop','🩺','❤️','stethiskoup'), W('Checkup','Kontrol','🩺','✅','çekap'), W('Vaccine','Aşı','💉','🛡️','veksin'),
@@ -1438,9 +1397,7 @@ const SECTIONS = [
    W('Highlighter','Fosforlu Kalem','🖍️','📝','haylayter'), W('Marker','Keçeli Kalem','🖊️','📝','markır'), W('Tape','Bant','📦','✂️','teyp'),
    W('Calendar','Takvim','📅','📆','kelındır')
  ]},
-  {id:227,type:'sentence',title:'Cümle Kur 28',icon:'📝',color:'#B27CFF',
-   templates:[ {parts:['I see a ',0,'.'], pools:['health']}, {parts:['This is my ',0,'.'], pools:['bodyparts2']}, {parts:['This is my ',0,'.'], pools:['officesupplies']} ]
- },
+  {id:227,type:'sentence',title:'Cümle Kur 28',icon:'📝',color:'#B27CFF', lesson:[] },
  {id:87,type:'words',cat:'expressions2',title:'Yüz İfadeleri',icon:'😊',words:[
    W('Smile','Gülümse','😊','😄','smayl'), W('Laugh','Kahkaha At','😂','🤣','lef'), W('Cry','Ağla','😢','💧','kray'),
    W('Wave','El Salla','👋','😊','veyv'), W('Hug','Sarıl','🤗','❤️','hag'), W('Wink','Göz Kırp','😉','👁️','vink'),
@@ -1459,9 +1416,7 @@ const SECTIONS = [
    W('Barn','Ahır','🏚️','🐄','barn'), W('Coop','Kümes','🐔','🥚','kup'), W('Pond','Gölet','🐸','💧','pand'),
    W('Web','Örümcek Ağı','🕸️','🕷️','veb')
  ]},
-  {id:228,type:'sentence',title:'Cümle Kur 29',icon:'📝',color:'#B27CFF',
-   templates:[ {parts:['I can ',0,'.'], pools:['expressions2']}, {parts:['I can ',0,'.'], pools:['math']}, {parts:['I see a ',0,'.'], pools:['animalhomes']} ]
- },
+  {id:228,type:'sentence',title:'Cümle Kur 29',icon:'📝',color:'#B27CFF', lesson:[] },
  {id:90,type:'words',cat:'worldfoods',title:'Dünya Yemekleri',icon:'🍣',words:[
    W('Sushi','Suşi','🍣','🍚','suşi'), W('Taco','Taco','🌮','🌶️','takou'), W('Burger','Burger','🍔','🍟','börgır'),
    W('Curry','Köri','🍛','🌶️','köri'), W('Noodles','Erişte','🍜','🥢','nudılz'), W('Kebab','Kebap','🍢','🔥','kıbab'),
@@ -1480,9 +1435,7 @@ const SECTIONS = [
    W('Organize','Düzenle','📦','✅','orgınayz'), W('Water Plants','Bitkileri Sula','🚿','🌱','vatır plents'), W('Make Bed','Yatağı Topla','🛏️','✅','meyk bed'),
    W('Take Out Trash','Çöpü Çıkar','🗑️','🚪','teyk aut treş')
  ]},
-  {id:229,type:'sentence',title:'Cümle Kur 30',icon:'📝',color:'#B27CFF',
-   templates:[ {parts:['I like ',0,'.'], pools:['worldfoods']}, {parts:['It is ',0,'.'], pools:['opposites3']}, {parts:['I can ',0,'.'], pools:['chores']} ]
- },
+  {id:229,type:'sentence',title:'Cümle Kur 30',icon:'📝',color:'#B27CFF', lesson:[] },
  {id:93,type:'words',cat:'animalmovements',title:'Hayvan Hareketleri',icon:'🐎',words:[
    W('Gallop','Dörtnala Koş','🐎','💨','gelıp'), W('Slither','Sürünerek İlerle','🐍','〰️','slidhır'), W('Waddle','Badi Badi Yürü','🦆','🚶','vadıl'),
    W('Pounce','Üzerine Atla','🐱','⬆️','pauns'), W('Dig','Kazıp Gir','🐰','🕳️','dig'), W('Migrate','Göç Et','🦢','✈️','maygreyt'),
@@ -1501,9 +1454,7 @@ const SECTIONS = [
    W('Blender','Blender','🥤','🍓','blendır'), W('Toaster','Ekmek Kızartma Makinesi','🍞','🔥','toustır'), W('Iron','Ütü','♨️','👕','ayrın'),
    W('Fan','Vantilatör','🌀','💨','fen')
  ]},
-  {id:230,type:'sentence',title:'Cümle Kur 31',icon:'📝',color:'#B27CFF',
-   templates:[ {parts:['I can ',0,'.'], pools:['animalmovements']}, {parts:['It is ',0,'.'], pools:['colorshades']}, {parts:['This is my ',0,'.'], pools:['appliances']} ]
- },
+  {id:230,type:'sentence',title:'Cümle Kur 31',icon:'📝',color:'#B27CFF', lesson:[] },
  {id:96,type:'words',cat:'artsupplies',title:'Sanat Malzemeleri',icon:'🖌️',words:[
    W('Paintbrush','Fırça','🖌️','🎨','peyntbraş'), W('Paint','Boya','🎨','🖌️','peynt'), W('Crayon','Boya Kalemi','🖍️','🌈','kreyan'),
    W('Canvas','Tuval','🖼️','🎨','kenvıs'), W('Palette','Palet','🎨','🖌️','pelıt'), W('Clay','Kil','🏺','🖐️','kley'),
@@ -1522,9 +1473,7 @@ const SECTIONS = [
    W('Delivery','Teslimat','🛵','📦','dilivıri'), W('Reservation','Rezervasyon','📅','🍽️','rezırveyşın'), W('Customer','Müşteri','🧑','🛍️','kastımır'),
    W('Service','Servis','🍽️','🤝','sörvıs')
  ]},
-  {id:231,type:'sentence',title:'Cümle Kur 32',icon:'📝',color:'#B27CFF',
-   templates:[ {parts:['This is my ',0,'.'], pools:['artsupplies']}, {parts:['This is my ',0,'.'], pools:['camping']}, {parts:['I see a ',0,'.'], pools:['restaurant']} ]
- },
+  {id:231,type:'sentence',title:'Cümle Kur 32',icon:'📝',color:'#B27CFF', lesson:[] },
  {id:99,type:'words',cat:'opposites4',title:'Zıt Kelimeler 4',icon:'✅',words:[
    W('Easy','Kolay','😌','✅','izi'), W('Difficult','Zor','😓','❗','difikılt'), W('Same','Aynı','🟰','👯','seym'),
    W('Different','Farklı','🔀','🎭','difrınt'), W('True','Doğru','✅','💯','tru'), W('False','Yanlış','❌','🚫','fols'),
@@ -1543,9 +1492,7 @@ const SECTIONS = [
    W('Dandelion','Karahindiba','🌼','💨','dendılayın'), W('Lavender','Lavanta','💜','🌿','levındır'), W('Poppy','Gelincik','🌺','❤️','papi'),
    W('Daffodil','Nergis','🌼','💛','defıdil')
  ]},
-  {id:232,type:'sentence',title:'Cümle Kur 33',icon:'📝',color:'#B27CFF',
-   templates:[ {parts:['It is ',0,'.'], pools:['opposites4']}, {parts:['I see a ',0,'.'], pools:['safety']}, {parts:['I like ',0,'.'], pools:['flowers']} ]
- },
+  {id:232,type:'sentence',title:'Cümle Kur 33',icon:'📝',color:'#B27CFF', lesson:[] },
  {id:102,type:'words',cat:'units',title:'Ölçü Birimleri',icon:'⚖️',words:[
    W('Kilogram','Kilogram','⚖️','🔢','kilıgrem'), W('Gram','Gram','⚖️','🔢','grem'), W('Liter','Litre','🧴','💧','litır'),
    W('Meter','Metre','📏','🔢','mitır'), W('Centimeter','Santimetre','📏','🔢','sentımitır'), W('Scale','Terazi','⚖️','🔢','skeyl'),
@@ -1554,6 +1501,289 @@ const SECTIONS = [
  ]}
 
 ];
+
+/* ===================== KONUŞMA DERSLERİ (cümle bölümleri) =====================
+   F = boşluk doldur  (|doğru cevap| işaretli)
+   R = soruya doğru cevabı seç
+   O = kelimeleri sıraya diz
+   Her sorunun tek bir doğru cevabı vardır; Türkçe anlam ve görsel ipucu verilir. */
+function F(e, tr, t, wrong){ const m=t.match(/^(.*)\|(.+)\|(.*)$/); return {k:'fill', e, tr, pre:m[1], ans:m[2], post:m[3], wrong}; }
+function R(e, q, tr, ans, wrong){ return {k:'reply', e, q, tr, ans, wrong}; }
+function O(e, tr, s){ return {k:'order', e, tr, s}; }
+
+const LESSONS = {
+200:{title:"Merhaba De!",icon:"👋",items:[
+  R("👋","Hello!","Merhaba!","Hi!",["Goodbye!","You're welcome."]),
+  F("🌅","Günaydın!","Good |morning|!",["night","evening"]),
+  F("🌙","İyi geceler!","Good |night|!",["morning","hello"]),
+  F("👋","Hoşça kal!","|Goodbye|!",["Hello","Thanks"]),
+  R("🌅","Good morning!","Günaydın!","Good morning!",["Good night!","Goodbye!"]),
+  O("👋","Merhaba arkadaşım!","Hello, my friend!")
+]},
+201:{title:"Adım Ne?",icon:"🧒",items:[
+  R("🧒","What's your name?","Adın ne?","My name is Ali.",["I am seven.","Thank you."]),
+  F("🧒","Benim adım Ali.","My |name| is Ali.",["age","dog"]),
+  F("🙋","Benim adım Mia.","My name |is| Mia.",["am","are"]),
+  O("🧒","Benim adım Tom.","My name is Tom."),
+  R("🤝","Nice to meet you!","Tanıştığımıza memnun oldum!","Nice to meet you too!",["Good night!","I am hungry."]),
+  F("😊","Ben Zeynep.","I am |Zeynep|.",["seven","happy"])
+]},
+202:{title:"Nasılsın?",icon:"🙂",items:[
+  R("🙂","How are you?","Nasılsın?","I'm fine, thank you.",["My name is Ali.","Goodbye!"]),
+  F("😊","İyiyim, teşekkürler.","I'm |fine|, thank you.",["name","seven"]),
+  R("🤗","How are you?","Nasılsın?","I'm happy!",["I have a cat.","Good night!"]),
+  F("🙂","Sen nasılsın?","How are |you|?",["my","is"]),
+  O("🙂","Nasılsın?","How are you?"),
+  F("😄","Ben mutluyum.","I am |happy|.",["hungry","tired"])
+]},
+203:{title:"Teşekkür Ederim",icon:"🙏",items:[
+  R("🎁","Thank you!","Teşekkür ederim!","You're welcome!",["Good night!","Hello!"]),
+  F("🙏","Rica ederim.","You're |welcome|.",["happy","sorry"]),
+  F("🍪","Bir kurabiye, lütfen.","A cookie, |please|.",["sorry","hello"]),
+  R("😔","Sorry!","Özür dilerim!","It's OK.",["You're welcome.","Hello!"]),
+  F("🙋","Affedersiniz!","|Excuse| me!",["Thank","Good"]),
+  O("🙏","Çok teşekkür ederim!","Thank you very much!")
+]},
+204:{title:"Yaşım Kaç?",icon:"🎂",items:[
+  R("🎂","How old are you?","Kaç yaşındasın?","I am seven.",["I am happy.","My name is Ali."]),
+  F("7️⃣","Ben yedi yaşındayım.","I am |seven|.",["six","eight"]),
+  F("8️⃣","Ben sekiz yaşındayım.","I am |eight|.",["seven","nine"]),
+  R("🐱","Do you like cats?","Kedileri sever misin?","Yes, I do.",["My name is Ali.","Goodbye!"]),
+  F("🙅","Hayır, sevmem.","No, I |don't|.",["do","am"]),
+  O("6️⃣","Ben altı yaşındayım.","I am six years old.")
+]},
+205:{title:"Ailem",icon:"👪",items:[
+  F("👩","Bu benim annem.","This is my |mom|.",["dad","sister"]),
+  F("👨","Bu benim babam.","This is my |dad|.",["mom","brother"]),
+  F("👧","Bu benim kız kardeşim.","This is my |sister|.",["brother","mom"]),
+  F("👦","Bu benim erkek kardeşim.","This is my |brother|.",["sister","dad"]),
+  R("👵","Who is she?","O kim?","She is my grandma.",["I am seven.","Good night!"]),
+  O("👨‍👩‍👧","Ben ailemi seviyorum.","I love my family.")
+]},
+206:{title:"Benim Var",icon:"🧸",items:[
+  F("🐱","Benim bir kedim var.","I have a |cat|.",["dog","bird"]),
+  F("🐶","Benim bir köpeğim var.","I have a |dog|.",["cat","fish"]),
+  F("⚽","Benim bir topum var.","I have a |ball|.",["doll","robot"]),
+  F("🧸","Benim bir ayıcığım var.","I |have| a teddy bear.",["am","like"]),
+  R("🐾","Do you have a pet?","Evcil hayvanın var mı?","Yes, I have a cat.",["My name is Ali.","Good morning!"]),
+  O("🎈","Benim bir balonum var.","I have a balloon.")
+]},
+207:{title:"Sevdiklerim",icon:"❤️",items:[
+  F("🍎","Ben elma severim.","I |like| apples.",["am","have"]),
+  F("🍌","Ben muz severim.","I like |bananas|.",["apples","cakes"]),
+  R("🥛","Do you like milk?","Süt sever misin?","Yes, I do.",["My name is Mia.","Goodbye!"]),
+  F("🥕","Ben havuç sevmem.","I |don't| like carrots.",["do","am"]),
+  F("🍦","Ben dondurma severim.","I like |ice cream|.",["milk","bread"]),
+  O("🍪","Ben kurabiye severim.","I like cookies.")
+]},
+208:{title:"Yapabilirim",icon:"💪",items:[
+  F("🏃","Ben koşabilirim.","I |can| run.",["am","have"]),
+  F("🏊","Ben yüzebilirim.","I can |swim|.",["run","jump"]),
+  F("🦘","Ben zıplayabilirim.","I can |jump|.",["swim","sing"]),
+  R("🏃","Can you run?","Koşabilir misin?","Yes, I can.",["Yes, I do.","Good night!"]),
+  F("🎵","Ben şarkı söyleyebilirim.","I can |sing|.",["read","swim"]),
+  O("🦘","Ben yükseğe zıplayabilirim.","I can jump high.")
+]},
+209:{title:"Bu Ne?",icon:"❓",items:[
+  R("🍎","What is this?","Bu ne?","It is an apple.",["I am fine.","Thank you."]),
+  F("🐶","Bu bir köpek.","It is a |dog|.",["cat","fish"]),
+  F("🍎","Bu bir elma.","It is an |apple|.",["banana","orange"]),
+  F("🚗","Bu bir araba.","It is a |car|.",["bus","boat"]),
+  R("🚌","What is this?","Bu ne?","It is a bus.",["I am seven.","You are welcome."]),
+  O("🐱","Bu bir kedi.","It is a cat.")
+]},
+210:{title:"Renkler",icon:"🎨",items:[
+  R("🔴","What color is it?","Bu hangi renk?","It is red.",["It is a dog.","I am fine."]),
+  F("🔵","Bu mavi.","It is |blue|.",["red","green"]),
+  F("🟡","Bu sarı.","It is |yellow|.",["blue","pink"]),
+  F("🟢","Benim yeşil bir topum var.","I have a |green| ball.",["red","black"]),
+  F("🌸","Bu pembe.","It is |pink|.",["purple","brown"]),
+  O("🍎","Elma kırmızı.","The apple is red.")
+]},
+211:{title:"Duygularım",icon:"😊",items:[
+  F("😄","Ben mutluyum.","I am |happy|.",["sad","tired"]),
+  F("😢","Ben üzgünüm.","I am |sad|.",["happy","hungry"]),
+  F("😴","Ben yorgunum.","I am |tired|.",["happy","cold"]),
+  R("😄","Are you happy?","Mutlu musun?","Yes, I am.",["Yes, I can.","Yes, it is."]),
+  F("🍽️","Ben açım.","I am |hungry|.",["happy","sleepy"]),
+  O("😴","Ben çok yorgunum.","I am very tired.")
+]},
+212:{title:"Evim ve Okulum",icon:"🏠",items:[
+  F("🏠","Bu benim evim.","This is my |house|.",["school","book"]),
+  F("🛏️","Bu benim yatağım.","This is my |bed|.",["chair","table"]),
+  F("🎒","Bu benim çantam.","This is my |bag|.",["bed","pen"]),
+  F("📚","Bu benim kitabım.","This is my |book|.",["bag","desk"]),
+  R("✏️","What is this?","Bu ne?","It is a pencil.",["I am happy.","Good night!"]),
+  O("🏫","Bu benim okulum.","This is my school.")
+]},
+213:{title:"Hava Nasıl?",icon:"🌤️",items:[
+  R("🌤️","How is the weather?","Hava nasıl?","It is sunny.",["I am fine.","My name is Ali."]),
+  F("☀️","Hava güneşli.","It is |sunny|.",["rainy","snowy"]),
+  F("🌧️","Hava yağmurlu.","It is |rainy|.",["sunny","windy"]),
+  F("❄️","Hava soğuk.","It is |cold|.",["hot","happy"]),
+  F("🥵","Hava sıcak.","It is |hot|.",["cold","rainy"]),
+  O("⛄","Kar yağıyor.","It is snowing.")
+]},
+214:{title:"Ne Giyiyorum?",icon:"👕",items:[
+  F("🧢","Ben şapka takıyorum.","I |wear| a hat.",["eat","play"]),
+  F("👕","Ben gömlek giyiyorum.","I wear a |shirt|.",["hat","shoe"]),
+  F("👟","Ben ayakkabı giyiyorum.","I wear |shoes|.",["socks","pants"]),
+  F("🧥","Hava soğuk. Ben mont giyiyorum.","It is cold. I wear a |coat|.",["dress","shirt"]),
+  R("👗","What do you wear?","Ne giyiyorsun?","I wear a dress.",["I eat an apple.","I am seven."]),
+  O("👖","Ben mavi pantolon giyiyorum.","I wear blue pants.")
+]},
+215:{title:"İstiyorum, Lütfen",icon:"🥛",items:[
+  F("🥛","Süt, lütfen.","Milk, |please|.",["sorry","hello"]),
+  R("🍽️","Are you hungry?","Aç mısın?","Yes, I am.",["Yes, I can.","Yes, it is."]),
+  F("💧","Su istiyorum.","I |want| water.",["wear","can"]),
+  F("🍎","Bir elma istiyorum, lütfen.","I want an apple, |please|.",["sorry","welcome"]),
+  R("🍪","Do you want a cookie?","Kurabiye ister misin?","Yes, please!",["No, I am happy.","Good morning!"]),
+  O("🥤","Su alabilir miyim, lütfen?","Can I have water, please?")
+]},
+216:{title:"Büyüyünce",icon:"👩‍⚕️",items:[
+  F("👩‍⚕️","Ben doktor olmak istiyorum.","I want to be a |doctor|.",["teacher","pilot"]),
+  F("👩‍🏫","Ben öğretmen olmak istiyorum.","I want to be a |teacher|.",["doctor","chef"]),
+  F("👨‍✈️","Ben pilot olmak istiyorum.","I want to be a |pilot|.",["doctor","farmer"]),
+  R("🤔","What do you want to be?","Ne olmak istiyorsun?","I want to be a chef.",["I am seven.","Thank you."]),
+  F("👨‍🍳","Babam aşçı.","My dad is a |chef|.",["pilot","nurse"]),
+  O("👩‍⚕️","Annem doktor.","My mom is a doctor.")
+]},
+217:{title:"Saat Kaç?",icon:"⏰",items:[
+  R("🕖","What time is it?","Saat kaç?","It is seven o'clock.",["I am seven.","It is sunny."]),
+  F("🕖","Saat yedi.","It is |seven| o'clock.",["five","nine"]),
+  F("🕘","Saat dokuz.","It is |nine| o'clock.",["six","ten"]),
+  F("🌅","Sabah kalkıyorum.","I wake up in the |morning|.",["night","evening"]),
+  F("🌙","Gece uyuyorum.","I sleep at |night|.",["morning","noon"]),
+  O("🕐","Saat bir.","It is one o'clock.")
+]},
+218:{title:"Sınıf Komutları",icon:"🧑‍🏫",items:[
+  F("🪑","Otur!","|Sit| down!",["Stand","Jump"]),
+  F("🧍","Ayağa kalk!","|Stand| up!",["Sit","Sleep"]),
+  F("👂","Lütfen dinle.","|Listen|, please.",["Look","Eat"]),
+  F("📖","Kitabını aç.","|Open| your book.",["Close","Eat"]),
+  R("🧑‍🏫","Sit down, please.","Lütfen otur.","OK, thank you.",["My name is Ali.","Good morning!"]),
+  O("🙋","Lütfen buraya gel!","Come here, please!")
+]},
+219:{title:"Nerede?",icon:"📦",items:[
+  F("🐱","Kedi kutunun içinde.","The cat is |in| the box.",["on","under"]),
+  F("📚","Kitap masanın üstünde.","The book is |on| the table.",["in","under"]),
+  F("🐶","Köpek masanın altında.","The dog is |under| the table.",["on","in"]),
+  R("🔎","Where is the ball?","Top nerede?","It is under the bed.",["It is red.","I am fine."]),
+  F("🧸","Ayıcık yatağın üstünde.","The teddy bear is |on| the bed.",["under","in"]),
+  O("🎒","Çanta burada.","The bag is here.")
+]},
+220:{title:"Kaç Tane?",icon:"🔢",items:[
+  R("🍎🍎🍎","How many apples?","Kaç elma var?","I have three apples.",["It is red.","I am three."]),
+  F("🍎🍎","İki elma.","|Two| apples.",["Three","Four"]),
+  F("⭐⭐⭐⭐⭐","Beş yıldız.","|Five| stars.",["Four","Six"]),
+  F("🐱🐱🐱🐱","Dört kedi.","|Four| cats.",["Three","Five"]),
+  F("🎈🎈🎈🎈🎈🎈","Altı balon.","|Six| balloons.",["Five","Seven"]),
+  O("🧸🧸🧸","Üç ayıcığım var.","I have three teddy bears.")
+]},
+221:{title:"Nerelisin?",icon:"🌍",items:[
+  R("🌍","Where are you from?","Nerelisin?","I am from Turkey.",["I am seven.","It is red."]),
+  F("🏠","Ben Türkiye'denim.","I am from |Turkey|.",["Japan","Italy"]),
+  F("🗼","Ben Fransa'danım.","I am from |France|.",["Turkey","Brazil"]),
+  F("🗻","Ben Japonya'danım.","I am from |Japan|.",["China","Spain"]),
+  R("🧒","Are you from Turkey?","Türkiye'den misin?","Yes, I am.",["Yes, I can.","Yes, I do."]),
+  O("🌍","Ben Türkiye'denim.","I am from Turkey.")
+]},
+222:{title:"Hobilerim",icon:"🎸",items:[
+  F("⚽","Ben futbol oynarım.","I |play| football.",["eat","wear"]),
+  F("🎸","Ben gitar çalarım.","I play the |guitar|.",["drum","piano"]),
+  F("🎨","Ben resim yapmayı severim.","I like to |draw|.",["swim","sleep"]),
+  F("📖","Ben kitap okumayı severim.","I like to |read|.",["draw","run"]),
+  R("⚽","Do you like football?","Futbolu sever misin?","Yes, I do!",["Yes, I am!","Yes, I can!"]),
+  O("🏊","Ben yüzmeyi severim.","I like to swim.")
+]},
+223:{title:"Yön Bulalım",icon:"🧭",items:[
+  F("⬅️","Sola dön.","Turn |left|.",["right","back"]),
+  F("➡️","Sağa dön.","Turn |right|.",["left","up"]),
+  F("⬆️","Düz git.","Go |straight|.",["left","home"]),
+  F("🛑","Dur!","|Stop|!",["Go","Sit"]),
+  R("🧭","Where is the park?","Park nerede?","Go straight.",["I am seven.","Thank you."]),
+  O("🚦","Dikkat et!","Be careful!")
+]},
+224:{title:"Alışveriş",icon:"🛒",items:[
+  R("🛒","How much is it?","Bu ne kadar?","It is five lira.",["It is red.","I am five."]),
+  F("🍞","Bir ekmek, lütfen.","Bread, |please|.",["sorry","hello"]),
+  F("💵","Teşekkürler, hoşça kalın.","|Thank| you, goodbye!",["Sorry","Hello"]),
+  F("🛍️","Bunu istiyorum.","I |want| this.",["wear","can"]),
+  R("🛍️","Can I help you?","Yardımcı olabilir miyim?","Yes, I want an apple.",["I am seven.","Good night!"]),
+  O("🍎","Elma kaç lira?","How much is the apple?")
+]},
+225:{title:"Günler ve Aylar",icon:"📅",items:[
+  R("📅","What day is it?","Bugün günlerden ne?","It is Monday.",["It is red.","It is two o'clock."]),
+  F("📅","Bugün Pazartesi.","Today is |Monday|.",["Friday","Sunday"]),
+  F("🏖️","Bugün Cumartesi.","Today is |Saturday|.",["Monday","Friday"]),
+  F("🎂","Doğum günüm Mayıs'ta.","My birthday is in |May|.",["June","April"]),
+  F("❄️","Ocak kış ayı.","|January| is in winter.",["July","May"]),
+  O("📆","Bugün Salı.","Today is Tuesday.")
+]},
+226:{title:"Hayvanlar Konuşuyor",icon:"🐮",items:[
+  F("🐶","Köpek havlar.","The dog says |woof|.",["meow","moo"]),
+  F("🐱","Kedi miyavlar.","The cat says |meow|.",["woof","quack"]),
+  F("🐮","İnek böler.","The cow says |moo|.",["oink","quack"]),
+  F("🦆","Ördek vaklar.","The duck says |quack|.",["meow","moo"]),
+  R("🐑","What does the sheep say?","Koyun ne der?","Baa!",["Woof!","Meow!"]),
+  O("🐱","Kedi miyavlar.","The cat says meow.")
+]},
+227:{title:"Arkadaşım",icon:"🧑‍🤝‍🧑",items:[
+  F("🧑‍🤝‍🧑","Bu benim arkadaşım.","This is my |friend|.",["bag","house"]),
+  R("🧑‍🤝‍🧑","This is my friend, Mia.","Bu arkadaşım Mia.","Nice to meet you!",["Good night!","You are welcome."]),
+  F("🤝","Hadi oynayalım!","Let's |play|!",["sleep","read"]),
+  F("🎲","Birlikte oynayalım!","Let's play |together|!",["sorry","please"]),
+  R("🧒","Do you want to play?","Oynamak ister misin?","Yes, let's play!",["No, I am seven.","I am fine."]),
+  O("🧑‍🤝‍🧑","O benim arkadaşım.","He is my friend.")
+]},
+228:{title:"Sağlıklı Kalalım",icon:"🧼",items:[
+  F("🧼","Ellerimi yıkıyorum.","I wash my |hands|.",["feet","ears"]),
+  F("🪥","Dişlerimi fırçalıyorum.","I brush my |teeth|.",["hair","hands"]),
+  F("🤒","Ben hastayım.","I am |sick|.",["happy","hungry"]),
+  R("🤒","Are you OK?","İyi misin?","Yes, I am OK.",["Yes, I can.","Yes, I do."]),
+  F("💧","Su içiyorum.","I |drink| water.",["wear","jump"]),
+  O("😴","Ben erken uyurum.","I sleep early.")
+]},
+229:{title:"Zıt Kelimeler",icon:"⚖️",items:[
+  F("🐘","Fil büyük.","The elephant is |big|.",["small","fast"]),
+  F("🐭","Fare küçük.","The mouse is |small|.",["big","tall"]),
+  F("☕","Çay sıcak.","The tea is |hot|.",["cold","big"]),
+  F("🧊","Buz soğuk.","The ice is |cold|.",["hot","big"]),
+  F("🐢","Kaplumbağa yavaş.","The turtle is |slow|.",["fast","big"]),
+  O("🐇","Tavşan hızlı.","The rabbit is fast.")
+]},
+230:{title:"Gezmeye Gidelim",icon:"🚌",items:[
+  F("🏞️","Parka gidiyoruz.","We go to the |park|.",["school","market"]),
+  F("🏫","Okula gidiyoruz.","We go to the |school|.",["park","zoo"]),
+  F("🚌","Otobüse biniyorum.","I take the |bus|.",["plane","boat"]),
+  F("✈️","Uçakla gidiyoruz.","We go by |plane|.",["bus","car"]),
+  R("🚗","Let's go!","Hadi gidelim!","OK, let's go!",["I am seven.","Good morning!"]),
+  O("🧳","Çantam hazır.","My bag is ready.")
+]},
+231:{title:"Dikkat!",icon:"⚠️",items:[
+  F("🚦","Kırmızı ışıkta dur.","|Stop| at the red light.",["Run","Sleep"]),
+  F("⚠️","Dikkat et!","|Be| careful!",["Eat","Play"]),
+  F("👀","İki yana bak.","|Look| left and right.",["Eat","Sing"]),
+  F("🚗","Emniyet kemerini tak.","Wear your |seat belt|.",["hat","shoes"]),
+  R("⚠️","Be careful!","Dikkat et!","OK, thank you.",["I am seven.","Good night!"]),
+  O("🤝","Yardım edebilir miyim?","Can I help you?")
+]},
+232:{title:"Büyük Tekrar",icon:"🏆",items:[
+  R("🙂","How are you?","Nasılsın?","I am fine, thank you.",["My name is Ali.","It is red."]),
+  R("🧒","What is your name?","Adın ne?","My name is Mia.",["I am seven.","I am fine."]),
+  R("🎁","Thank you!","Teşekkürler!","You are welcome!",["Good night!","Hello!"]),
+  F("🐶","Benim bir köpeğim var.","I |have| a dog.",["am","wear"]),
+  F("😄","Ben mutluyum.","I |am| happy.",["can","have"]),
+  O("👋","Hoşça kal, arkadaşım!","Goodbye, my friend!")
+]}
+};
+SECTIONS.forEach(s=>{
+  if(s.type==='sentence' && LESSONS[s.id]){
+    s.lesson = LESSONS[s.id].items;
+    s.title = LESSONS[s.id].title;
+    s.icon = '💬';
+  }
+});
 
 const wordSections = SECTIONS.filter(s=>s.type==='words');
 
@@ -2471,55 +2701,116 @@ function answerQuiz(btn, isCorrect){
   }, isCorrect==='1' ? 1500 : 1000);
 }
 
-/* ===================== SENTENCE FLOW ===================== */
-let sSection, sRounds, sIdx, sCorrect;
+/* ===================== SENTENCE FLOW (Konuşma Dersleri) ===================== */
+let sSection, sRounds, sIdx, sCorrect, sLocked, sOpts, sWords, sPlaced, sChipOrder;
+function esc(t){ return String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function sVisual(e){
+  const n = Array.from(e.replace(/\u200D\p{Extended_Pictographic}/gu,'').replace(/[\uFE0F\u20E3]/g,'')).length;
+  return '<div class="qVisual"><span class="qVisualEmoji' + (n>3?' sm':'') + '">' + e + '</span></div>';
+}
 function openSentence(section){
   sSection = section;
-  sRounds = [];
-  for(let i=0;i<6;i++){
-    const tpl = section.templates[i % section.templates.length];
-    const chosen = tpl.pools.map(p => shuffle(poolWords(p))[0]);
-    const blankSlot = Math.floor(Math.random()*tpl.pools.length);
-    sRounds.push({tpl, chosen, blankSlot});
-  }
-  sIdx = 0; sCorrect = 0;
+  sRounds = section.lesson.slice();
+  sIdx = 0; sCorrect = 0; sLocked = false;
   showScreen('sentenceScreen');
   renderSentence();
 }
 function renderSentence(){
+  stopSpeaking();
+  sLocked = false;
   document.getElementById('sentProgress').style.width = Math.round((sIdx/sRounds.length)*100)+'%';
-  const r = sRounds[sIdx];
-  const correctWord = r.chosen[r.blankSlot];
-  const pool = poolWords(r.tpl.pools[r.blankSlot]).filter(w=>w.en!==correctWord.en);
-  const dists = shuffle(pool).slice(0,2);
-  const opts = shuffle([correctWord, ...dists]);
-
-  let sentenceHtml = '';
-  r.tpl.parts.forEach(p=>{
-    if(typeof p === 'string'){ sentenceHtml += p; }
-    else{
-      if(p === r.blankSlot){ sentenceHtml += '<span class="blank">&nbsp;</span>'; }
-      else{ sentenceHtml += r.chosen[p].e1 + ' <b>' + r.chosen[p].en + '</b>'; }
-    }
-  });
-
+  const it = sRounds[sIdx];
   const card = document.getElementById('sCard');
-  card.innerHTML = `
-    <div class="qPrompt">Cümleyi tamamla</div>
-    <div class="qSentence">${sentenceHtml}</div>
-    <div class="options">
-      ${opts.map(o=>`<button class="opt" onclick="answerSentence(this,'${o.en===correctWord.en?'1':'0'}')">${o.e1}<span class="lbl">${o.en}</span></button>`).join('')}
-    </div>`;
+  if(it.k==='fill'){
+    sOpts = shuffle([it.ans, ...it.wrong]);
+    card.innerHTML =
+      sVisual(it.e) +
+      '<div class="sTr">' + esc(it.tr) + '</div>' +
+      '<div class="qPrompt">Cümleyi tamamla</div>' +
+      '<div class="qSentence">' + esc(it.pre) + '<span class="blank" id="sBlank">&nbsp;</span>' + esc(it.post) + '</div>' +
+      '<div class="options">' + sOpts.map((o,i)=>'<button class="opt" onclick="pickSentence('+i+')"><span class="lbl">'+esc(o)+'</span></button>').join('') + '</div>';
+  } else if(it.k==='reply'){
+    sOpts = shuffle([it.ans, ...it.wrong]);
+    card.innerHTML =
+      sVisual(it.e) +
+      '<div class="sBubble"><button class="sSpeak" onclick="speak(\'' + it.q.replace(/'/g,"\\'") + '\',\'en-US\')">🔊</button>' +
+      '<div><div class="sQ">' + esc(it.q) + '</div><div class="sTr">' + esc(it.tr) + '</div></div></div>' +
+      '<div class="qPrompt">Doğru cevabı seç</div>' +
+      '<div class="options">' + sOpts.map((o,i)=>'<button class="opt" onclick="pickSentence('+i+')"><span class="lbl">'+esc(o)+'</span></button>').join('') + '</div>';
+    speakLater(350, it.q, 'en-US');
+  } else {
+    sWords = it.s.split(' ');
+    sPlaced = [];
+    let order = sWords.map((_,i)=>i);
+    for(let t=0;t<8;t++){
+      order = shuffle(order);
+      if(order.map(i=>sWords[i]).join(' ') !== it.s) break;
+    }
+    sChipOrder = order;
+    card.innerHTML =
+      sVisual(it.e) +
+      '<div class="sTr">' + esc(it.tr) + '</div>' +
+      '<div class="qPrompt">Kelimeleri sıraya diz</div>' +
+      '<div class="ansRow" id="ansRow"></div>' +
+      '<div class="chipRow" id="chipRow"></div>';
+    renderChips();
+  }
 }
-function answerSentence(btn, isCorrect){
-  document.querySelectorAll('#sCard .opt').forEach(b=>b.disabled=true);
-  if(isCorrect==='1'){ btn.classList.add('correct'); sCorrect++; }
-  else{ btn.classList.add('wrong'); }
+function renderChips(){
+  const ans = document.getElementById('ansRow'), pool = document.getElementById('chipRow');
+  if(!ans || !pool) return;
+  ans.innerHTML = sPlaced.map(i=>'<button class="chip" onclick="unplaceChip('+i+')">'+esc(sWords[i])+'</button>').join('');
+  pool.innerHTML = sChipOrder.filter(i=>sPlaced.indexOf(i)<0).map(i=>'<button class="chip" onclick="placeChip('+i+')">'+esc(sWords[i])+'</button>').join('');
+}
+function placeChip(i){
+  if(sLocked) return;
+  sPlaced.push(i);
+  haptic('LIGHT');
+  renderChips();
+  if(sPlaced.length === sWords.length){
+    const it = sRounds[sIdx];
+    const ok = sPlaced.map(k=>sWords[k]).join(' ') === it.s;
+    sLocked = true;
+    const row = document.getElementById('ansRow');
+    if(ok){
+      row.classList.add('good'); sCorrect++; haptic('MEDIUM');
+    } else {
+      row.classList.add('bad');
+      setTimeout(()=>{ row.classList.remove('bad'); row.classList.add('good'); row.innerHTML = sWords.map(w=>'<button class="chip">'+esc(w)+'</button>').join(''); }, 700);
+    }
+    speakLater(ok?200:800, cleanForSpeech(it.s), 'en-US');
+    nextSentence(ok ? 1700 : 2600);
+  }
+}
+function unplaceChip(i){
+  if(sLocked) return;
+  sPlaced = sPlaced.filter(k=>k!==i);
+  renderChips();
+}
+function pickSentence(i){
+  if(sLocked) return;
+  sLocked = true;
+  const it = sRounds[sIdx];
+  const ok = sOpts[i] === it.ans;
+  const btns = document.querySelectorAll('#sCard .opt');
+  btns.forEach(b=>b.disabled=true);
+  if(ok){ btns[i].classList.add('correct'); sCorrect++; haptic('MEDIUM'); }
+  else { btns[i].classList.add('wrong'); const ci = sOpts.indexOf(it.ans); if(btns[ci]) btns[ci].classList.add('correct'); }
+  if(it.k==='fill'){
+    const b = document.getElementById('sBlank');
+    if(b){ b.textContent = it.ans; b.classList.add('filled'); }
+    speakLater(200, cleanForSpeech(it.pre + it.ans + it.post), 'en-US');
+  } else {
+    speakLater(200, cleanForSpeech(it.ans), 'en-US');
+  }
+  nextSentence(ok ? 1700 : 2400);
+}
+function nextSentence(ms){
   setTimeout(()=>{
     sIdx++;
     if(sIdx < sRounds.length){ renderSentence(); }
     else{ finishSection(sSection, sCorrect, sRounds.length); }
-  }, 700);
+  }, ms);
 }
 
 /* ===================== COMPLETE ===================== */
