@@ -708,7 +708,7 @@ button{font-family:inherit;color:inherit;}
         <div class="planTag gold">En Avantajlı</div>
         <div class="planName">Sınırsız Plan</div>
         <div class="planDuration">Yıllık üyelik</div>
-        <div class="planPrice">199 TL<span>/yıl</span></div>
+        <div class="planPrice">199.99 TL<span>/yıl</span></div>
         <div class="planNote">İlk 7 gün ücretsiz, sonra yılda bir yenilenir</div>
         <button class="planBtn">Seç</button>
       </div>
@@ -2071,9 +2071,9 @@ function requestMicPermission(){
   }
 }
 const PLANS = {
-  pro:    {name:'Başlangıç Plan', duration:'Aylık',    days:30,  price:'29.99 TL', trial:1},
+  pro:    {name:'Başlangıç Plan', duration:'Aylık',    days:30,  price:'29.99 TL', trial:3},
   king:   {name:'Aile Plan',      duration:'3 Aylık',  days:90,  price:'69.99 TL', trial:3},
-  master: {name:'Sınırsız Plan',  duration:'Yıllık',   days:365, price:'199 TL',   trial:7}
+  master: {name:'Sınırsız Plan',  duration:'Yıllık',   days:365, price:'199.99 TL',   trial:7}
 };
 let membershipReturnScreen = 'settingsScreen';
 let selectedPlanId = null;
@@ -2091,7 +2091,7 @@ function openMembership(fromWhere){
   document.getElementById('promoMsg').textContent = '';
   showScreen('membershipScreen');
 }
-const REVENUECAT_API_KEY = ''; // RevenueCat panelinden alınan "Public Google API Key" buraya yapıştırılacak
+const REVENUECAT_API_KEY = 'goog_qlGZBuoyRuJokBgAyBuIDBcyFVo'; // RevenueCat Public Google API Key
 const PLAN_PACKAGE_TYPE = { pro:'MONTHLY', king:'THREE_MONTH', master:'ANNUAL' };
 let rcConfigured = false;
 
@@ -2117,7 +2117,8 @@ async function buyPlan(planId){
   msg.textContent = 'Açılıyor...';
   try{
     const offeringsResult = await RC.getOfferings();
-    const current = offeringsResult.offerings.current;
+    const offerings = (offeringsResult && offeringsResult.offerings) ? offeringsResult.offerings : offeringsResult;
+    const current = offerings && offerings.current;
     const pkg = current && current.availablePackages.find(p => p.packageType === PLAN_PACKAGE_TYPE[planId]);
     if(!pkg){ msg.textContent = 'Bu plan şu an satın alınamıyor.'; return; }
     const { customerInfo } = await RC.purchasePackage({ aPackage: pkg });
