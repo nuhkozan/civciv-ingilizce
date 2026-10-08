@@ -2130,6 +2130,8 @@ function updateMembershipUI(){
     if(btn) btn.textContent = isCurrent ? '✓ Aktif planın' : (active ? 'Seç' : 'Seç');
   });
   if(active){
+    const intro = document.getElementById('membershipIntro');
+    if(intro) intro.textContent = 'Tüm bölümlere, tüm kelimelere ve gelecekteki içeriklere sınırsız erişim.';
     const n = planDaysLeft();
     banner.style.display = 'block';
     banner.innerHTML = '<div class="pbName">⭐ ' + planDisplayName() + (AUTH.viaCode ? ' (promosyon kodu)' : '') + '</div>' +
@@ -2158,6 +2160,7 @@ async function buyPlan(planId){
   if(AUTH.type!=='member'){ msg.textContent = 'Önce giriş yapman gerekiyor.'; return; }
   if(isPremium()){
     msg.textContent = 'Aktif bir üyeliğin var (' + planDaysText(planDaysLeft()).toLowerCase() + '). Plan değişikliği için Google Play > Abonelikler bölümünü kullanabilirsin.';
+    try{ updateMembershipUI(); }catch(e){}
     return;
   }
   if(!ensureRevenueCat()){
