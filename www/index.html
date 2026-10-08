@@ -611,6 +611,7 @@ button{font-family:inherit;color:inherit;}
         <button class="bigBtn" style="max-width:240px;" onclick="goMap()">Öğrenmeye Başla</button>
       </div>
       <button class="bigBtn" style="max-width:260px;margin-top:26px;" onclick="logout()">Çıkış Yap</button>
+      <button id="deleteAccountBtn" style="margin-top:18px;background:none;border:none;color:#9a8f73;text-decoration:underline;font-size:.85rem;cursor:pointer;" onclick="deleteAccount()">Hesabımı sil</button>
     </div>
   </div>
 </div>
@@ -2154,6 +2155,81 @@ function ensureRevenueCat(){
   return rcConfigured;
 }
 
+
+// ---- Ortak diyalog, ebeveyn kilidi, hesap silme ----
+function askDialog(o){
+  return new Promise(function(resolve){
+    var ov = document.createElement('div');
+    ov.style.cssText = 'position:fixed;inset:0;background:rgba(30,25,15,.55);z-index:99999;display:flex;align-items:center;justify-content:center;padding:20px;';
+    var box = document.createElement('div');
+    box.style.cssText = 'background:#fffdf7;border-radius:22px;max-width:380px;width:100%;padding:22px 20px;box-shadow:0 10px 40px rgba(0,0,0,.3);text-align:center;font-family:inherit;color:#1f1a10;';
+    var h = document.createElement('div'); h.style.cssText='font-size:1.15rem;font-weight:800;margin-bottom:8px;'; h.textContent=o.title||'';
+    var b = document.createElement('div'); b.style.cssText='font-size:.95rem;line-height:1.45;margin-bottom:12px;color:#4a4332;white-space:pre-line;'; b.textContent=o.body||'';
+    box.appendChild(h); box.appendChild(b);
+    var inp=null, err=document.createElement('div');
+    err.style.cssText='color:#c0392b;font-size:.85rem;min-height:18px;margin-bottom:6px;';
+    if(o.input){
+      inp=document.createElement('input'); inp.type='text'; inp.inputMode='numeric'; inp.autocomplete='off';
+      inp.style.cssText='width:100%;box-sizing:border-box;font-size:1.3rem;text-align:center;padding:10px;border-radius:14px;border:2px solid #e3d9bd;margin-bottom:6px;';
+      box.appendChild(inp);
+    }
+    box.appendChild(err);
+    var row=document.createElement('div'); row.style.cssText='display:flex;gap:10px;';
+    function mk(txt,primary,danger){
+      var x=document.createElement('button');
+      x.textContent=txt;
+      x.style.cssText='flex:1;padding:12px;border-radius:14px;border:none;font-size:1rem;font-weight:700;cursor:pointer;'+
+        (primary?('background:'+(danger?'#c0392b':'#1f1a10')+';color:#fff;'):'background:#eee6cf;color:#1f1a10;');
+      return x;
+    }
+    var no=mk(o.cancelText||'Vazgeç',false), yes=mk(o.okText||'Tamam',true,o.danger);
+    row.appendChild(no); row.appendChild(yes); box.appendChild(row); ov.appendChild(box); document.body.appendChild(ov);
+    function close(v){ try{ document.body.removeChild(ov); }catch(e){} resolve(v); }
+    no.onclick=function(){ close(false); };
+    yes.onclick=function(){
+      if(o.validate){ var m=o.validate(inp?inp.value.trim():''); if(m){ err.textContent=m; if(inp){inp.value='';inp.focus();} return; } }
+      close(true);
+    };
+    if(inp) setTimeout(function(){ try{inp.focus();}catch(e){} },50);
+  });
+}
+
+// Ebeveyn kilidi: çocuğun kolay çözemeyeceği bir çarpma sorusu
+async function parentalGate(){
+  var a = 6 + Math.floor(Math.random()*4);   // 6-9
+  var b = 12 + Math.floor(Math.random()*8);  // 12-19
+  return askDialog({
+    title:'👨‍👩‍👧 Ebeveyn Kontrolü',
+    body:'Devam etmek için bir yetişkin şu soruyu cevaplamalı:\n' + a + ' × ' + b + ' = ?',
+    input:true, okText:'Onayla', cancelText:'Vazgeç',
+    validate:function(v){ return (parseInt(v,10) === a*b) ? '' : 'Cevap yanlış, tekrar dene.'; }
+  });
+}
+
+async function deleteAccount(){
+  if(AUTH.type!=='member'){ return; }
+  var okGate = await parentalGate();
+  if(!okGate) return;
+  var sure = await askDialog({
+    title:'Hesabı Sil',
+    body:'Hesabın, ilerlemen ve üyelik kaydın kalıcı olarak silinecek. Bu işlem geri alınamaz.\n\nAktif bir aboneliğin varsa Google Play > Abonelikler bölümünden ayrıca iptal etmen gerekir.',
+    okText:'Evet, sil', cancelText:'Vazgeç', danger:true
+  });
+  if(!sure) return;
+  try{
+    var r = await sb.functions.invoke('delete-account', { body:{} });
+    if(r && r.error){ throw r.error; }
+  }catch(e){
+    await askDialog({ title:'Silinemedi', body:'Hesap şu an silinemedi. Lütfen internet bağlantını kontrol edip tekrar dene.', okText:'Tamam', cancelText:'Kapat' });
+    return;
+  }
+  try{ await sb.auth.signOut(); }catch(e){}
+  AUTH = {type:null};
+  try{ localStorage.clear(); sessionStorage.clear(); }catch(e){}
+  showScreen('loginScreen');
+  await askDialog({ title:'Hesabın silindi', body:'Tüm verilerin silindi. Bizi denediğin için teşekkürler!', okText:'Tamam', cancelText:'Kapat' });
+}
+
 async function buyPlan(planId){
   const msg = document.getElementById('buyMsg');
   msg.style.color = '';
@@ -2168,6 +2244,7 @@ async function buyPlan(planId){
     return;
   }
   const RC = window.Capacitor.Plugins.Purchases;
+  if(!(await parentalGate())){ msg.textContent = ''; return; }
   msg.textContent = 'Açılıyor...';
   try{
     const offeringsResult = await RC.getOfferings();
@@ -2341,6 +2418,7 @@ function continueLearning(){
 function showProfile(){
   document.getElementById('profileName').textContent = AUTH.type==='guest' ? 'Misafir Kullanıcı' : (AUTH.username || 'Kullanıcı');
   document.getElementById('profileType').textContent = AUTH.type==='guest' ? 'Üyeliksiz deneme' : 'Üye';
+  var dab=document.getElementById('deleteAccountBtn'); if(dab) dab.style.display = AUTH.type==='member' ? 'inline-block' : 'none';
   const piEl = document.getElementById('profilePlanInfo');
   if(AUTH.type==='guest'){
     piEl.style.display = 'none';
