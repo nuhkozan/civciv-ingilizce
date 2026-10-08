@@ -354,6 +354,19 @@ button{font-family:inherit;color:inherit;}
   font-weight:800; font-size:.95rem; cursor:pointer; background:var(--ink); color:#fff;
 }
 .promoBox{ width:100%; text-align:center; }
+.planInfo{ width:100%; max-width:320px; margin-top:16px; background:var(--card); border-radius:20px; padding:14px 16px; text-align:center; box-shadow:0 4px 0 rgba(0,0,0,.06); border:2px solid var(--sun); }
+.planInfo.off{ border-color:transparent; }
+.planInfo .piName{ font-family:'Baloo 2'; font-weight:800; font-size:1.15rem; }
+.planInfo .piDays{ font-family:'Baloo 2'; font-weight:800; font-size:1.6rem; color:var(--good); line-height:1.1; margin-top:2px; }
+.planInfo .piDays.warn{ color:#E07A1F; }
+.planInfo .piDate{ font-weight:700; font-size:.78rem; opacity:.55; margin-top:2px; }
+.planInfo .piBtn{ margin-top:10px; border:none; border-radius:14px; padding:9px 18px; font-weight:800; font-size:.85rem; cursor:pointer; background:var(--ink); color:#fff; }
+.planBanner{ background:var(--card); border:2px solid var(--sun); border-radius:18px; padding:12px 14px; text-align:center; box-shadow:0 4px 0 rgba(0,0,0,.06); }
+.planBanner .pbName{ font-family:'Baloo 2'; font-weight:800; font-size:1.05rem; }
+.planBanner .pbDays{ font-weight:800; font-size:.85rem; color:var(--good); margin-top:2px; }
+.planCard.current{ border-color:var(--good); cursor:default; }
+.planCard.current .planBtn{ background:var(--good); opacity:.85; }
+.planCard.dimmed{ opacity:.55; }
 .promoLabel{ font-weight:800; font-size:.85rem; opacity:.7; margin-bottom:8px; }
 .promoRow{ display:flex; gap:8px; align-items:center; }
 .promoBtn{
@@ -573,7 +586,7 @@ button{font-family:inherit;color:inherit;}
       <button class="homeBtn toggleBtn" id="soundToggleBtn" onclick="toggleSound()">🔊 <span>Ses</span> <b class="toggleState" id="soundToggleState">Açık</b></button>
     </div>
     <div class="appFooter">
-      <div>Civciv İngilizce v1.0.0</div>
+      <div>Civciv İngilizce <span class="app-ver">v1.0.0</span></div>
       <div>© 2026 Civciv İngilizce — Kozan Games</div>
     </div>
   </div>
@@ -590,6 +603,7 @@ button{font-family:inherit;color:inherit;}
       <div class="profileAvatar">👤</div>
       <div class="profileName" id="profileName"></div>
       <div class="profileType" id="profileType"></div>
+      <div class="planInfo" id="profilePlanInfo" style="display:none;"></div>
       <div class="profileStats" id="profileStats"></div>
       <div class="emptyState" id="profileEmptyState" style="display:none;">
         <div style="font-size:2.2rem;">🌱</div>
@@ -620,7 +634,7 @@ button{font-family:inherit;color:inherit;}
       <button class="settingsRow" onclick="logout()">🚪 <span>Çıkış Yap</span></button>
       <p class="settingsMsg" id="settingsMsg"></p>
       <div class="appFooter">
-        <div>Civciv İngilizce v1.0.0</div>
+        <div>Civciv İngilizce <span class="app-ver">v1.0.0</span></div>
         <div>© 2026 Civciv İngilizce — Kozan Games</div>
       </div>
     </div>
@@ -688,15 +702,16 @@ button{font-family:inherit;color:inherit;}
       <p id="membershipIntro" style="font-weight:700; opacity:.6; font-size:.85rem; text-align:center; margin:0 0 4px;">
         Tüm bölümlere, tüm kelimelere ve gelecekteki içeriklere sınırsız erişim.
       </p>
+      <div class="planBanner" id="membershipActiveBanner" style="display:none;"></div>
       <p class="settingsMsg" id="buyMsg" style="text-align:center;"></p>
-      <div class="planCard" onclick="buyPlan('pro')">
+      <div class="planCard" id="planCard_pro" onclick="buyPlan('pro')">
         <div class="planName">Başlangıç Plan</div>
         <div class="planDuration">Aylık üyelik</div>
         <div class="planPrice">29.99 TL<span>/ay</span></div>
         <div class="planNote">İlk 3 gün ücretsiz, sonra 30 günde bir yenilenir</div>
         <button class="planBtn">Seç</button>
       </div>
-      <div class="planCard featured" onclick="buyPlan('king')">
+      <div class="planCard featured" id="planCard_king" onclick="buyPlan('king')">
         <div class="planTag">En Popüler</div>
         <div class="planName">Aile Plan</div>
         <div class="planDuration">3 Aylık üyelik</div>
@@ -704,7 +719,7 @@ button{font-family:inherit;color:inherit;}
         <div class="planNote">İlk 3 gün ücretsiz, sonra 90 günde bir yenilenir</div>
         <button class="planBtn">Seç</button>
       </div>
-      <div class="planCard" onclick="buyPlan('master')">
+      <div class="planCard" id="planCard_master" onclick="buyPlan('master')">
         <div class="planTag gold">En Avantajlı</div>
         <div class="planName">Sınırsız Plan</div>
         <div class="planDuration">Yıllık üyelik</div>
@@ -1869,7 +1884,16 @@ function saveAuth(){
     else{ sessionStorage.setItem('kk_auth', JSON.stringify(AUTH)); localStorage.removeItem('kk_auth'); }
   }catch(e){}
 }
+document.addEventListener('visibilitychange', ()=>{
+  if(document.visibilityState==='visible' && typeof AUTH!=='undefined' && AUTH.type==='member' && AUTH.userId){
+    fetchProfile().then(()=>{ try{ updateMembershipUI(); }catch(e){} });
+  }
+});
 function isPremium(){ return !!(AUTH.plan && AUTH.planExpires && AUTH.planExpires > Date.now()); }
+function planDaysLeft(){ return AUTH.planExpires ? Math.max(0, Math.ceil((AUTH.planExpires - Date.now()) / 86400000)) : 0; }
+function planDisplayName(){ return (PLANS[AUTH.plan] && PLANS[AUTH.plan].name) || 'Üyelik'; }
+function planEndDate(){ return AUTH.planExpires ? new Date(AUTH.planExpires).toLocaleDateString('tr-TR', {day:'numeric', month:'long', year:'numeric'}) : ''; }
+function planDaysText(n){ return n <= 0 ? 'Bugün sona eriyor' : (n === 1 ? 'Son 1 gün kaldı' : n + ' gün kaldı'); }
 async function applyProfile(profile){
   if(!profile) return;
   AUTH.plan = profile.plan || null;
@@ -2082,6 +2106,7 @@ function openMembership(fromWhere){
   document.getElementById('membershipBackBtn').onclick = ()=>{
     if(fromWhere==='map') goMap();
     else if(fromWhere==='home') goHome();
+    else if(fromWhere==='profile') showProfile();
     else showScreen('settingsScreen');
   };
   document.getElementById('membershipIntro').textContent = fromWhere==='map'
@@ -2089,7 +2114,29 @@ function openMembership(fromWhere){
     : 'Tüm bölümlere, tüm kelimelere ve gelecekteki içeriklere sınırsız erişim.';
   document.getElementById('promoCodeInput').value = '';
   document.getElementById('promoMsg').textContent = '';
+  updateMembershipUI();
   showScreen('membershipScreen');
+}
+function updateMembershipUI(){
+  const banner = document.getElementById('membershipActiveBanner');
+  const active = AUTH.type==='member' && isPremium();
+  ['pro','king','master'].forEach(id=>{
+    const card = document.getElementById('planCard_'+id);
+    if(!card) return;
+    const btn = card.querySelector('.planBtn');
+    const isCurrent = active && AUTH.plan===id;
+    card.classList.toggle('current', isCurrent);
+    card.classList.toggle('dimmed', active && !isCurrent);
+    if(btn) btn.textContent = isCurrent ? '✓ Aktif planın' : (active ? 'Seç' : 'Seç');
+  });
+  if(active){
+    const n = planDaysLeft();
+    banner.style.display = 'block';
+    banner.innerHTML = '<div class="pbName">⭐ ' + planDisplayName() + (AUTH.viaCode ? ' (promosyon kodu)' : '') + '</div>' +
+      '<div class="pbDays">' + planDaysText(n) + ' · Bitiş: ' + planEndDate() + '</div>';
+  } else {
+    banner.style.display = 'none';
+  }
 }
 const REVENUECAT_API_KEY = 'goog_qlGZBuoyRuJokBgAyBuIDBcyFVo'; // RevenueCat Public Google API Key
 const PLAN_PACKAGE_TYPE = { pro:'MONTHLY', king:'THREE_MONTH', master:'ANNUAL' };
@@ -2109,6 +2156,10 @@ async function buyPlan(planId){
   const msg = document.getElementById('buyMsg');
   msg.style.color = '';
   if(AUTH.type!=='member'){ msg.textContent = 'Önce giriş yapman gerekiyor.'; return; }
+  if(isPremium()){
+    msg.textContent = 'Aktif bir üyeliğin var (' + planDaysText(planDaysLeft()).toLowerCase() + '). Plan değişikliği için Google Play > Abonelikler bölümünü kullanabilirsin.';
+    return;
+  }
   if(!ensureRevenueCat()){
     msg.textContent = 'Ödeme sistemi henüz hazır değil, lütfen daha sonra tekrar dene.';
     return;
@@ -2121,12 +2172,19 @@ async function buyPlan(planId){
     const current = offerings && offerings.current;
     const pkg = current && current.availablePackages.find(p => p.packageType === PLAN_PACKAGE_TYPE[planId]);
     if(!pkg){ msg.textContent = 'Bu plan şu an satın alınamıyor.'; return; }
-    const { customerInfo } = await RC.purchasePackage({ aPackage: pkg });
-    await syncEntitlementToSupabase(customerInfo, planId);
+    await RC.purchasePackage({ aPackage: pkg });
     haptic('MEDIUM');
-    msg.style.color = 'var(--good)';
-    msg.textContent = 'Üyeliğin aktif! 🎉';
-    setTimeout(()=>{ goMap(); }, 1200);
+    msg.textContent = 'Ödeme alındı, üyeliğin etkinleştiriliyor...';
+    const ok = await waitForPlanSync(25000);
+    if(ok){
+      updateMembershipUI();
+      msg.style.color = 'var(--good)';
+      msg.textContent = 'Üyeliğin aktif! 🎉';
+      setTimeout(()=>{ goMap(); }, 1200);
+    } else {
+      msg.style.color = '';
+      msg.textContent = 'Ödemen alındı. Üyeliğin birkaç dakika içinde otomatik açılacak, uygulamayı yeniden açman yeterli.';
+    }
   }catch(e){
     if(e && e.userCancelled) { msg.textContent = ''; return; }
     msg.textContent = 'Satın alma tamamlanamadı, tekrar dener misin?';
@@ -2143,28 +2201,31 @@ async function restorePurchasesFlow(){
     const { customerInfo } = await window.Capacitor.Plugins.Purchases.restorePurchases();
     const active = customerInfo.entitlements.active['premium'];
     if(active){
-      await syncEntitlementToSupabase(customerInfo, null);
-      msg.style.color = 'var(--good)';
-      msg.textContent = 'Üyeliğin geri yüklendi! 🎉';
-      setTimeout(()=>{ goMap(); }, 1200);
+      msg.textContent = 'Üyeliğin kontrol ediliyor...';
+      const ok = await waitForPlanSync(10000);
+      if(ok){
+        updateMembershipUI();
+        msg.style.color = 'var(--good)';
+        msg.textContent = 'Üyeliğin geri yüklendi! 🎉';
+        setTimeout(()=>{ goMap(); }, 1200);
+      } else {
+        msg.textContent = 'Satın alımın bulundu, üyeliğin birkaç dakika içinde açılacak.';
+      }
     } else {
       msg.textContent = 'Aktif bir satın alım bulunamadı.';
     }
   }catch(e){ msg.textContent = 'Kontrol edilemedi, tekrar dener misin?'; }
 }
 
-async function syncEntitlementToSupabase(customerInfo, planId){
-  try{
-    const active = customerInfo.entitlements.active['premium'];
-    if(!active) return;
-    const expiresIso = active.expirationDate;
-    const days = expiresIso ? Math.max(1, Math.ceil((new Date(expiresIso).getTime() - Date.now()) / (24*60*60*1000))) : 365;
-    const PRODUCT_TO_PLAN = { civciv_pro:'pro', civciv_king:'king', civciv_master:'master' };
-    const pid = String(active.productIdentifier || '').split(':')[0];
-    const plan = planId || PRODUCT_TO_PLAN[pid] || 'master';
-    await sb.rpc('activate_plan', { p_plan: plan, p_days: days });
+// Plan bilgisini sunucu (RevenueCat webhook) yazar; uygulama sadece okur.
+async function waitForPlanSync(maxMs){
+  const t0 = Date.now();
+  while(Date.now() - t0 < maxMs){
     await fetchProfile();
-  }catch(e){}
+    if(isPremium()) return true;
+    await new Promise(r=>setTimeout(r, 1500));
+  }
+  return isPremium();
 }
 
 async function redeemPromoCode(){
@@ -2179,6 +2240,7 @@ async function redeemPromoCode(){
   if(error || !data || !data.success){
     const reason = data && data.error==='used' ? 'Bu kod daha önce kullanılmış.'
                  : data && data.error==='not_authenticated' ? 'Önce giriş yapman gerekiyor.'
+                 : data && data.error==='rate_limited' ? 'Çok fazla deneme yaptın, lütfen daha sonra tekrar dene.'
                  : 'Geçersiz kod.';
     msg.textContent = reason;
     return;
@@ -2276,6 +2338,24 @@ function continueLearning(){
 function showProfile(){
   document.getElementById('profileName').textContent = AUTH.type==='guest' ? 'Misafir Kullanıcı' : (AUTH.username || 'Kullanıcı');
   document.getElementById('profileType').textContent = AUTH.type==='guest' ? 'Üyeliksiz deneme' : 'Üye';
+  const piEl = document.getElementById('profilePlanInfo');
+  if(AUTH.type==='guest'){
+    piEl.style.display = 'none';
+  } else if(isPremium()){
+    const n = planDaysLeft();
+    piEl.className = 'planInfo';
+    piEl.style.display = 'block';
+    piEl.innerHTML = '<div class="piName">⭐ ' + planDisplayName() + (AUTH.viaCode ? ' (promosyon kodu)' : '') + '</div>' +
+      '<div class="piDays' + (n<=3 ? ' warn' : '') + '">' + planDaysText(n) + '</div>' +
+      '<div class="piDate">Bitiş: ' + planEndDate() + '</div>' +
+      '<button class="piBtn" onclick="openMembership(\'profile\')">Üyeliğimi gör</button>';
+  } else {
+    piEl.className = 'planInfo off';
+    piEl.style.display = 'block';
+    piEl.innerHTML = '<div class="piName">' + (AUTH.plan ? 'Üyeliğin sona erdi' : 'Ücretsiz deneme') + '</div>' +
+      '<div class="piDate">' + (AUTH.plan ? planDisplayName() + ' · Bitiş: ' + planEndDate() : 'İlk 3 bölüm ücretsiz') + '</div>' +
+      '<button class="piBtn" onclick="openMembership(\'profile\')">Üyelik planlarını gör</button>';
+  }
   const doneCount = SECTIONS.filter(s=>s.type!=='placeholder' && isDone(s.id)).length;
   const wordsLearned = wordSections.filter(s=>isDone(s.id)).reduce((a,s)=>a+s.words.length,0);
   const statsEl = document.getElementById('profileStats');
@@ -2832,6 +2912,22 @@ function finishSection(section, correct, total){
 }
 
 /* ===================== INIT ===================== */
+
+// Sürüm: native uygulamada gerçek sürümü (Play'e yüklenen build) gösterir
+(function(){
+  var cur=null;
+  function setVer(t){ cur=t; document.querySelectorAll('.app-ver').forEach(function(e){ if(e.textContent!==t) e.textContent=t; }); }
+  try{ new MutationObserver(function(){ if(cur) setVer(cur); }).observe(document.documentElement,{childList:true,subtree:true}); }catch(e){}
+  window.refreshAppVersion = function(){
+    try{
+      var A = window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.App;
+      if(isNativePlatform() && A && A.getInfo){
+        A.getInfo().then(function(i){ if(i && i.version) setVer('v'+i.version+(i.build?' ('+i.build+')':'')); }).catch(function(){});
+      }
+    }catch(e){}
+  };
+  window.refreshAppVersion();
+})();
 if(isNativePlatform() && window.Capacitor.Plugins.App){
   try{
     window.Capacitor.Plugins.App.addListener('appUrlOpen', (data)=>{
