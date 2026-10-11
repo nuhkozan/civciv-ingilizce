@@ -338,6 +338,7 @@ button{font-family:inherit;color:inherit;}
   border:2px solid transparent;
 }
 .planCard.featured{ border-color:var(--sun); }
+.planFit{ font-weight:700; font-size:.78rem; opacity:.7; margin-top:8px; line-height:1.35; }
 .planTag{
   position:absolute; top:-10px; left:50%; transform:translateX(-50%);
   background:var(--sun); color:#20180a; font-weight:800; font-size:.68rem;
@@ -545,6 +546,22 @@ button{font-family:inherit;color:inherit;}
   </div>
 </div>
 
+<!-- RESET PASSWORD (kurtarma bağlantısından sonra) -->
+<div class="screen" id="resetScreen">
+  <div class="wrap">
+    <div class="authCard">
+      <div style="font-size:3rem;">🔐</div>
+      <h1 style="font-size:1.3rem;">Yeni Şifre Belirle</h1>
+      <p class="authSub">Hesabın için yeni bir şifre yaz</p>
+      <input class="authInput" id="resetPass" type="password" placeholder="Yeni şifre (en az 6 karakter)" autocomplete="new-password">
+      <input class="authInput" id="resetPass2" type="password" placeholder="Yeni şifre (tekrar)" autocomplete="new-password">
+      <button class="bigBtn" style="margin-top:2px;" onclick="doResetPassword()">Şifreyi Kaydet</button>
+      <button class="linkBtn" onclick="cancelReset()">Vazgeç</button>
+      <p class="authMsg" id="resetMsg"></p>
+    </div>
+  </div>
+</div>
+
 <!-- HOME -->
 <div class="screen" id="homeScreen">
   <div class="wrap">
@@ -577,13 +594,17 @@ button{font-family:inherit;color:inherit;}
     <div class="homeMenu">
       <button class="homeBtn" onclick="goMap()">🚀 <span>Hadi Öğrenmeye Başlayalım</span></button>
       <button class="homeBtn" onclick="continueLearning()">⏩ <span>Kaldığın Yerden Devam Et</span></button>
-      <button class="homeBtn" onclick="openMembership('home')">👑 <span>Üyelik Seçenekleri</span></button>
       <button class="homeBtn" onclick="showProfile()">👤 <span>Profilim</span></button>
+      <button class="homeBtn" onclick="openMembership('home')">👑 <span>Üyelik Seçenekleri</span></button>
       <button class="homeBtn" onclick="showSettings()">⚙️ <span>Ayarlar</span></button>
     </div>
     <div class="homeMenu togglesRow" style="margin-top:10px;">
       <button class="homeBtn toggleBtn" id="micToggleBtn" onclick="toggleMic()">🎙️ <span>Mikrofon</span> <b class="toggleState" id="micToggleState">Açık</b></button>
       <button class="homeBtn toggleBtn" id="soundToggleBtn" onclick="toggleSound()">🔊 <span>Ses</span> <b class="toggleState" id="soundToggleState">Açık</b></button>
+    </div>
+    <div class="homeMenu togglesRow" style="margin-top:10px;">
+      <button class="homeBtn toggleBtn" onclick="openContact()">✉️ <span>Bize Ulaşın</span></button>
+      <button class="homeBtn toggleBtn" onclick="logout()">🚪 <span>Çıkış Yap</span></button>
     </div>
     <div class="appFooter">
       <div>Civciv İngilizce <span class="app-ver">v1.0.0</span></div>
@@ -610,8 +631,6 @@ button{font-family:inherit;color:inherit;}
         <p>Henüz hiç bölüm tamamlamadın.<br>Hadi ilk kelimeyle başlayalım!</p>
         <button class="bigBtn" style="max-width:240px;" onclick="goMap()">Öğrenmeye Başla</button>
       </div>
-      <button class="bigBtn" style="max-width:260px;margin-top:26px;" onclick="logout()">Çıkış Yap</button>
-      <button id="deleteAccountBtn" style="margin-top:18px;background:none;border:none;color:#9a8f73;text-decoration:underline;font-size:.85rem;cursor:pointer;" onclick="deleteAccount()">Hesabımı sil</button>
     </div>
   </div>
 </div>
@@ -624,15 +643,12 @@ button{font-family:inherit;color:inherit;}
       <h2 style="font-size:1.1rem;">Ayarlar</h2>
     </div>
     <div style="flex:1; display:flex; flex-direction:column; gap:10px; padding-top:20px;">
-      <div class="settingsGroupLabel">Üyelik</div>
-      <button class="settingsRow" onclick="showMembershipInfo()">💳 <span>Üyelik Seçenekleri</span></button>
-      <div class="settingsGroupLabel" style="margin-top:8px;">Genel</div>
+      <div class="settingsGroupLabel">Genel</div>
       <button class="settingsRow" onclick="requestMicPermission()">🎙️ <span>Mikrofon İznini Ver / Kontrol Et</span></button>
       <button class="settingsRow" onclick="testSound()">🔊 <span>Sesi Test Et</span></button>
       <button class="settingsRow" onclick="resetProgress()">🔄 <span>İlerlemeyi Sıfırla</span></button>
-      <div class="settingsGroupLabel" style="margin-top:8px;">Destek</div>
-      <button class="settingsRow" onclick="openContact()">✉️ <span>Bize Ulaşın</span></button>
-      <button class="settingsRow" onclick="logout()">🚪 <span>Çıkış Yap</span></button>
+      <div class="settingsGroupLabel" id="accountGroupLabel" style="margin-top:8px;display:none;">Hesap</div>
+      <button class="settingsRow" id="deleteAccountBtn" style="display:none;color:#c0392b;" onclick="deleteAccount()">🗑️ <span>Hesabımı Sil</span></button>
       <p class="settingsMsg" id="settingsMsg"></p>
       <div class="appFooter">
         <div>Civciv İngilizce <span class="app-ver">v1.0.0</span></div>
@@ -646,7 +662,7 @@ button{font-family:inherit;color:inherit;}
 <div class="screen" id="contactScreen">
   <div class="wrap">
     <div class="topbar">
-      <button class="backBtn" onclick="showScreen('settingsScreen')">‹</button>
+      <button class="backBtn" onclick="goHome()">‹</button>
       <h2 style="font-size:1.1rem;">Bize Ulaşın</h2>
     </div>
     <div style="flex:1; display:flex; flex-direction:column; gap:12px; padding:16px 6px 20px; align-items:center;">
@@ -701,7 +717,7 @@ button{font-family:inherit;color:inherit;}
     </div>
     <div style="flex:1; display:flex; flex-direction:column; gap:14px; padding:16px 4px 20px; overflow-y:auto;">
       <p id="membershipIntro" style="font-weight:700; opacity:.6; font-size:.85rem; text-align:center; margin:0 0 4px;">
-        Tüm bölümlere, tüm kelimelere ve gelecekteki içeriklere sınırsız erişim.
+        Tüm bölümlere, tüm kelimelere ve gelecekteki içeriklere sınırsız erişim.<br>Üç planda da içerik aynı, sadece süre ve fiyat farklı. Sana uygun olanı seç.
       </p>
       <div class="planBanner" id="membershipActiveBanner" style="display:none;"></div>
       <p class="settingsMsg" id="buyMsg" style="text-align:center;"></p>
@@ -710,22 +726,23 @@ button{font-family:inherit;color:inherit;}
         <div class="planDuration">Aylık üyelik</div>
         <div class="planPrice">29.99 TL<span>/ay</span></div>
         <div class="planNote">İlk 3 gün ücretsiz, sonra 30 günde bir yenilenir</div>
+        <div class="planFit">👍 Önce bir ay deneyip karar vermek isteyenler için</div>
         <button class="planBtn">Seç</button>
       </div>
-      <div class="planCard featured" id="planCard_king" onclick="buyPlan('king')">
-        <div class="planTag">En Popüler</div>
+      <div class="planCard" id="planCard_king" onclick="buyPlan('king')">
         <div class="planName">Aile Plan</div>
         <div class="planDuration">3 Aylık üyelik</div>
         <div class="planPrice">69.99 TL<span>/3 ay</span></div>
         <div class="planNote">İlk 3 gün ücretsiz, sonra 90 günde bir yenilenir</div>
+        <div class="planFit">👍 Birkaç ay düzenli çalışmak isteyenler için (ayda yaklaşık 23.33 TL)</div>
         <button class="planBtn">Seç</button>
       </div>
       <div class="planCard" id="planCard_master" onclick="buyPlan('master')">
-        <div class="planTag gold">En Avantajlı</div>
         <div class="planName">Sınırsız Plan</div>
         <div class="planDuration">Yıllık üyelik</div>
         <div class="planPrice">199.99 TL<span>/yıl</span></div>
         <div class="planNote">İlk 7 gün ücretsiz, sonra yılda bir yenilenir</div>
+        <div class="planFit">👍 Bir yıl boyunca rahatça öğrenmek isteyenler için (ayda yaklaşık 16.67 TL)</div>
         <button class="planBtn">Seç</button>
       </div>
       <button class="linkBtn" onclick="restorePurchasesFlow()">Satın alımlarımı geri yükle</button>
@@ -1956,6 +1973,7 @@ async function finishGoogleLogin(url){
   try{
     const u = new URL(url);
     let code = u.searchParams.get('code');
+    let isRecovery = u.searchParams.get('type')==='recovery' || (u.hash && new URLSearchParams(u.hash.slice(1)).get('type')==='recovery');
     if(code){
       await sb.auth.exchangeCodeForSession(code);
     } else if(u.hash){
@@ -1969,6 +1987,14 @@ async function finishGoogleLogin(url){
       try{ window.Capacitor.Plugins.Browser.close(); }catch(e){}
     }
     if(session && session.user){
+      if(isRecovery || window.__kkRecovery){
+        window.__kkRecovery = false;
+        document.getElementById('resetPass').value = '';
+        document.getElementById('resetPass2').value = '';
+        document.getElementById('resetMsg').textContent = '';
+        showScreen('resetScreen');
+        return;
+      }
       AUTH = { type:'member', username: session.user.email, userId: session.user.id };
       saveAuth();
       await fetchProfile();
@@ -1977,6 +2003,35 @@ async function finishGoogleLogin(url){
       enterHome();
     }
   }catch(e){}
+}
+try{ sb.auth.onAuthStateChange(function(ev){ if(ev==='PASSWORD_RECOVERY') window.__kkRecovery = true; }); }catch(e){}
+async function doResetPassword(){
+  const p1 = document.getElementById('resetPass').value;
+  const p2 = document.getElementById('resetPass2').value;
+  const msg = document.getElementById('resetMsg');
+  msg.style.color = '';
+  if(p1.length < 6){ msg.textContent = 'Şifre en az 6 karakter olmalı.'; return; }
+  if(p1 !== p2){ msg.textContent = 'Şifreler aynı değil.'; return; }
+  try{
+    const { error } = await sb.auth.updateUser({ password: p1 });
+    if(error){ msg.textContent = 'Şifre kaydedilemedi. Bağlantının süresi dolmuş olabilir, yeniden dene.'; return; }
+    const { data: { session } } = await sb.auth.getSession();
+    if(session && session.user){
+      REMEMBER_ME = true;
+      AUTH = { type:'member', username: session.user.email, userId: session.user.id };
+      saveAuth();
+      await fetchProfile();
+      await fetchProgress();
+      ensureRevenueCat();
+      enterHome();
+    } else { showScreen('loginScreen'); }
+  }catch(e){ msg.textContent = 'Şifre kaydedilemedi. Lütfen tekrar dene.'; }
+}
+async function cancelReset(){
+  try{ await sb.auth.signOut(); }catch(e){}
+  AUTH = {type:null};
+  try{ localStorage.removeItem('kk_auth'); sessionStorage.removeItem('kk_auth'); }catch(e){}
+  showScreen('loginScreen');
 }
 function doGuestLogin(){
   REMEMBER_ME = true;
@@ -2110,9 +2165,9 @@ function openMembership(fromWhere){
     else if(fromWhere==='profile') showProfile();
     else showScreen('settingsScreen');
   };
-  document.getElementById('membershipIntro').textContent = fromWhere==='map'
-    ? 'İlk 3 bölüm ücretsizdi 🎉 Öğrenmeye devam etmek için bir plan seç.'
-    : 'Tüm bölümlere, tüm kelimelere ve gelecekteki içeriklere sınırsız erişim.';
+  document.getElementById('membershipIntro').innerHTML = fromWhere==='map'
+    ? 'İlk 3 bölüm ücretsizdi 🎉 Öğrenmeye devam etmek için bir plan seç.<br>Üç planda da içerik aynı, sadece süre ve fiyat farklı.'
+    : 'Tüm bölümlere, tüm kelimelere ve gelecekteki içeriklere sınırsız erişim.<br>Üç planda da içerik aynı, sadece süre ve fiyat farklı. Sana uygun olanı seç.';
   document.getElementById('promoCodeInput').value = '';
   document.getElementById('promoMsg').textContent = '';
   updateMembershipUI();
@@ -2194,15 +2249,29 @@ function askDialog(o){
   });
 }
 
-// Ebeveyn kilidi: çocuğun kolay çözemeyeceği bir çarpma sorusu
+// Ebeveyn kilidi: yazıyla verilen sayıyı rakamla yazma (5-9 yaş çocuk için zor, yetişkin için çok kolay)
+function numToTr(n){
+  var ones=['','bir','iki','üç','dört','beş','altı','yedi','sekiz','dokuz'];
+  var tens=['','on','yirmi','otuz','kırk','elli','altmış','yetmiş','seksen','doksan'];
+  function below1000(x){
+    var h=Math.floor(x/100), t=Math.floor((x%100)/10), o=x%10, out=[];
+    if(h>0){ out.push((h>1?ones[h]+' ':'')+'yüz'); }
+    if(t>0) out.push(tens[t]);
+    if(o>0) out.push(ones[o]);
+    return out.join(' ');
+  }
+  var k=Math.floor(n/1000), r=n%1000, out=[];
+  if(k>0) out.push((k>1?ones[k]+' ':'')+'bin');
+  if(r>0) out.push(below1000(r));
+  return out.join(' ');
+}
 async function parentalGate(){
-  var a = 6 + Math.floor(Math.random()*4);   // 6-9
-  var b = 12 + Math.floor(Math.random()*8);  // 12-19
+  var n = 1100 + Math.floor(Math.random()*8900);   // 1100-9999
   return askDialog({
     title:'👨‍👩‍👧 Ebeveyn Kontrolü',
-    body:'Devam etmek için bir yetişkin şu soruyu cevaplamalı:\n' + a + ' × ' + b + ' = ?',
+    body:'Devam etmek için bir yetişkin şu sayıyı rakamla yazmalı:\n' + numToTr(n),
     input:true, okText:'Onayla', cancelText:'Vazgeç',
-    validate:function(v){ return (parseInt(v,10) === a*b) ? '' : 'Cevap yanlış, tekrar dene.'; }
+    validate:function(v){ return (parseInt(v,10) === n) ? '' : 'Cevap yanlış, tekrar dene.'; }
   });
 }
 
@@ -2418,7 +2487,6 @@ function continueLearning(){
 function showProfile(){
   document.getElementById('profileName').textContent = AUTH.type==='guest' ? 'Misafir Kullanıcı' : (AUTH.username || 'Kullanıcı');
   document.getElementById('profileType').textContent = AUTH.type==='guest' ? 'Üyeliksiz deneme' : 'Üye';
-  var dab=document.getElementById('deleteAccountBtn'); if(dab) dab.style.display = AUTH.type==='member' ? 'inline-block' : 'none';
   const piEl = document.getElementById('profilePlanInfo');
   if(AUTH.type==='guest'){
     piEl.style.display = 'none';
@@ -2453,6 +2521,9 @@ function showProfile(){
 }
 function showSettings(){
   document.getElementById('settingsMsg').textContent = '';
+  var isMember = AUTH.type==='member';
+  var dab=document.getElementById('deleteAccountBtn'); if(dab) dab.style.display = isMember ? 'flex' : 'none';
+  var agl=document.getElementById('accountGroupLabel'); if(agl) agl.style.display = isMember ? 'block' : 'none';
   showScreen('settingsScreen');
 }
 function resetProgress(){
@@ -3012,7 +3083,7 @@ function finishSection(section, correct, total){
 if(isNativePlatform() && window.Capacitor.Plugins.App){
   try{
     window.Capacitor.Plugins.App.addListener('appUrlOpen', (data)=>{
-      if(data && data.url && data.url.indexOf('login-callback')>-1){
+      if(data && data.url && (data.url.indexOf('login-callback')>-1 || data.url.indexOf('type=recovery')>-1)){
         finishGoogleLogin(data.url);
       }
     });
