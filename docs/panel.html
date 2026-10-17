@@ -1,0 +1,247 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Civciv Panel</title>
+<style>
+  :root{
+    --bg:#070d14; --card:#0b1622; --line:#17314a; --ink:#e6f1ff; --mute:#8aa0b8;
+    --accent:#6fe3ff; --gold:#ffd23f; --good:#4ade80; --bad:#f87171;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;padding:16px;max-width:760px;margin-inline:auto}
+  h1{font-size:1.5rem;color:var(--accent);margin:8px 0 2px;text-shadow:0 0 18px rgba(111,227,255,.35)}
+  h2{font-size:1.1rem;color:var(--accent);margin:26px 0 8px;padding-bottom:6px;border-bottom:1px solid var(--line)}
+  .sub{color:var(--mute);font-size:.88rem;line-height:1.4;margin:0 0 14px}
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 14px}
+  .card .l{font-size:.72rem;letter-spacing:.04em;color:var(--mute);text-transform:uppercase}
+  .card .v{font-size:1.9rem;font-weight:800;color:var(--gold);margin-top:4px}
+  .card .v.good{color:var(--good)}
+  table{width:100%;border-collapse:collapse;font-size:.85rem}
+  th,td{text-align:left;padding:9px 6px;border-bottom:1px solid var(--line);vertical-align:top}
+  th{color:var(--mute);font-weight:600;font-size:.75rem}
+  td.n{text-align:right;white-space:nowrap}
+  .tag{display:inline-block;font-size:.68rem;padding:1px 7px;border-radius:99px;border:1px solid var(--line);color:var(--mute);margin-left:4px}
+  .tag.paid{color:var(--good);border-color:var(--good)}
+  .tag.test{color:var(--mute)}
+  .bars{display:flex;align-items:flex-end;gap:5px;height:90px;margin-top:6px}
+  .bar{flex:1;background:linear-gradient(var(--accent),#2a7fa0);border-radius:4px 4px 0 0;min-height:2px;position:relative}
+  .bar span{position:absolute;top:-16px;left:0;right:0;text-align:center;font-size:.68rem;color:var(--ink)}
+  .barLbl{display:flex;gap:5px;margin-top:4px}
+  .barLbl div{flex:1;text-align:center;font-size:.62rem;color:var(--mute)}
+  .login{max-width:340px;margin:60px auto}
+  input{width:100%;padding:12px;border-radius:10px;border:1px solid var(--line);background:#06101a;color:var(--ink);font-size:1rem;margin-bottom:10px}
+  button{width:100%;padding:12px;border:none;border-radius:10px;background:var(--accent);color:#04202c;font-weight:800;font-size:1rem;cursor:pointer}
+  button.ghost{background:none;color:var(--mute);border:1px solid var(--line);width:auto;padding:6px 12px;font-size:.8rem;font-weight:600}
+  .err{color:var(--bad);font-size:.85rem;min-height:1.2em;margin:6px 0}
+  .bar-top{display:flex;justify-content:space-between;align-items:center;gap:8px}
+  .hidden{display:none}
+  label.chk{display:flex;gap:6px;align-items:center;color:var(--mute);font-size:.8rem;margin:6px 0}
+  label.chk input{width:auto;margin:0}
+  .empty{color:var(--mute);font-size:.85rem;padding:8px 0}
+</style>
+</head>
+<body>
+
+<div id="loginBox" class="login">
+  <h1>🐥 Civciv Panel</h1>
+  <p class="sub">Yönetici girişi. Bu sayfadaki veriler sadece yönetici hesabına açıktır.</p>
+  <input id="em" type="email" placeholder="E-posta" autocomplete="username">
+  <input id="pw" type="password" placeholder="Şifre" autocomplete="current-password">
+  <div class="err" id="loginErr"></div>
+  <button id="loginBtn">Giriş yap</button>
+</div>
+
+<div id="app" class="hidden">
+  <div class="bar-top">
+    <div>
+      <h1>📊 CİVCİV — İstatistikler</h1>
+      <p class="sub" id="gen"></p>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:6px">
+      <button class="ghost" id="refreshBtn">Yenile</button>
+      <button class="ghost" id="logoutBtn">Çıkış</button>
+    </div>
+  </div>
+  <p class="sub">Test hesapları (yönetici ve test e-postaları) sayılara dahil edilmez. Aktif = son girişi veya ilerlemesi o süre içinde olan üye. Üyeliksiz deneyenler ve indirme sayısı burada görünmez, onlar için Play Console'a bak.</p>
+
+  <div class="grid" id="cards"></div>
+
+  <h2>Son 14 günde yeni üye</h2>
+  <div id="daily"></div>
+
+  <h2>Aktif abonelikler</h2>
+  <div id="plans"></div>
+
+  <h2>Üyeler (en yeni 100)</h2>
+  <label class="chk"><input type="checkbox" id="showTest"> Test hesaplarını da göster</label>
+  <div style="overflow-x:auto"><table id="tbl"></table></div>
+</div>
+
+<script>
+const SB_URL = 'https://elsfotlpczqyqlcxnudz.supabase.co';
+const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVsc2ZvdGxwY3pxeXFsY3hudWR6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTA3OTYxODUsImV4cCI6MjEwNjM3MjE4NX0.UAv9y-RVJ8_aOnIH-d19jqm2Ssizto5HtwQ941OiAgE';
+const PLAN_NAMES = {pro:'Başlangıç (aylık)', king:'Aile (3 aylık)', master:'Sınırsız (yıllık)'};
+const TOTAL_SECTIONS = 133;
+
+const $ = id => document.getElementById(id);
+let token = null, lastData = null;
+
+function store(k, v){ try{ if(v==null) sessionStorage.removeItem(k); else sessionStorage.setItem(k, v);}catch(e){} }
+function load(k){ try{ return sessionStorage.getItem(k);}catch(e){ return null; } }
+
+async function login(){
+  $('loginErr').textContent = '';
+  const email = $('em').value.trim(), password = $('pw').value;
+  if(!email || !password){ $('loginErr').textContent = 'E-posta ve şifre gerekli.'; return; }
+  $('loginBtn').disabled = true;
+  try{
+    const r = await fetch(SB_URL + '/auth/v1/token?grant_type=password', {
+      method:'POST', headers:{'apikey':SB_KEY,'Content-Type':'application/json'},
+      body: JSON.stringify({email, password})
+    });
+    const j = await r.json();
+    if(!r.ok || !j.access_token){ $('loginErr').textContent = 'Giriş başarısız.'; return; }
+    token = j.access_token; store('cp_token', token);
+    $('pw').value = '';
+    await show();
+  }catch(e){ $('loginErr').textContent = 'Bağlantı hatası.'; }
+  finally{ $('loginBtn').disabled = false; }
+}
+
+async function fetchStats(){
+  const r = await fetch(SB_URL + '/rest/v1/rpc/admin_stats', {
+    method:'POST',
+    headers:{'apikey':SB_KEY,'Authorization':'Bearer '+token,'Content-Type':'application/json'},
+    body:'{}'
+  });
+  if(!r.ok) throw new Error(r.status);
+  return r.json();
+}
+
+async function show(){
+  try{
+    lastData = await fetchStats();
+  }catch(e){
+    token = null; store('cp_token', null);
+    $('app').classList.add('hidden'); $('loginBox').classList.remove('hidden');
+    $('loginErr').textContent = 'Bu hesabın yetkisi yok ya da oturum süresi doldu.';
+    return;
+  }
+  $('loginBox').classList.add('hidden'); $('app').classList.remove('hidden');
+  render();
+}
+
+function fmtDate(s){
+  if(!s) return '-';
+  const d = new Date(s);
+  return d.toLocaleString('tr-TR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit',timeZone:'Europe/Istanbul'});
+}
+function td(text, cls){ const c = document.createElement('td'); c.textContent = text; if(cls) c.className = cls; return c; }
+
+function render(){
+  const d = lastData;
+  $('gen').textContent = 'Anlık özet: ' + fmtDate(d.generated_at);
+
+  const cards = [
+    ['Toplam üye (test hariç)', d.real_users],
+    ['Son 24 saatte yeni üye', d.new_24h],
+    ['Son 7 günde yeni üye', d.new_7d],
+    ['Son 24 saatte aktif', d.active_24h],
+    ['Son 7 günde aktif', d.active_7d],
+    ['Son 30 günde aktif', d.active_30d],
+    ['İlerleme kaydı olan üye', d.with_progress],
+    ['Tamamlanan bölüm', d.sections_done],
+    ['Aktif abone', d.paid_active, true],
+    ['Şimdiye dek ücretli deneyen', d.paid_ever]
+  ];
+  const g = $('cards'); g.textContent = '';
+  cards.forEach(([l,v,good])=>{
+    const c = document.createElement('div'); c.className = 'card';
+    const a = document.createElement('div'); a.className = 'l'; a.textContent = l;
+    const b = document.createElement('div'); b.className = 'v' + (good && v>0 ? ' good' : ''); b.textContent = v;
+    c.append(a,b); g.append(c);
+  });
+
+  // 14 gün
+  const map = {}; d.daily.forEach(x=>map[x.day]=x.n);
+  const days = [];
+  for(let i=13;i>=0;i--){
+    const t = new Date(Date.now() - i*86400000);
+    const key = t.toLocaleDateString('sv-SE',{timeZone:'Europe/Istanbul'});
+    days.push({key, n: map[key]||0});
+  }
+  const max = Math.max(1, ...days.map(x=>x.n));
+  const dw = $('daily'); dw.textContent = '';
+  const bars = document.createElement('div'); bars.className = 'bars';
+  const lbls = document.createElement('div'); lbls.className = 'barLbl';
+  days.forEach(x=>{
+    const b = document.createElement('div'); b.className = 'bar'; b.style.height = Math.max(2, (x.n/max)*100) + '%';
+    if(x.n){ const s = document.createElement('span'); s.textContent = x.n; b.append(s); }
+    bars.append(b);
+    const l = document.createElement('div'); l.textContent = x.key.slice(8); lbls.append(l);
+  });
+  dw.append(bars, lbls);
+
+  // planlar
+  const pw = $('plans'); pw.textContent = '';
+  if(!d.plans.length){ const e = document.createElement('div'); e.className = 'empty'; e.textContent = 'Şu an aktif abone yok.'; pw.append(e); }
+  else{
+    const t = document.createElement('table');
+    d.plans.forEach(p=>{ const r = document.createElement('tr'); r.append(td(PLAN_NAMES[p.plan]||p.plan), td(p.n,'n')); t.append(r); });
+    pw.append(t);
+  }
+
+  renderUsers();
+}
+
+function renderUsers(){
+  const showTest = $('showTest').checked;
+  const t = $('tbl'); t.textContent = '';
+  const head = document.createElement('tr');
+  ['Üye','Kayıt','Son aktif','Bölüm','Plan'].forEach(h=>{ const c = document.createElement('th'); c.textContent = h; head.append(c); });
+  t.append(head);
+  const list = lastData.users.filter(u => showTest || !u.is_test);
+  if(!list.length){ const r = document.createElement('tr'); r.append(td('Üye yok.')); t.append(r); return; }
+  const now = Date.now();
+  list.forEach(u=>{
+    const r = document.createElement('tr');
+    const c1 = document.createElement('td');
+    const nm = document.createElement('div'); nm.textContent = u.name !== '-' ? u.name : u.email;
+    c1.append(nm);
+    if(u.name !== '-'){ const em = document.createElement('div'); em.style.color = 'var(--mute)'; em.style.fontSize = '.75rem'; em.textContent = u.email; c1.append(em); }
+    const pv = document.createElement('span'); pv.className = 'tag'; pv.textContent = u.provider === 'google' ? 'Google' : 'E-posta'; c1.append(pv);
+    if(u.is_test){ const tg = document.createElement('span'); tg.className = 'tag test'; tg.textContent = 'test'; c1.append(tg); }
+    r.append(c1);
+    r.append(td(fmtDate(u.created_at)));
+    const last = [u.last_sign_in_at, u.last_progress].filter(Boolean).sort().pop();
+    r.append(td(fmtDate(last)));
+    r.append(td(u.done_sections + '/' + TOTAL_SECTIONS, 'n'));
+    const pc = document.createElement('td');
+    if(u.plan){
+      const active = u.plan_expires && new Date(u.plan_expires).getTime() > now;
+      pc.textContent = (PLAN_NAMES[u.plan]||u.plan);
+      const tg = document.createElement('span'); tg.className = 'tag' + (active && !u.via_code ? ' paid' : '');
+      tg.textContent = u.via_code ? 'kod' : (active ? 'aktif' : 'bitti'); pc.append(tg);
+    }else pc.textContent = '-';
+    r.append(pc);
+    t.append(r);
+  });
+}
+
+$('loginBtn').addEventListener('click', login);
+$('pw').addEventListener('keydown', e=>{ if(e.key==='Enter') login(); });
+$('refreshBtn').addEventListener('click', show);
+$('showTest').addEventListener('change', renderUsers);
+$('logoutBtn').addEventListener('click', ()=>{ token = null; store('cp_token', null); lastData = null; $('app').classList.add('hidden'); $('loginBox').classList.remove('hidden'); });
+
+(function init(){
+  const t = load('cp_token');
+  if(t){ token = t; show(); }
+})();
+</script>
+</body>
+</html>
